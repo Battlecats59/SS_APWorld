@@ -25,6 +25,7 @@ from .Items import ITEM_TABLE, SSItem
 from .Locations import LOCATION_TABLE, SSLocation, SSLocFlag
 from .Options import SSOptions
 from .Rules import set_rules
+from .Names import HASH_NAMES
 
 from .Rando.Dungeons import DungeonRando
 from .Rando.Entrances import EntranceRando
@@ -222,9 +223,7 @@ class SSWorld(World):
         """
         multiworld = self.multiworld
         player = self.player
-        with open("./worlds/ss/names.txt", "r") as fp:
-            hash_names = fp.read().splitlines()
-        player_hash = self.multiworld.per_slot_randoms[player].sample(hash_names, 3)
+        player_hash = self.multiworld.per_slot_randoms[player].sample(HASH_NAMES, 3)
 
         # Output seed name and slot number to seed RNG in randomizer client.
         output_data = {
