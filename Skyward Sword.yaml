@@ -33,7 +33,7 @@ description: Default Skyward Sword Template
 
 game: Skyward Sword
 requires:
-  version: 0.5.3 # Version of Archipelago required for this yaml to work as expected.
+  version: 0.5.1 # Version of Archipelago required for this yaml to work as expected.
 
 Skyward Sword:
   # Game Options
