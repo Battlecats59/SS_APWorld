@@ -10,10 +10,10 @@ From now on, Archipelago may be referred to as "AP". Skyward Sword may be referr
 - The latest release of [Archipelago](https://github.com/ArchipelagoMW/Archipelago/releases/latest)
 - [Dolphin Emulator](https://dolphin-emu.org/download/) (use the dev version!)
 - A `The Legend of Zelda: Skyward Sword` unrandomzied US 1.00 iso
-- The [Archipelago release of the Skyward Sword Randomizer](https://github.com/Battlecats59/sslib/tree/archipelago)
+- The [Archipelago release of the Skyward Sword Randomizer](https://nightly.link/Battlecats59/sslib/workflows/build.yaml/archipelago/)
 - The Skyward Sword AP World:
-    - This includes the [APWorld file and the YAML options file]() (no link yet)
-    - A zip file including both of these can be downloaded [here]() (no link yet)
+    - This includes the [APWorld file and the YAML options file](https://github.com/Battlecats59/SS_APWorld/releases/latest)
+    - A zip file including both of these can be downloaded [here](https://github.com/Battlecats59/SS_APWorld/releases/download/v0.1.0/APSkywardSword.zip)
 
 ### Useful Links
 - [Archipelago Setup Guide](https://archipelago.gg/tutorial/Archipelago/setup/en)
