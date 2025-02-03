@@ -13,7 +13,7 @@ from Options import (
 )
 
 
-#Completion Requirements
+# Completion Requirements
 class RequiredDungeonCount(Range):
     """
     Determines the number of dungeons required to beat the seed.
@@ -27,12 +27,14 @@ class RequiredDungeonCount(Range):
     range_end = 6
     default = 2
 
+
 class TriforceRequired(DefaultOnToggle):
     """
     If enabled, the three Triforces will be required to open the door to Hylia's Realm at the end of the game.
     """
 
     display_name = "Triforce Required"
+
 
 class TriforceShuffle(Choice):
     """
@@ -43,10 +45,11 @@ class TriforceShuffle(Choice):
     """
 
     display_name = "Triforce Shuffle"
-    option_vanilla = 0
-    option_sky_keep = 1
-    option_anywhere = 2
-    default = 2
+    # option_vanilla = 0
+    # option_sky_keep = 1
+    option_anywhere = 0 # 2
+    default = 0 # 2
+
 
 class GateOfTimeSwordRequirement(Choice):
     """
@@ -61,6 +64,7 @@ class GateOfTimeSwordRequirement(Choice):
     option_true_master_sword = 4
     default = 4
 
+
 class GateOfTimeDungeonRequirements(Choice):
     """
     Enables dungeon requirements for opening the Gate of Time.
@@ -69,12 +73,10 @@ class GateOfTimeDungeonRequirements(Choice):
     """
 
     display_name = "Gate of Time Dungeon Requirements"
-    option_goddess_sword = 0
-    option_goddess_longsword = 1
-    option_goddess_white_sword = 2
-    option_master_sword = 3
-    option_true_master_sword = 4
-    default = 4
+    option_required = 0
+    #option_unrequired = 1
+    default = 0
+
 
 class Imp2Skip(DefaultOnToggle):
     """
@@ -83,6 +85,7 @@ class Imp2Skip(DefaultOnToggle):
 
     display_name = "Imp 2 Skip"
 
+
 class SkipHorde(Toggle):
     """
     If enabled, the requirement to defeat The Horde at the end of the game is skipped.
@@ -90,12 +93,14 @@ class SkipHorde(Toggle):
 
     display_name = "Skip Horde"
 
+
 class SkipGhirahim3(Toggle):
     """
     If enabled, the requirement to defeat Ghirahim 3 at the end of the game is skipped.
     """
 
     display_name = "Skip Ghirahim 3"
+
 
 class SkipDemise(Toggle):
     """
@@ -105,7 +110,7 @@ class SkipDemise(Toggle):
     display_name = "Skip Demise"
 
 
-#Open Options
+# Open Options
 class GateOfTimeStartingState(Choice):
     """
     Determines whether the Gate of Time starts raised or lowered.
@@ -117,6 +122,7 @@ class GateOfTimeStartingState(Choice):
     option_lowered = 0
     option_raised = 1
     default = 0
+
 
 class OpenThunderhead(Choice):
     """
@@ -130,12 +136,14 @@ class OpenThunderhead(Choice):
     option_open = 1
     default = 0
 
+
 class OpenEarthTemple(Toggle):
     """
     If enabled, the Earth Temple door (requiring 5 key pieces to unlock) is opened at the start of the game.
     """
 
     display_name = "Open Earth Temple"
+
 
 class OpenLanayruMiningFacility(Choice):
     """
@@ -150,6 +158,7 @@ class OpenLanayruMiningFacility(Choice):
     option_main_node = 1
     option_open = 2
     default = 2
+
 
 class OpenLakeFloria(Choice):
     """
@@ -166,14 +175,15 @@ class OpenLakeFloria(Choice):
     default = 0
 
 
-#Dungeons
-class EmptyUnrequiredDungeons(DefaultOnToggle):
+# Dungeons
+class EmptyUnrequiredDungeons(Toggle): # DefaultOnToggle
     """
     If enabled, only the required dungeons will contain progression items.
     If not enabled, all dungeons and Sky Keep can potentially contain progression items.
     """
 
     display_name = "Empty Unrequired Dungeons"
+
 
 class MapMode(Choice):
     """
@@ -186,12 +196,13 @@ class MapMode(Choice):
     """
 
     display_name = "Map Mode"
-    option_removed = 0
-    option_vanilla = 1
-    option_own_dungeon_restricted = 2
-    option_own_dungeon_unrestricted = 3
-    option_anywhere = 4
-    default = 2
+    # option_removed = 0
+    # option_vanilla = 1
+    # option_own_dungeon_restricted = 2
+    # option_own_dungeon_unrestricted = 3
+    option_anywhere = 0 # 4
+    default = 0 # 2
+
 
 class SmallKeyMode(Choice):
     """
@@ -204,11 +215,12 @@ class SmallKeyMode(Choice):
     """
 
     display_name = "Small Key Mode"
-    option_vanilla = 0
-    option_own_dungeon_restricted = 1
-    option_lanayru_caves_key_only = 2
-    option_anywhere = 3
-    default = 1
+    # option_vanilla = 0
+    # option_own_dungeon_restricted = 1
+    # option_lanayru_caves_key_only = 2
+    option_anywhere = 0 # 3
+    default = 0 # 1
+
 
 class BossKeyMode(Choice):
     """
@@ -219,10 +231,11 @@ class BossKeyMode(Choice):
     """
 
     display_name = "Boss Key Mode"
-    option_vanilla = 0
-    option_own_dungeon = 1
-    option_anywhere = 2
-    default = 1
+    # option_vanilla = 0
+    # option_own_dungeon = 1
+    option_anywhere = 0 # 2
+    default = 0 # 1
+
 
 class FSLastRoomLavaFlow(Toggle):
     """
@@ -233,7 +246,7 @@ class FSLastRoomLavaFlow(Toggle):
     display_name = "FS Last Room Lava Flow"
 
 
-#Silent Realms
+# Silent Realms
 class ShuffleTrialObjects(Choice):
     """
     Shuffles obtainable items in Silent Realms (within the same Silent Realm).
@@ -250,6 +263,7 @@ class ShuffleTrialObjects(Choice):
     option_full = 3
     default = 0
 
+
 class TreasuresanityInSilentRealms(Toggle):
     """
     Randomizes treasures in Silent Realms to items. Items other than relics will glow in Silent Realms
@@ -258,18 +272,19 @@ class TreasuresanityInSilentRealms(Toggle):
 
     display_name = "Treasuresanity in Silent Realms"
 
+
 class TrialTreasureAmount(Range):
     """
     How many treasures per Silent Realm you want to randomize.
     """
 
     display_name = "Trial Treasure Amount"
-    range_start = 1
+    range_start = 10 # 1
     range_end = 10
-    default = 5
+    default = 10 # 5
 
 
-#Entrances
+# Entrances
 class RandomizeEntrances(Choice):
     """
     Shuffles entrances with one another.
@@ -286,12 +301,14 @@ class RandomizeEntrances(Choice):
     option_all_surface_dungeons_and_sky_keep = 3
     default = 0
 
+
 class RandomizeSilentRealms(Toggle):
     """
     If enabled, the Silent Realm that a Trial Gate entrance leads to is shuffled.
     """
 
     display_name = "Randomize Silent Realms"
+
 
 class RandomStartingSpawn(Choice):
     """
@@ -305,10 +322,11 @@ class RandomStartingSpawn(Choice):
 
     display_name = "Random Starting Spawn"
     option_vanilla = 0
-    option_bird_statues = 1
-    option_any_surface_region = 2
-    option_any = 3
+    # option_bird_statues = 1
+    # option_any_surface_region = 2
+    # option_any = 3
     default = 0
+
 
 class LimitStartingLocation(Toggle):
     """
@@ -317,6 +335,7 @@ class LimitStartingLocation(Toggle):
     """
 
     display_name = "Limit Starting Location"
+
 
 class RandomStartingStatues(Toggle):
     """
@@ -327,7 +346,7 @@ class RandomStartingStatues(Toggle):
     display_name = "Random Starting Statues"
 
 
-#Additional Randomization
+# Additional Randomization
 class Shopsanity(DefaultOnToggle):
     """
     Determines if shops are randomized. When enabled, shop items and locations will be shuffled like normal items,
@@ -336,6 +355,7 @@ class Shopsanity(DefaultOnToggle):
     """
 
     display_name = "Shopsanity"
+
 
 class RupoorMode(Choice):
     """
@@ -349,12 +369,13 @@ class RupoorMode(Choice):
 
     display_name = "Rupoor Mode"
     option_off = 0
-    option_added = 1
-    option_rupoor_mayhem = 2
-    option_rupoor_insanity = 3
+    # option_added = 1
+    # option_rupoor_mayhem = 2
+    # option_rupoor_insanity = 3
     default = 0
 
-class Rupeesanity(Toggle):
+
+class Rupeesanity(DefaultOnToggle): # Toggle
     """
     Shuffles freestanding rupees. When unshuffled, all freestanding rupees will remain vanilla.
     Note, it is not possible to shuffle some freestanding rupees yet (e.g. the rupees on the Lumpy Pumpkin
@@ -362,6 +383,7 @@ class Rupeesanity(Toggle):
     """
 
     display_name = "Rupeesanity"
+
 
 class Tadtonesanity(Toggle):
     """
@@ -372,6 +394,7 @@ class Tadtonesanity(Toggle):
 
     display_name = "Tadtonesanity"
 
+
 class PlaceScrapShopUpgrades(DefaultOnToggle):
     """
     If enabled, the extra progressive items upgradeable in the Scrap Shop in vanilla will be shuffled.
@@ -380,6 +403,7 @@ class PlaceScrapShopUpgrades(DefaultOnToggle):
     """
 
     display_name = "Place Scrap Shop Upgrades"
+
 
 class ForceSwordDungeonReward(Choice):
     """
@@ -396,12 +420,14 @@ class ForceSwordDungeonReward(Choice):
     option_final_check = 2
     default = 0
 
+
 class RandomizeBossKeyPuzzles(Toggle):
     """
     If enabled, the starting position of the boss keys will be randomized.
     """
 
     display_name = "Randomize Boss Key Puzzles"
+
 
 class RandomPuzzles(Toggle):
     """
@@ -410,6 +436,7 @@ class RandomPuzzles(Toggle):
     """
 
     display_name = "Random Puzzles"
+
 
 class PeatriceConversations(Range):
     """
@@ -420,6 +447,7 @@ class PeatriceConversations(Range):
     range_start = 0
     range_end = 6
     default = 6
+
 
 class DemiseCount(Range):
     """
@@ -434,13 +462,30 @@ class DemiseCount(Range):
     default = 1
 
 
-#Convenience Tweaks
+# Convenience Tweaks
+class BiTPatches(Choice):
+    """
+    Changes how the Back in Time (BiT) glitch works.
+    **Disable BiT**: Makes it impossible to activate BiT.
+    **Vanilla**: Keeps the vanilla game behaviour where BiT is possible but Eldin BiT (and others) will still crash.
+    **Fix BiT Crashes**: Does not load some arcs to make all areas accessible in BiT.
+    **WARNING**: All 3 files must be filled BEFORE activating BiT otherwise this will not work.
+    """
+
+    display_name = "BiT Patches"
+    option_disable = 0
+    # option_vanilla = 1
+    # option_fix_crashes = 2
+    default = 0 # 1
+
+
 class FillDowsingOnWhiteSword(DefaultOnToggle):
     """
     If enabled, obtaining the Goddess White Sword will unlock rupee, crystal, treasure and goddess cube dowsing.
     """
 
     display_name = "Fill Dowsing on White Sword"
+
 
 class FullWalletUpgrades(Toggle):
     """
@@ -449,6 +494,7 @@ class FullWalletUpgrades(Toggle):
     """
 
     display_name = "Full Wallet Upgrades"
+
 
 class AmmoAvailability(Choice):
     """
@@ -467,7 +513,7 @@ class AmmoAvailability(Choice):
     default = 3
 
 
-#Hero Mode
+# Hero Mode
 class UpgradedSkywardStrike(DefaultOnToggle):
     """
     If enabled, the Skyward Strike will be fully upgraded for all swords (excluding Practice Sword).
@@ -476,12 +522,14 @@ class UpgradedSkywardStrike(DefaultOnToggle):
 
     display_name = "Upgraded Skyward Strike"
 
+
 class FasterAirMeterDrain(Toggle):
     """
     If enabled, the air meter depletes twice as fast when under water.
     """
 
     display_name = "Faster Air Meter Drain"
+
 
 class HeartDrops(Toggle):
     """
@@ -490,6 +538,7 @@ class HeartDrops(Toggle):
     """
 
     display_name = "Heart Drops"
+
 
 class DamageMultiplier(Range):
     """
@@ -505,7 +554,7 @@ class DamageMultiplier(Range):
     default = 1
 
 
-#Starting Items
+# Starting Items
 class StartingSword(Choice):
     """
     Select which sword to start with.
@@ -522,6 +571,7 @@ class StartingSword(Choice):
     option_true_master_sword = 6
     default = 2
 
+
 class StartingTabletCount(Range):
     """
     The number of tablets to start with.
@@ -533,6 +583,7 @@ class StartingTabletCount(Range):
     range_end = 3
     default = 1
 
+
 class StartingGratitudeCrystalPacks(Range):
     """
     How many gratitude crystal packs to start with.
@@ -542,6 +593,7 @@ class StartingGratitudeCrystalPacks(Range):
     range_start = 0
     range_end = 13
     default = 0
+
 
 class StartingEmptyBottles(Range):
     """
@@ -555,6 +607,7 @@ class StartingEmptyBottles(Range):
     range_end = 5
     default = 0
 
+
 class StartingHeartContainers(Range):
     """
     Determines how many heart containers to start with.
@@ -564,6 +617,7 @@ class StartingHeartContainers(Range):
     range_start = 0
     range_end = 6
     default = 0
+
 
 class StartingHeartPieces(Range):
     """
@@ -575,6 +629,7 @@ class StartingHeartPieces(Range):
     range_end = 24
     default = 0
 
+
 class StartingTadtoneCount(Range):
     """
     How many groups of Tadtones to start with.
@@ -585,6 +640,7 @@ class StartingTadtoneCount(Range):
     range_end = 17
     default = 0
 
+
 class RandomStartingItem(Toggle):
     """
     Gives you a random progression item at the start of the game in addition to any starting items.
@@ -593,6 +649,7 @@ class RandomStartingItem(Toggle):
     """
 
     display_name = "Random Starting Item"
+
 
 class StartWithHylianShield(DefaultOnToggle):
     """
@@ -604,6 +661,7 @@ class StartWithHylianShield(DefaultOnToggle):
 
     display_name = "Start with Hylian Shield"
 
+
 class StartWithFullWallet(Toggle):
     """
     If enabled, you will start with a full wallet.
@@ -612,12 +670,14 @@ class StartWithFullWallet(Toggle):
 
     display_name = "Start with Full Wallet"
 
+
 class StartWithMaxBugs(Toggle):
     """
     If enabled, you will start with 99 of each type of bug.
     """
 
     display_name = "Start with Max Bugs"
+
 
 class StartWithMaxTreasures(Toggle):
     """
@@ -627,7 +687,7 @@ class StartWithMaxTreasures(Toggle):
     display_name = "Start with Max Treasures"
 
 
-#Hints
+# Hints
 class SongHints(Choice):
     """
     Determines how hints appear on songs.
@@ -639,10 +699,11 @@ class SongHints(Choice):
 
     display_name = "Song Hints"
     option_none = 0
-    option_basic = 1
-    option_advanced = 2
-    option_direct = 3
+    # option_basic = 1
+    # option_advanced = 2
+    # option_direct = 3
     default = 0
+
 
 class ChestDowsing(Choice):
     """
@@ -656,9 +717,10 @@ class ChestDowsing(Choice):
 
     display_name = "Chest Dowsing"
     option_vanilla = 0
-    option_all_chests = 1
-    option_progress_items = 2
+    # option_all_chests = 1
+    # option_progress_items = 2
     default = 0
+
 
 class AllowDowsingInDungeons(Toggle):
     """
@@ -668,13 +730,15 @@ class AllowDowsingInDungeons(Toggle):
 
     display_name = "Allow Dowsing in Dungeons"
 
-class PastImpaStoneOfTrialsHint(DefaultOnToggle):
+
+class PastImpaStoneOfTrialsHint(Toggle): # DefaultOnToggle
     """
     If enabled, Impa in Hylia's Temple to give a hint to the location of the Stone of Trials.
     Does not appear if the Stone of Trials is a starting item.
     """
 
     display_name = "Past Impa Stone of Trials Hint"
+
 
 class SeparateCubeSotS(Toggle):
     """
@@ -684,6 +748,7 @@ class SeparateCubeSotS(Toggle):
 
     display_name = "Separate Cube SotS"
 
+
 class PreciseItemHints(Toggle):
     """
     If enabled, item hints will indicate the exact location within a region that is being hinted.
@@ -691,6 +756,7 @@ class PreciseItemHints(Toggle):
     """
 
     display_name = "Precise Item Hints"
+
 
 @dataclass
 class SSOptions(PerGameCommonOptions):
@@ -735,6 +801,7 @@ class SSOptions(PerGameCommonOptions):
     random_puzzles: RandomPuzzles
     peatrice_conversations: PeatriceConversations
     demise_count: DemiseCount
+    bit_patches: BiTPatches
     dowsing_after_whitesword: FillDowsingOnWhiteSword
     full_wallet_upgrades: FullWalletUpgrades
     ammo_availability: AmmoAvailability

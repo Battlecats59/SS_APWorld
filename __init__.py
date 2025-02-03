@@ -10,7 +10,13 @@ from BaseClasses import MultiWorld, Region, Tutorial
 from Options import Toggle
 from worlds.AutoWorld import WebWorld, World
 from worlds.generic.Rules import add_item_rule
-from worlds.LauncherComponents import Component, SuffixIdentifier, Type, components, launch_subprocess
+from worlds.LauncherComponents import (
+    Component,
+    SuffixIdentifier,
+    Type,
+    components,
+    launch_subprocess,
+)
 
 from .Constants import *
 
@@ -23,8 +29,11 @@ from .Rules import set_rules
 from .Rando.Dungeons import DungeonRando
 from .Rando.Entrances import EntranceRando
 from .Rando.ItemPlacement import handle_itempool, item_classification
+from .Rando.HintPlacement import handle_hints
 
-VERSION = "0.1.0"
+AP_VERSION = [0, 5, 3]
+WORLD_VERSION = [0, 1, 0]
+RANDO_VERSION = [2, 2, 0]
 
 def run_client() -> None:
     """
@@ -35,18 +44,23 @@ def run_client() -> None:
 
     launch_subprocess(main, name="SSClient")
 
+
 components.append(
     Component(
-        "Skyward Sword Client", func=run_client, component_type=Type.CLIENT, file_identifier=SuffixIdentifier(".apssr")
+        "Skyward Sword Client",
+        func=run_client,
+        component_type=Type.CLIENT,
+        file_identifier=SuffixIdentifier(".apssr"),
     )
 )
+
 
 class SSWorld(World):
     """
     What if that's Zelda down there, and she's sending me a signal? It's a sign!
     It says, `Save me, Groose. You're my only hope!`
     The more I think about it, the more sure I get! It's Zelda down there, and I gotta go rescue her!
-    
+
     Anyhow, don't think about trying to go down there before me. I'm her hero, remember?
 
     Ugh. I don't even know why I'm talking to you. Looking at you just makes me feel sad again.
@@ -61,10 +75,10 @@ class SSWorld(World):
     origin_region_name: str = "Upper Skyloft"
 
     item_name_to_id: ClassVar[dict[str, int]] = {
-        name: data.idx for name, data in ITEM_TABLE.items() if data.idx is not None
+        name: SSItem.get_apid(data.code) for name, data in ITEM_TABLE.items() if data.code is not None
     }
     location_name_to_id: ClassVar[dict[str, int]] = {
-        name: data.idx for name, data in LOCATION_TABLE.items() if data.idx is not None
+        name: SSLocation.get_apid(data.code) for name, data in LOCATION_TABLE.items() if data.code is not None
     }
 
     create_items = handle_itempool
@@ -91,21 +105,21 @@ class SSWorld(World):
 
         def add_flag(option: Toggle, flag: SSLocFlag) -> SSLocFlag:
             return flag if option else SSLocFlag.ALWAYS
-        
+
         for loc, data in LOCATION_TABLE.items():
             progress_locations.add(loc)
             # For now, every location is progress
 
         return progress_locations, nonprogress_locations
-    
 
     def generate_early(self) -> None:
         """
         Run before any other steps of the multiworld, but after options.
         """
 
-        self.progress_locations, self.nonprogress_locations = self.determine_progress_and_nonprogress_locations()
-
+        self.progress_locations, self.nonprogress_locations = (
+            self.determine_progress_and_nonprogress_locations()
+        )
 
     def create_regions(self) -> None:
         """
@@ -124,7 +138,9 @@ class SSWorld(World):
             for conn_reg in conn:
                 self.get_region(reg).connect(
                     self.get_region(conn_reg),
-                    rule=lambda state, region=conn_reg: getattr(Macros, get_access_rule(region))(state, self.player)
+                    rule=lambda state, region=conn_reg: getattr(
+                        Macros, get_access_rule(region)
+                    )(state, self.player),
                 )
 
         self.dungeons.randomize_required_dungeons()
@@ -153,9 +169,11 @@ class SSWorld(World):
 
             self.get_region(dun_entrance_region).connect(
                 apreg,
-                rule=lambda state, entrance=conn: getattr(Macros, f"can_reach_{entrance}")
+                rule=lambda state, entrance=conn: getattr(
+                    Macros, f"can_reach_{entrance}"
+                ),
             )
-            
+
         for trl, conn in self.entrances.trial_connections.items():
             if conn == "trial_gate_on_skyloft":
                 trl_gate_region = "Central Skyloft"
@@ -171,10 +189,9 @@ class SSWorld(World):
             self.multiworld.regions.append(apreg)
 
             self.get_region(trl_gate_region).connect(
-                apreg,
-                rule=lambda state, gate=conn: getattr(Macros, f"can_open_{gate}")
+                apreg, rule=lambda state, gate=conn: getattr(Macros, f"can_open_{gate}")
             )
-        
+
         # Place locations within the regions
         for loc in self.progress_locations:
             loc_data = LOCATION_TABLE[loc]
@@ -182,7 +199,6 @@ class SSWorld(World):
             loc_region = self.get_region(loc_data.region)
             location = SSLocation(self.player, loc, loc_region, loc_data)
             loc_region.locations.append(location)
-    
 
     def create_item(self, name: str) -> SSItem:
         """
@@ -194,13 +210,9 @@ class SSWorld(World):
 
         if name in ITEM_TABLE:
             return SSItem(
-                name,
-                self.player,
-                ITEM_TABLE[name],
-                item_classification(self, name)
+                name, self.player, ITEM_TABLE[name], item_classification(self, name)
             )
         raise KeyError(f"Invalid item name: {name}")
-    
 
     def generate_output(self, output_directory: str) -> None:
         """
@@ -210,23 +222,33 @@ class SSWorld(World):
         """
         multiworld = self.multiworld
         player = self.player
+        with open("./worlds/ss/names.txt", "r") as fp:
+            hash_names = fp.read().splitlines()
+        player_hash = self.multiworld.per_slot_randoms[player].sample(hash_names, 3)
 
         # Output seed name and slot number to seed RNG in randomizer client.
         output_data = {
-            "APVersion": list(VERSION),
-            "Seed": multiworld.seed_name,
+            "AP Version": list(AP_VERSION),
+            "World Version": list(WORLD_VERSION),
+            "Hash": f"AP P{player} " + " ".join(player_hash),
+            "AP Seed": multiworld.seed_name,
+            "Rando Seed": self.multiworld.per_slot_randoms[player].randint(0, 2**32 - 1),
             "Slot": player,
             "Name": self.player_name,
             "Options": {},
+            "Starting Items": self.starting_items,
             "Required Dungeons": self.dungeons.required_dungeons,
             "Locations": {},
-            "Dungeon Entrances": self.entrances.dungeon_connections,
-            "Trial Entrances": self.entrances.trial_connections,
+            "Hints": handle_hints(self),
+            "Dungeon Entrances": {},
+            "Trial Entrances": {},
         }
 
         # Output options to file.
         for field in fields(self.options):
-            output_data["Options"][field.name] = getattr(self.options, field.name).value
+            output_data["Options"][field.name.replace("_", "-")] = getattr(
+                self.options, field.name
+            ).value
 
         # Output which item has been placed at each location.
         locations = multiworld.get_locations(player)
@@ -238,16 +260,52 @@ class SSWorld(World):
                         "name": location.item.name,
                         "game": location.item.game,
                         "classification": location.item.classification.name,
+                        "chest_dowsing": 8,
                     }
                 else:
-                    item_info = {"name": "Nothing", "game": "Skyward Sword", "classification": "filler"}
+                    print(f"No item in location: {location.name}. Defaulting to red rupee.")
+                    item_info = {
+                        "player": location.item.player,
+                        "name": "Red Rupee",
+                        "game": "Skyward Sword",
+                        "classification": "filler",
+                        "chest_dowsing": 8,
+                    }
                 output_data["Locations"][location.name] = item_info
 
-        # Output the plando details to file.
-        file_path = os.path.join(output_directory, f"{multiworld.get_out_file_name_base(player)}.apssr")
-        with open(file_path, "wb") as f:
-            f.write(b64encode(bytes(yaml.safe_dump(output_data, sort_keys=False), "utf-8")))
+        # Fix entrances
+        dunconn = {}
+        trlconn = {}
+        for dun, ent in self.entrances.dungeon_connections.items():
+            rando_friendly_entrance_name_list = []
+            for w in ent.split("_"):
+                if w not in ["in", "on"]:
+                    w = w[0].upper() + w[1:]
+                rando_friendly_entrance_name_list.append(w)
+            rando_friendly_entrance_name = " ".join(rando_friendly_entrance_name_list)
+            dunconn[rando_friendly_entrance_name] = dun
+        for dun in sorted(dunconn.keys(), key=lambda i: DUNGEON_ENTRANCE_LIST.index(i)):
+            output_data["Dungeon Entrances"][dun] = dunconn[dun]
+        for trl, gate in self.entrances.trial_connections.items():
+            rando_friendly_gate_name_list = []
+            for w in gate.split("_"):
+                if w not in ["in", "on"]:
+                    w = w[0].upper() + w[1:]
+                rando_friendly_gate_name_list.append(w)
+            rando_friendly_gate_name = " ".join(rando_friendly_gate_name_list)
+            trlconn[rando_friendly_gate_name] = trl
+        for trl in sorted(trlconn.keys(), key=lambda i: TRIAL_GATE_LIST.index(i)):
+            output_data["Trial Entrances"][trl] = trlconn[trl]
+        
 
+        # Output the plando details to file.
+        file_path = os.path.join(
+            output_directory, f"{multiworld.get_out_file_name_base(player)}.apssr"
+        )
+        with open(file_path, "wb") as f:
+            f.write(
+                b64encode(bytes(yaml.safe_dump(output_data, sort_keys=False), "utf-8"))
+            )
 
     def fill_slot_data(self) -> Mapping[str, Any]:
         """

@@ -1,0 +1,600 @@
+﻿# Q. What is this file?
+# A. This file contains options which allow you to configure your multiworld experience while allowing
+#    others to play how they want as well.
+#
+# Q. How do I use it?
+# A. The options in this file are weighted. This means the higher number you assign to a value, the
+#    more chances you have for that option to be chosen. For example, an option like this:
+#
+#    map_shuffle:
+#      on: 5
+#      off: 15
+#
+#    Means you have 5 chances for map shuffle to occur, and 15 chances for map shuffle to be turned
+#    off.
+#
+# Q. I've never seen a file like this before. What characters am I allowed to use?
+# A. This is a .yaml file. You are allowed to use most characters.
+#    To test if your yaml is valid or not, you can use this website:
+#        http://www.yamllint.com/
+#    You can also verify that your Archipelago options are valid at this site:
+#        https://archipelago.gg/check
+
+# Your name in-game, limited to 8 characters.
+# You MUST use this name as your filename to connect to the server
+#     {player} will be replaced with the player's slot number.
+#     {PLAYER} will be replaced with the player's slot number, if that slot number is greater than 1.
+#     {number} will be replaced with the counter value of the name.
+#     {NUMBER} will be replaced with the counter value of the name, if the counter value is greater than 1.
+name: Player
+
+# Used to describe your yaml. Useful if you have multiple files.
+description: Default Skyward Sword Template
+
+game: Skyward Sword
+requires:
+  version: 0.5.3 # Version of Archipelago required for this yaml to work as expected.
+
+Skyward Sword:
+  # Game Options
+  progression_balancing:
+    # A system that can move progression earlier, to try and prevent the player from getting stuck and bored early.
+    # 
+    # A lower setting means more getting stuck. A higher setting means less getting stuck.
+    #
+    # You can define additional values between the minimum and maximum values.
+    # Minimum value is 0
+    # Maximum value is 99
+    random: 0
+    random-low: 0
+    random-high: 0
+    disabled: 0 # equivalent to 0
+    normal: 50 # equivalent to 50
+    extreme: 0 # equivalent to 99
+
+  accessibility:
+    # Set rules for reachability of your items/locations.
+    # 
+    # **Full:** ensure everything can be reached and acquired.
+    # 
+    # **Minimal:** ensure what is needed to reach your goal can be acquired.
+    full: 50
+    minimal: 0
+
+  required_dungeon_count:
+    # Determines the number of dungeons required to beat the seed.
+    # Beating Sky Keep is **NOT** required.
+    # Lanayru Mining Facility is beaten when exiting to the Temple of Time at the end of the dungeon.
+    # The other dungeons are only beaten when the Goddess Crest at the end is struck with a Skyward Strike.
+    #
+    # You can define additional values between the minimum and maximum values.
+    # Minimum value is 0
+    # Maximum value is 6
+    2: 50
+    random: 0
+    random-low: 0
+    random-high: 0
+
+  triforce_required:
+    # If enabled, the three Triforces will be required to open the door to Hylia's Realm at the end of the game.
+    'false': 0
+    'true': 50
+
+  triforce_shuffle:
+    # Choose where Triforces will appear in the game.
+    # **Vanilla**: Triforces are placed in their vanilla locations in Sky Keep.
+    # **Sky Keep**: Triforces are shuffled only within Sky Keep.
+    # **Anywhere**: Triforces are shuffled with all other valid locations in the game.
+    anywhere: 50 # DO NOT CHANGE
+
+  got_sword_requirement:
+    # Determines the sword needed to open the Gate of Time.
+    goddess_sword: 0
+    goddess_longsword: 0
+    goddess_white_sword: 0
+    master_sword: 0
+    true_master_sword: 50
+
+  got_dungeon_requirement:
+    # Enables dungeon requirements for opening the Gate of Time.
+    # **Required**: beating the required dungeons is necessary to open the Gate of Time.
+    # **Unrequired**: the Gate of Time can be opened without beating the required dungeons.
+    required: 50 # DO NOT CHANGE
+
+  imp2_skip:
+    # If enabled, the requirement to defeat Imprisoned 2 at the end of the game is skipped.
+    'false': 0
+    'true': 50
+
+  skip_horde:
+    # If enabled, the requirement to defeat The Horde at the end of the game is skipped.
+    'false': 50
+    'true': 0
+
+  skip_g3:
+    # If enabled, the requirement to defeat Ghirahim 3 at the end of the game is skipped.
+    'false': 50
+    'true': 0
+
+  skip_demise:
+    # If enabled, the requirement to defeat Demise at the end of the game is skipped.
+    'false': 50
+    'true': 0
+
+  got_start:
+    # Determines whether the Gate of Time starts raised or lowered.
+    # **Lowered**: the Goddess's Harp is needed to raise the Gate of Time.
+    # **Raised**: the Gate of Time is raised from the start of the game.
+    lowered: 50
+    raised: 0
+
+  open_thunderhead:
+    # Determines how the Thunderhead is unlocked.
+    # **Ballad**: the Thunderhead opens when the Ballad of the Goddess song is found.
+    # **Open**: the Thunderhead is open from the start of the game.
+    ballad: 50
+    open: 0
+
+  open_et:
+    # If enabled, the Earth Temple door (requiring 5 key pieces to unlock) is opened at the start of the game.
+    'false': 50
+    'true': 0
+
+  open_lmf:
+    # Determines the conditions for opening the Lanayru Mining Facility dungeon.
+    # **Nodes**: requires activating the 3 nodes (vanilla).
+    # **Main Node**: requires only the main generator to be activated.
+    # **Open**: the Lanayru Mining Facility is open at the start of the game.
+    nodes: 0
+    main_node: 0
+    open: 50
+
+  open_lake_floria:
+    # Choose how to access Lake Floria.
+    # **Vanilla**: logically requires you to talk to Yerbal and draw on the Floria Gates to enter Lake Floria.
+    # **Talk to Yerbal**: logically requires you to talk to Yerbal to enter Lake Floria.
+    # **Open**: the Floria Gates are opened from the start of the game.
+    vanilla: 50
+    talk_to_yerbal: 0
+    open: 0
+
+  empty_unrequired_dungeons:
+    # If enabled, only the required dungeons will contain progression items.
+    # If not enabled, all dungeons and Sky Keep can potentially contain progression items.
+    'false': 50 # DO NOT CHANGE
+    'true': 0 # DO NOT CHANGE
+
+  map_mode:
+    # Determines the placement of maps.
+    # **Removed**: maps are removed.
+    # **Vanilla**: maps appear in their vanilla locations.
+    # **Restricted**: dungeon maps cannot appear on boss heart containers or the ending checks of dungeons.
+    # **Unrestricted**: dungeon maps appear anywhere within their own dungeon.
+    # **Anywhere**: maps can appear outside of dungeons.
+    anywhere: 50 # DO NOT CHANGE
+
+  small_key_mode:
+    # Determines the placement of small keys.
+    # **Vanilla**: keys will be in their vanilla locations (The Skyview Digging Spot will not contain a key).
+    # **Restricted**: keys will be within their own dungeons.
+    # **Lanayru Caves Key only**: shuffles the Lanayru Caves Small Key
+    # (all other keys are shuffled within their own dungeon).
+    # **Anywhere**: keys can appear outside of dungeons.
+    anywhere: 50 # DO NOT CHANGE
+
+  boss_key_mode:
+    # Determines the placement of boss keys.
+    # **Vanilla**: boss keys appear in their vanilla locations.
+    # **Own Dungeon**: boss keys appear within their own dungeon.
+    # **Anywhere**: boss keys can appear outside of dungeons.
+    anywhere: 50 # DO NOT CHANGE
+
+  fs_lava_flow:
+    # If enabled, the lava in the last room of Fire Sanctuary will be flowing by default (without needing to
+    # blow up the underground boulder).
+    'false': 50
+    'true': 0
+
+  shuffle_trial_objects:
+    # Shuffles obtainable items in Silent Realms (within the same Silent Realm).
+    # **None**: trial objects appear in their vanilla locations.
+    # **Simple**: only shuffles tears and light fruits.
+    # **Advanced**: also shuffles dusk relics.
+    # **Full**: also shuffles stamina fruits.
+    none: 50
+    simple: 0
+    advanced: 0
+    full: 0
+
+  treasuresanity_in_silent_realms:
+    # Randomizes treasures in Silent Realms to items. Items other than relics will glow in Silent Realms
+    # (Yellow in Faron, Blue in Eldin, Green in Lanayru, and Red on Skyloft)
+    'false': 50
+    'true': 0
+
+  trial_treasure_amount:
+    # How many treasures per Silent Realm you want to randomize.
+    #
+    # You can define additional values between the minimum and maximum values.
+    # Minimum value is 10
+    # Maximum value is 10
+    10: 50 # DO NOT CHANGE
+    random: 0
+    random-low: 0
+    random-high: 0
+
+  randomize_entrances:
+    # Shuffles entrances with one another.
+    # **None**: entrances are vanilla.
+    # **Required Dungeons Separately**: required dungeons entrances are only shuffled with each other.
+    # **All Surface Dungeons**: all surface dungeons entrances are shuffled with each other.
+    # **All Surface Dungeons + Sky Keep** - all surface dungeon entrances AND the Sky Keep entrance are shuffled with each other.
+    none: 50
+    required_dungeons_separately: 0
+    all_surface_dungeons: 0
+    all_surface_dungeons_and_sky_keep: 0
+
+  randomize_trials:
+    # If enabled, the Silent Realm that a Trial Gate entrance leads to is shuffled.
+    'false': 50
+    'true': 0
+
+  random_start_entrance:
+    # Determines where you will spawn you start the game.
+    # **Vanilla**: You will spawn in Link's bedroom.
+    # **Bird Statues**: You will spawn at a random Bird Statue or Link's bedroom.
+    # **Any Surface Region**: You will spawn at any valid surface entrance or Link's bedroom.
+    # **Any**: You will spawn at any valid entrance.
+    # **TIP**: You can ask Fi to warp you back to the starting point.
+    vanilla: 50 # DO NOT CHANGE
+
+  limit_start_entrance:
+    # If enabled, you will only start at a location in a region unlocked by the tablets you start with.
+    # E.g. Starting with Ruby Tablet and Amber Tablet will mean you cannot start in Faron.
+    'false': 50
+    'true': 0
+
+  random_start_statues:
+    # If enabled, the starting statue for each surface region will be randomized. All overworld statues
+    # except Inside the Volcano and Inside Fire Sanctuary may be chosen.
+    'false': 50 # DO NOT CHANGE
+    'true': 0 # DO NOT CHANGE
+
+  shopsanity:
+    # Determines if shops are randomized. When enabled, shop items and locations will be shuffled like normal items,
+    # and the shop locations will get a randomized item. When disabled, shops will always contain their vanilla items,
+    # however those items may still be required for progression. **Currently shuffled shops**: Beedle's Airshop
+    'false': 0
+    'true': 50
+
+  rupoor_mode:
+    # Adds or replaces junk items with Rupoors.
+    # **Off**: no Rupoors are added as junk items.
+    # **Added**: adds 15 rupoors as junk items.
+    # **Rupoor Mayhem**: replaces half of the junk items with Rupoors.
+    # **Rupoor Insanity**: replaces all junk items with Rupoors.
+    # Note, Rupoors may also be added if there are not enough junk items for the game to randomize.
+    'off': 50 # DO NOT CHANGE
+
+  rupeesanity:
+    # Shuffles freestanding rupees. When unshuffled, all freestanding rupees will remain vanilla.
+    # Note, it is not possible to shuffle some freestanding rupees yet (e.g. the rupees on the Lumpy Pumpkin
+    # chandelier).
+    'false': 0 # DO NOT CHANGE
+    'true': 50 # DO NOT CHANGE
+
+  tadtonesanity:
+    # If enabled, 17 "Group of Tadtones" items will be shuffled throughout the world and each of the tadtone
+    # groups in Flooded Faron Woods will give an item when collected. Get all 17 "Group of Tadtones" items to
+    # complete the music scroll and receive an item from the Water Dragon in Flooded Faron Woods."
+    'false': 50
+    'true': 0
+
+  gondo_upgrades:
+    # If enabled, the extra progressive items upgradeable in the Scrap Shop in vanilla will be shuffled.
+    # Includes: Quick Beetle, Tough Beetle, Iron Bow, Sacred Bow, Big Bug Net and Scattershot.
+    # Note, there are no random items obtainable by talking to Gondo at the Scrap Shop.
+    'false': 0 # DO NOT CHANGE
+    'true': 50 # DO NOT CHANGE
+
+  sword_dungeon_reward:
+    # Determines if swords should be rewarded for beating required dungeons.
+    # **None**: swords are shuffled anywhere.
+    # **Heart Container**: end of required dungeon heart containers are swords.
+    # **Final Check**: the final check of required dungeons are swords.
+    # Note, if there aren't enough swords to place, some required dungeons will not force a sword at the end.
+    none: 50
+    heart_container: 0
+    final_check: 0
+
+  randomize_boss_key_puzzles:
+    # If enabled, the starting position of the boss keys will be randomized.
+    'false': 50
+    'true': 0
+
+  random_puzzles:
+    # Randomizes the Isle of Songs puzzle, the Ancient Cistern/Sandship directional door puzzles,
+    # and the Lanayru Mining Facility switches puzzle.
+    'false': 50
+    'true': 0
+
+  peatrice_conversations:
+    # How many times you need to talk to Peatrice before she calls you "darling" and you can start Peater's quest.
+    #
+    # You can define additional values between the minimum and maximum values.
+    # Minimum value is 0
+    # Maximum value is 6
+    6: 50
+    random: 0
+    random-low: 0
+    random-high: 0
+
+  demise_count:
+    # Determines how many demises appear in the final fight of the game.
+    # **WARNING**: Enabling more than one makes the fight very difficult.
+    # **DOUBLE WARNING**: Enabling more than 3 demises produces a lot of lag and can make the game unplayable.
+    #
+    # You can define additional values between the minimum and maximum values.
+    # Minimum value is 1
+    # Maximum value is 10
+    1: 50
+    random: 0
+    random-low: 0
+    random-high: 0
+
+  bit_patches:
+    # Changes how the Back in Time (BiT) glitch works.
+    # **Disable BiT**: Makes it impossible to activate BiT.
+    # **Vanilla**: Keeps the vanilla game behaviour where BiT is possible but Eldin BiT (and others) will still crash.
+    # **Fix BiT Crashes**: Does not load some arcs to make all areas accessible in BiT.
+    # **WARNING**: All 3 files must be filled BEFORE activating BiT otherwise this will not work.
+    disable: 50 # DO NOT CHANGE
+
+  dowsing_after_whitesword:
+    # If enabled, obtaining the Goddess White Sword will unlock rupee, crystal, treasure and goddess cube dowsing.
+    'false': 0
+    'true': 50
+
+  full_wallet_upgrades:
+    # If enabled, wallets you find throughout the game will already be filled with Rupees.
+    # E.g. Finding the Giant Wallet will add 4000 Rupees to your Rupee counter.
+    'false': 50
+    'true': 0
+
+  ammo_availability:
+    # Determines the number of locations where ammo refills can be found.
+    # **Scarce**: Ammo will only be available from chance-based drops and Rupin's Gear shop.
+    # **Vanilla**: Ammo will appear when breaking pots and barrels in the same way as the vanilla game.
+    # **Useful**: Ammo pots will be added in key places near checks requiring a specific ammo to reduce back-tracking.
+    # **Plentiful**: Ammo pots will be added next to all Bird Statues.
+    scarce: 0
+    vanilla: 0
+    useful: 0
+    plentiful: 50
+
+  upgraded_skyward_strike:
+    # If enabled, the Skyward Strike will be fully upgraded for all swords (excluding Practice Sword).
+    # This increases the reach and the charge speed of the Skyward Strike.
+    'false': 0
+    'true': 50
+
+  fast_air_meter:
+    # If enabled, the air meter depletes twice as fast when under water.
+    'false': 50
+    'true': 0
+
+  enable_heart_drops:
+    # If enabled, heart flowers will spawn and hearts may drop from defeated enemies, broken pots, broken barrels,
+    # cut grass, and digging spots.
+    'false': 50
+    'true': 0
+
+  damage_multiplier:
+    # Determines the overall damage multiplier.
+    # **Normal Mode** (default) damage is x1.
+    # **Hero Hode** (new game +) damage is x2.
+    # At x12 or higher, the hot cave in Eldin Volcano logically requires Fireshield Earrings to traverse."
+    #
+    # You can define additional values between the minimum and maximum values.
+    # Minimum value is 1
+    # Maximum value is 255
+    1: 50
+    random: 0
+    random-low: 0
+    random-high: 0
+
+  starting_sword:
+    # Select which sword to start with.
+    # The remaining upgrades will be shuffled into the item pool.
+    swordless: 0
+    practice_sword: 0
+    goddess_sword: 50
+    goddess_longsword: 0
+    goddess_white_sword: 0
+    master_sword: 0
+    true_master_sword: 0
+
+  starting_tablet_count:
+    # The number of tablets to start with.
+    # Tablets are selected randomly and the remainder are randomized as progress items.
+    #
+    # You can define additional values between the minimum and maximum values.
+    # Minimum value is 0
+    # Maximum value is 3
+    1: 50
+    random: 0
+    random-low: 0
+    random-high: 0
+
+  starting_crystal_packs:
+    # How many gratitude crystal packs to start with.
+    #
+    # You can define additional values between the minimum and maximum values.
+    # Minimum value is 0
+    # Maximum value is 13
+    0: 50
+    random: 0
+    random-low: 0
+    random-high: 0
+
+  starting_bottles:
+    # Determines how many empty bottles start in your pouch.
+    # **WARNING**: If you start with more pouch items than pouch slots, the extra items will become usable after
+    # finding additional pouches.
+    #
+    # You can define additional values between the minimum and maximum values.
+    # Minimum value is 0
+    # Maximum value is 5
+    0: 50
+    random: 0
+    random-low: 0
+    random-high: 0
+
+  starting_heart_containers:
+    # Determines how many heart containers to start with.
+    #
+    # You can define additional values between the minimum and maximum values.
+    # Minimum value is 0
+    # Maximum value is 6
+    0: 50
+    random: 0
+    random-low: 0
+    random-high: 0
+
+  starting_heart_pieces:
+    # Determines how many heart pieces to start with.
+    #
+    # You can define additional values between the minimum and maximum values.
+    # Minimum value is 0
+    # Maximum value is 24
+    0: 50
+    random: 0
+    random-low: 0
+    random-high: 0
+
+  starting_tadtones:
+    # How many groups of Tadtones to start with.
+    #
+    # You can define additional values between the minimum and maximum values.
+    # Minimum value is 0
+    # Maximum value is 17
+    0: 50
+    random: 0
+    random-low: 0
+    random-high: 0
+
+  random_starting_item:
+    # Gives you a random progression item at the start of the game in addition to any starting items.
+    # This includes: Bow, Beetle, Slingshot, Digging Mitts, Pouch, Bomb Bag, Clawshots, Whip, Gust Bellows,
+    # Water Dragon's Scale, Fireshield Earrings, Goddess's Harp and Spiral Charge.
+    'false': 50
+    'true': 0
+
+  start_with_hylian_shield:
+    # If enabled, you will start with the Hylian Shield in your pouch.
+    # **WARNING**: If you start with more pouch items than pouch slots, the extra items will become usable after
+    # finding additional pouches.
+    # Hylian Shield will always be placed in the first pouch slot.
+    'false': 0
+    'true': 50
+
+  full_starting_wallet:
+    # If enabled, you will start with a full wallet.
+    # This changes based on the number of starting wallets and extra wallets.
+    'false': 50
+    'true': 0
+
+  max_starting_bugs:
+    # If enabled, you will start with 99 of each type of bug.
+    'false': 50
+    'true': 0
+
+  max_starting_treasures:
+    # If enabled, you will start with 99 of each type of treasure.
+    'false': 50
+    'true': 0
+
+  song_hints:
+    # Determines how hints appear on songs.
+    # **None**: Silent Realm rewards will be hinted on Gossip Stones.
+    # **Basic**: the song text indicates if beating the trial rewards a progress item.
+    # **Advanced**: the song text indicates if beating the trial rewards a SotS, junk or potientially required item.
+    # **Direct**: the song text states the reward for beating the trial directly.
+    none: 50 # DO NOT CHANGE
+
+  chest_dowsing:
+    # Determines the main quest (top) dowsing option.
+    # **Vanilla**: dowsing points to Trial Gates and the Sandship
+    # (after obtaining the necessary song or Sea Chart first).
+    # **All Chests**: dowsing points to all chests (regardless of their contents).
+    # **Progress Items**: dowsing only points to chests containing progress items
+    # (doesn't work with Goddess Chests).
+    vanilla: 50 # DO NOT CHANGE
+
+  dungeon_dowsing:
+    # If enabled, dowsing will be re-enabled in dungeons and other dungeon-like areas like the Great Tree and
+    # Waterfall Cave.
+    'false': 50
+    'true': 0
+
+  impa_sot_hint:
+    # If enabled, Impa in Hylia's Temple to give a hint to the location of the Stone of Trials.
+    # Does not appear if the Stone of Trials is a starting item.
+    'false': 50 # DO NOT CHANGE
+    'true': 0 # DO NOT CHANGE
+
+  cube_sots:
+    # If enabled, when a SotS hint points to a Goddess Chest, the hint will change to indicate this and display
+    # which of the cube progress regions is SotS.
+    'false': 50
+    'true': 0
+
+  precise_item:
+    # If enabled, item hints will indicate the exact location within a region that is being hinted.
+    # If disabled, only the region will be hinted.
+    'false': 50
+    'true': 0
+
+  death_link:
+    # When you die, everyone who enabled death link dies. Of course, the reverse is true too.
+    'false': 50
+    'true': 0
+
+  # Item & Location Options
+  local_items:
+    # Forces these items to be in their native world.
+    []
+
+  non_local_items:
+    # Forces these items to be outside their native world.
+    []
+
+  start_inventory:
+    # Start with these items.
+    {} # DO NOT CHANGE
+
+  starting_items:
+    # Start with these items and don't place them in the world.
+    # 
+    # The game decides what the replacement items will be.
+    {} # DO NOT CHANGE
+
+  start_hints:
+    # Start with these item's locations prefilled into the ``!hint`` command.
+    []
+
+  start_location_hints:
+    # Start with these locations and their item prefilled into the ``!hint`` command.
+    []
+
+  exclude_locations:
+    # Prevent these locations from having an important item.
+    [] # DO NOT CHANGE
+
+  priority_locations:
+    # Prevent these locations from having an unimportant item.
+    [] # DO NOT CHANGE
+
+  item_links:
+    # Share part of your item pool with other players.
+    []

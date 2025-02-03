@@ -6,15 +6,23 @@ from typing import TYPE_CHECKING, Any, Optional
 import dolphin_memory_engine
 
 import Utils
-from CommonClient import ClientCommandProcessor, CommonContext, get_base_parser, gui_enabled, logger, server_loop
+from CommonClient import (
+    ClientCommandProcessor,
+    CommonContext,
+    get_base_parser,
+    gui_enabled,
+    logger,
+    server_loop,
+)
 from NetUtils import ClientStatus, NetworkItem
 
 from .Items import ITEM_TABLE, LOOKUP_ID_TO_NAME
-from .Locations import LOCATION_TABLE, SSLocFlag, SSLocType, SSLocCheckedFlag
+from .Locations import LOCATION_TABLE, SSLocation, SSLocFlag, SSLocType, SSLocCheckedFlag
 from .Constants import *
 
 if TYPE_CHECKING:
     import kvui
+
 
 class SSCommandProcessor(ClientCommandProcessor):
     """
@@ -46,7 +54,7 @@ class SSContext(CommonContext):
 
     command_processor = SSCommandProcessor
     game: str = "Skyward Sword"
-    items_handling: int = 0b111
+    items_handling: int = 0b001
 
     def __init__(self, server_address: Optional[str], password: Optional[str]) -> None:
         """
@@ -76,7 +84,7 @@ class SSContext(CommonContext):
         self.visited_stage_names: Optional[set[str]] = None
 
         # Length of the item get array in memory.
-        self.len_give_item_array: int = 0x10
+        self.len_give_item_array: int = 0x1 # TODO CHANGE TO 0x10 WHEN GAME IS FIXED
 
     async def disconnect(self, allow_autoreconnect: bool = False) -> None:
         """
@@ -118,10 +126,14 @@ class SSContext(CommonContext):
             self.items_rcvd = []
             self.last_rcvd_index = -1
             if "death_link" in args["slot_data"]:
-                Utils.async_start(self.update_death_link(bool(args["slot_data"]["death_link"])))
+                Utils.async_start(
+                    self.update_death_link(bool(args["slot_data"]["death_link"]))
+                )
             # Request the connected slot's dictionary (used as a set) of visited stages.
             visited_stages_key = AP_VISITED_STAGE_NAMES_KEY_FORMAT % self.slot
-            Utils.async_start(self.send_msgs([{"cmd": "Get", "keys": [visited_stages_key]}]))
+            Utils.async_start(
+                self.send_msgs([{"cmd": "Get", "keys": [visited_stages_key]}])
+            )
         elif cmd == "ReceivedItems":
             if args["index"] >= self.last_rcvd_index:
                 self.last_rcvd_index = args["index"]
@@ -137,13 +149,20 @@ class SSContext(CommonContext):
                 if visited_stages_key in requested_keys_dict:
                     visited_stages = requested_keys_dict[visited_stages_key]
                     # If it has not been set before, the value in the response will be `None`.
-                    visited_stage_names = set() if visited_stages is None else set(visited_stages.keys())
+                    visited_stage_names = (
+                        set() if visited_stages is None else set(visited_stages.keys())
+                    )
                     # If the current stage name is not in the set, send a message to update the dictionary on the
                     # server.
                     current_stage_name = self.current_stage_name
-                    if current_stage_name and current_stage_name not in visited_stage_names:
+                    if (
+                        current_stage_name
+                        and current_stage_name not in visited_stage_names
+                    ):
                         visited_stage_names.add(current_stage_name)
-                        Utils.async_start(self.update_visited_stages(current_stage_name))
+                        Utils.async_start(
+                            self.update_visited_stages(current_stage_name)
+                        )
                     self.visited_stage_names = visited_stage_names
 
     def on_deathlink(self, data: dict[str, Any]) -> None:
@@ -180,7 +199,12 @@ class SSContext(CommonContext):
                         "key": visited_stages_key,
                         "default": {},
                         "want_reply": False,
-                        "operations": [{"operation": "update", "value": {newly_visited_stage_name: True}}],
+                        "operations": [
+                            {
+                                "operation": "update",
+                                "value": {newly_visited_stage_name: True},
+                            }
+                        ],
                     }
                 ]
             )
@@ -193,17 +217,18 @@ def dme_read_byte(console_address: int) -> int:
     :param console_address: Address to read from.
     :return: The value read from memory.
     """
-    return int.from_bytes(dolphin_memory_engine.read_byte(console_address), byteorder="big")
+    return dolphin_memory_engine.read_byte(console_address)
 
 
-def dme_write_byte(console_address: int, value: int) -> None:
+def dme_write_byte(console_address: int, value: bytes) -> None:
     """
-    Write 1 byte short to Dolphin memory.
+    Write 1 byte to Dolphin memory.
 
     :param console_address: Address to write to.
     :param value: Value to write.
     """
-    dolphin_memory_engine.write_byte(console_address, value.to_bytes(1, byteorder="big"))
+    dolphin_memory_engine.write_byte(console_address, value)
+
 
 def dme_read_short(console_address: int) -> int:
     """
@@ -212,7 +237,9 @@ def dme_read_short(console_address: int) -> int:
     :param console_address: Address to read from.
     :return: The value read from memory.
     """
-    return int.from_bytes(dolphin_memory_engine.read_bytes(console_address, 2), byteorder="big")
+    return int.from_bytes(
+        dolphin_memory_engine.read_bytes(console_address, 2), byteorder="big"
+    )
 
 
 def dme_write_short(console_address: int, value: int) -> None:
@@ -222,7 +249,9 @@ def dme_write_short(console_address: int, value: int) -> None:
     :param console_address: Address to write to.
     :param value: Value to write.
     """
-    dolphin_memory_engine.write_bytes(console_address, value.to_bytes(2, byteorder="big"))
+    dolphin_memory_engine.write_bytes(
+        console_address, value.to_bytes(2, byteorder="big")
+    )
 
 
 def dme_read_string(console_address: int, strlen: int) -> str:
@@ -233,7 +262,25 @@ def dme_read_string(console_address: int, strlen: int) -> str:
     :param strlen: Length of the string to read.
     :return: The string.
     """
-    return dolphin_memory_engine.read_bytes(console_address, strlen).split(b"\0", 1)[0].decode()
+    return (
+        dolphin_memory_engine.read_bytes(console_address, strlen)
+        .split(b"\0", 1)[0]
+        .decode()
+    )
+
+def dme_read_filename() -> str:
+    """
+    Read the filename in dolphin memory.
+
+    :return: The string containing the filename.
+    """
+    filename_bytes = dolphin_memory_engine.read_bytes(FILE_NAME_ADDR, 0x10)
+    filename_bytes = filename_bytes.replace(b"\x00\x00", b"")
+    filename_bytes = filename_bytes.replace(b"\x7F\x7F", b"")
+    filename_bytes = filename_bytes.replace(b"\xFF\xFF", b"")
+
+    return filename_bytes.decode("utf_16_be")
+
 
 
 def _give_death(ctx: SSContext) -> None:
@@ -252,7 +299,7 @@ def _give_death(ctx: SSContext) -> None:
         dme_write_short(CURR_HEALTH_ADDR, 0)
 
 
-def _give_item(ctx: SSContext, item_name: str) -> bool:
+async def _give_item(ctx: SSContext, item_name: str) -> bool:
     """
     Give an item to the player in-game.
 
@@ -260,15 +307,17 @@ def _give_item(ctx: SSContext, item_name: str) -> bool:
     :param item_name: Name of the item to give.
     :return: Whether the item was successfully given.
     """
-    if not check_ingame() or dme_read_string(CURR_STAGE_ADDR, 16) == 0x00:
+    if not (check_link_state_for_giveitem() and check_alive()):
         return False
 
-    item_id = ITEM_TABLE[item_name].item_id # In game item ID
+    item_id = ITEM_TABLE[item_name].item_id  # In game item ID
 
     # Loop through the item array, placing the item in an empty slot (0xFF).
     for idx in range(ctx.len_give_item_array):
         slot = dme_read_byte(GIVE_ITEM_ARRAY_ADDR + idx)
         if slot == 0xFF:
+            await asyncio.sleep(0.5)
+            logger.info(f"DEBUG: Gave item {item_id} to player {ctx.player_names[ctx.slot]}.")
             dme_write_byte(GIVE_ITEM_ARRAY_ADDR + idx, item_id)
             return True
 
@@ -282,7 +331,7 @@ async def give_items(ctx: SSContext) -> None:
 
     :param ctx: The SS client context.
     """
-    if check_ingame() and dme_read_string(CURR_STAGE_ADDR, 16) != 0x00:
+    if check_link_state_for_giveitem() and check_alive():
         # Read the expected index of the player, which is the index of the latest item they've received.
         expected_idx = dme_read_short(EXPECTED_INDEX_ADDR)
 
@@ -291,8 +340,8 @@ async def give_items(ctx: SSContext) -> None:
             # If the item's index is greater than the player's expected index, give the player the item.
             if expected_idx <= idx:
                 # Attempt to give the item and increment the expected index.
-                while not _give_item(ctx, LOOKUP_ID_TO_NAME[item.item]):
-                    await asyncio.sleep(0.01)
+                while not await _give_item(ctx, LOOKUP_ID_TO_NAME[item.item]):
+                    await asyncio.sleep(1)
 
                 # Increment the expected index.
                 dme_write_short(EXPECTED_INDEX_ADDR, idx + 1)
@@ -312,7 +361,7 @@ async def check_locations(ctx: SSContext) -> None:
         checked = False
         [flag_type, flag_bit, flag_value, addr] = data.checked_flag
         if data.type == SSLocType.RELIC:
-            continue # NOT SUPPORTED YET
+            continue  # NOT SUPPORTED YET
         if flag_type == SSLocCheckedFlag.STORY:
             flag = dme_read_byte(addr + flag_bit)
             checked = bool(flag & flag_value)
@@ -321,26 +370,30 @@ async def check_locations(ctx: SSContext) -> None:
             checked = bool(flag & flag_value)
         elif flag_type == SSLocCheckedFlag.SPECL:
             if location == "Upper Skyloft - Ghost/Pipit's Crystals":
-                flag1 = bool(dme_read_byte(0x805A9B16) & 0x80) # 5 crystals from Pipit
-                flag2 = bool(dme_read_byte(0x805A9B16) & 0x04) # 5 crystals from Ghost
+                flag1 = bool(dme_read_byte(0x805A9B16) & 0x80)  # 5 crystals from Pipit
+                flag2 = bool(dme_read_byte(0x805A9B16) & 0x04)  # 5 crystals from Ghost
                 checked = flag1 or flag2
             if location == "Central Skyloft - Peater/Peatrice's Crystals":
-                flag1 = bool(dme_read_byte(0x805A9B1A) & 0x40) # 5 crystals from Peatrice
-                flag2 = bool(dme_read_byte(0x805A9B1D) & 0x02) # 5 crystals from Peater
+                flag1 = bool(
+                    dme_read_byte(0x805A9B1A) & 0x40
+                )  # 5 crystals from Peatrice
+                flag2 = bool(dme_read_byte(0x805A9B1D) & 0x02)  # 5 crystals from Peater
                 checked = flag1 or flag2
 
         if checked:
-            if data.idx is None: # Defeat Demise
+            if data.code is None:  # Defeat Demise
                 if not ctx.finished_game:
-                    await ctx.send_msgs([{"cmd": "StatusUpdate", "status": ClientStatus.CLIENT_GOAL}])
+                    await ctx.send_msgs(
+                        [{"cmd": "StatusUpdate", "status": ClientStatus.CLIENT_GOAL}]
+                    )
                     ctx.finished_game = True
             else:
-                ctx.locations_checked.add(data.idx)
+                ctx.locations_checked.add(SSLocation.get_apid(data.code))
 
     # Send the list of newly-checked locations to the server.
     locations_checked = ctx.locations_checked.difference(ctx.checked_locations)
     if locations_checked:
-        await ctx.send_msgs([{"cmd": "LocationChecks", "locations": locations_checked}])
+        await ctx.send_msgs([{"cmd": "LocationChecks", "locations": locations_checked}]) 
 
 
 async def check_current_stage_changed(ctx: SSContext) -> None:
@@ -368,12 +421,15 @@ async def check_current_stage_changed(ctx: SSContext) -> None:
         # If the stage has never been visited before, update the server's data storage to indicate that it has been
         # visited.
         visited_stage_names = ctx.visited_stage_names
-        if visited_stage_names is not None and new_stage_name not in visited_stage_names:
+        if (
+            visited_stage_names is not None
+            and new_stage_name not in visited_stage_names
+        ):
             visited_stage_names.add(new_stage_name)
             await ctx.update_visited_stages(new_stage_name)
 
 
-async def check_alive() -> bool:
+def check_alive() -> bool:
     """
     Check if the player is currently alive in-game.
 
@@ -406,7 +462,19 @@ def check_ingame() -> bool:
 
     :return: `True` if the player is in-game, otherwise `False`.
     """
-    return dolphin_memory_engine.read_bytes(CURR_STATE_ADDR, 4) != 0x0
+    return dolphin_memory_engine.read_bytes(CURR_STATE_ADDR, 3) != 0x0
+
+def check_link_state_for_giveitem() -> bool:
+    """
+    Returns a bool determining whether Link is in a valid or invalid state to receive items.
+
+    :return: True if Link is in a valid state, False if Link is in an invalid state
+    """
+    linkstate = dolphin_memory_engine.read_bytes(CURR_STATE_ADDR, 4) != 0x0
+    if linkstate in LINK_INVALID_STATES:
+        return False
+    else:
+        return True
 
 
 async def dolphin_sync_task(ctx: SSContext) -> None:
@@ -420,10 +488,13 @@ async def dolphin_sync_task(ctx: SSContext) -> None:
     logger.info("Connecting to Dolphin. Use /dolphin for status information.")
     while not ctx.exit_event.is_set():
         try:
-            if dolphin_memory_engine.is_hooked() and ctx.dolphin_status == CONNECTION_CONNECTED_STATUS:
+            if (
+                dolphin_memory_engine.is_hooked()
+                and ctx.dolphin_status == CONNECTION_CONNECTED_STATUS
+            ):
                 if not check_ingame():
                     # Reset the give item array while not in the game.
-                    #dolphin_memory_engine.write_bytes(GIVE_ITEM_ARRAY_ADDR, bytes([0xFF] * ctx.len_give_item_array))
+                    # dolphin_memory_engine.write_bytes(GIVE_ITEM_ARRAY_ADDR, bytes([0xFF] * ctx.len_give_item_array))
                     await asyncio.sleep(0.1)
                     continue
                 if ctx.slot is not None:
@@ -434,7 +505,7 @@ async def dolphin_sync_task(ctx: SSContext) -> None:
                     await check_current_stage_changed(ctx)
                 else:
                     if not ctx.auth:
-                        ctx.auth = dme_read_string(FILE_NAME_ADDR, 0x10)
+                        ctx.auth = dme_read_filename()
                     if ctx.awaiting_rom:
                         await ctx.server_auth()
                 await asyncio.sleep(0.1)
@@ -455,14 +526,18 @@ async def dolphin_sync_task(ctx: SSContext) -> None:
                         ctx.dolphin_status = CONNECTION_CONNECTED_STATUS
                         ctx.locations_checked = set()
                 else:
-                    logger.info("Connection to Dolphin failed, attempting again in 5 seconds...")
+                    logger.info(
+                        "Connection to Dolphin failed, attempting again in 5 seconds..."
+                    )
                     ctx.dolphin_status = CONNECTION_LOST_STATUS
                     await ctx.disconnect()
                     await asyncio.sleep(5)
                     continue
         except Exception:
             dolphin_memory_engine.un_hook()
-            logger.info("Connection to Dolphin failed, attempting again in 5 seconds...")
+            logger.info(
+                "Connection to Dolphin failed, attempting again in 5 seconds..."
+            )
             logger.error(traceback.format_exc())
             ctx.dolphin_status = CONNECTION_LOST_STATUS
             await ctx.disconnect()
@@ -487,7 +562,9 @@ def main(connect: Optional[str] = None, password: Optional[str] = None) -> None:
         ctx.run_cli()
         await asyncio.sleep(1)
 
-        ctx.dolphin_sync_task = asyncio.create_task(dolphin_sync_task(ctx), name="DolphinSync")
+        ctx.dolphin_sync_task = asyncio.create_task(
+            dolphin_sync_task(ctx), name="DolphinSync"
+        )
 
         await ctx.exit_event.wait()
         ctx.server_address = None

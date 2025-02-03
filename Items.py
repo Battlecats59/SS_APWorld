@@ -2,6 +2,7 @@ from BaseClasses import Item
 from BaseClasses import ItemClassification as IC
 from typing import NamedTuple, Optional
 
+
 class SSItemData(NamedTuple):
     """
     Data for an item in SS.
@@ -9,9 +10,10 @@ class SSItemData(NamedTuple):
 
     type: str
     classification: IC
-    idx: Optional[int]
+    code: Optional[int]
     quantity: int
     item_id: Optional[int]
+
 
 class SSItem(Item):
     """
@@ -21,16 +23,34 @@ class SSItem(Item):
     game: str = "Skyward Sword"
     type: Optional[str]
 
-    def __init__(self, name: str, player: int, data: SSItemData, classification: Optional[IC] = None) -> None:
+    def __init__(
+        self,
+        name: str,
+        player: int,
+        data: SSItemData,
+        classification: Optional[IC] = None,
+    ) -> None:
         super().__init__(
             name,
             data.classification if classification is None else classification,
-            None if data.idx is None else data.idx,
+            None if data.code is None else SSItem.get_apid(data.code),
             player,
         )
 
         self.type = data.type
         self.item_id = data.item_id
+
+    @staticmethod
+    def get_apid(code: int) -> int:
+        """
+        Compute the Archipelago ID for the given item index.
+
+        :param code: The index of the item.
+        :return: The computed Archipelago ID.
+        """
+        base_id: int = 99000
+        return base_id + code
+
 
 ITEM_TABLE: dict[str, SSItemData] = {
     "Small Key":            SSItemData("Item",         IC.progression,         1,      0,  0x01), # unused
@@ -158,9 +178,9 @@ CONSUMABLE_ITEMS: dict[str, int] = {
     "Silver Rupee": 23,
     "Gold Rupee": 11,
     "Semi Rare Treasure": 10,
-    "Rare Treasure": 4
+    "Rare Treasure": 4,
 }
 
 LOOKUP_ID_TO_NAME: dict[int, str] = {
-    data.idx: item for item, data in ITEM_TABLE.items() if data.idx is not None
+    SSItem.get_apid(data.code): item for item, data in ITEM_TABLE.items() if data.code is not None
 }

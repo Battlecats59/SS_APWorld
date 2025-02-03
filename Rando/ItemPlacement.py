@@ -20,6 +20,7 @@ def handle_itempool(world: "SSWorld") -> None:
 
     # Create the itempool.
     pool, precollected_items = _create_itempool(world)
+    world.starting_items = precollected_items
 
     # Add starting items to the multiworld's `precollected_items` list.
     for item in precollected_items:
@@ -54,7 +55,11 @@ def _create_itempool(world: "SSWorld") -> tuple[list[str], list[str]]:
     for item, data in ITEM_TABLE.items():
         if data.type == "Item":
             adjusted_classification = item_classification(world, item)
-            classification = data.classification if adjusted_classification is None else adjusted_classification
+            classification = (
+                data.classification
+                if adjusted_classification is None
+                else adjusted_classification
+            )
 
             if classification & IC.progression:
                 progression_pool.extend([item] * data.quantity)
@@ -66,7 +71,11 @@ def _create_itempool(world: "SSWorld") -> tuple[list[str], list[str]]:
         # Handle dungeon items
         if data.type == "Small Key":
             item_dungeon = item[:-10]
-            if item_dungeon in world.dungeons.required_dungeons or item_dungeon == "Lanayru Caves" or not eud:
+            if (
+                item_dungeon in world.dungeons.required_dungeons
+                or item_dungeon == "Lanayru Caves"
+                or not eud
+            ):
                 progression_pool.extend([item] * data.quantity)
             else:
                 useful_pool.extend([item] * data.quantity)
@@ -90,13 +99,17 @@ def _create_itempool(world: "SSWorld") -> tuple[list[str], list[str]]:
             "There are insufficient locations to place progression items! "
             f"Trying to place {len(progression_pool)} items in only {num_items_left_to_place} locations."
         )
-    pool.extend(progression_pool) # Should have more than enough locations available to place progression/useful items.
+    pool.extend(
+        progression_pool
+    )  # Should have more than enough locations available to place progression/useful items.
     pool.extend(useful_pool)
     num_items_left_to_place -= len(progression_pool)
     num_items_left_to_place -= len(useful_pool)
 
     starting_items.extend(_handle_starting_items(world))
-    num_items_left_to_place += len(starting_items) # Since these items are removed from the pool, make sure they get filled.
+    num_items_left_to_place += len(
+        starting_items
+    )  # Since these items are removed from the pool, make sure they get filled.
     for itm in starting_items:
         pool.remove(itm)
 
@@ -106,7 +119,7 @@ def _create_itempool(world: "SSWorld") -> tuple[list[str], list[str]]:
     consumable_pool = world.multiworld.random.choices(
         list(CONSUMABLE_ITEMS.keys()),
         weights=list(CONSUMABLE_ITEMS.values()),
-        k=num_consumables_needed
+        k=num_consumables_needed,
     )
     filler_pool.extend(consumable_pool)
     pool.extend(filler_pool)
@@ -127,14 +140,16 @@ def _handle_starting_items(world: "SSWorld") -> list[str]:
     starting_sword_option = options.starting_sword.value
     for _ in range(int(starting_sword_option)):
         starting_items.append("Progressive Sword")
-    
+
     # Starting Tablets
     starting_tablet_option = options.starting_tablet_count.value
     tablets = ["Emerald Tablet", "Ruby Tablet", "Amber Tablet"]
     if starting_tablet_option == 0:
         pass
     else:
-        randomized_tablets = world.multiworld.random.sample(tablets, starting_tablet_option)
+        randomized_tablets = world.multiworld.random.sample(
+            tablets, starting_tablet_option
+        )
         starting_items.extend(randomized_tablets)
 
     # Starting Crystals
@@ -189,12 +204,16 @@ def _handle_placements(world: "SSWorld", pool: list[str]) -> list[str]:
     placed: list[str] = []
 
     # Place a "Victory" item on "Defeat Demise" for AP.
-    world.get_location("Hylia's Realm - Defeat Demise").place_locked_item(world.create_item("Victory"))
+    world.get_location("Hylia's Realm - Defeat Demise").place_locked_item(
+        world.create_item("Victory")
+    )
 
     if not options.treasuresanity_in_silent_realms:
         for loc, data in LOCATION_TABLE.items():
             if data.type == SSLocType.RELIC:
-                world.get_location(loc).place_locked_item(world.create_item("Dusk Relic"))
+                world.get_location(loc).place_locked_item(
+                    world.create_item("Dusk Relic")
+                )
                 placed.append("Dusk Relic")
 
     if not options.shopsanity:
@@ -205,15 +224,19 @@ def _handle_placements(world: "SSWorld", pool: list[str]) -> list[str]:
     if not options.tadtonesanity:
         for loc, data in LOCATION_TABLE.items():
             if data.type == SSLocType.CLEF:
-                world.get_location(loc).place_locked_item(world.create_item("Group of Tadtones"))
+                world.get_location(loc).place_locked_item(
+                    world.create_item("Group of Tadtones")
+                )
                 placed.append("Group of Tadtones")
 
     if options.sword_dungeon_reward != "none":
         num_swords_to_place = pool.count("Progressive Sword")
-        if num_swords_to_place < world.dungeons.required_dungeons:
+        if num_swords_to_place < len(world.dungeons.required_dungeons):
             # More dungeons than swords to place, place as many as possible
-            dungeons_to_place_swords = world.multiworld.random.sample(world.dungeons.required_dungeons, num_swords_to_place)
-        elif num_swords_to_place >= world.dungeons.required_dungeons:
+            dungeons_to_place_swords = world.multiworld.random.sample(
+                world.dungeons.required_dungeons, num_swords_to_place
+            )
+        elif num_swords_to_place >= len(world.dungeons.required_dungeons):
             # More swords than dungeons, so place a sword in each required dungeon
             dungeons_to_place_swords = world.dungeons.required_dungeons.copy()
 
@@ -222,9 +245,11 @@ def _handle_placements(world: "SSWorld", pool: list[str]) -> list[str]:
                 loc = DUNGEON_HC_CHECKS[dun]
             else:
                 loc = DUNGEON_FINAL_CHECKS[dun]
-            world.get_location(loc).place_locked_item(world.create_item("Progressive Sword"))
+            world.get_location(loc).place_locked_item(
+                world.create_item("Progressive Sword")
+            )
             placed.append("Progressive Sword")
-    
+
     return placed
 
 
@@ -237,6 +262,6 @@ def item_classification(world: "SSWorld", name: str) -> IC | None:
     :return: New IC of the item or None
     """
 
-    adjusted_classification = None # TODO
+    adjusted_classification = None  # TODO
 
     return adjusted_classification

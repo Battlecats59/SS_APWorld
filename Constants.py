@@ -1,25 +1,33 @@
 # This address is used to check/set the player's health for DeathLink.
-CURR_HEALTH_ADDR = 0x8095A76A # HALFWORD
+CURR_HEALTH_ADDR = 0x8095A76A  # HALFWORD
 
 # Link's state- make sure he is not in a loading zone
 CURR_STATE_ADDR = 0x80B76585
 
-# The expected index for the following item that should be received. Array of 4 bytes right after the give item array
-EXPECTED_INDEX_ADDR = 0x0 # WORD
+# The expected index for the following item that should be received. Array of 2 bytes right after the give item array
+EXPECTED_INDEX_ADDR = 0x80678784  # HALFWORD
 # WILL BE UPDATED WHEN THE BUILD IS RELEASED
 
 # This address contains the current stage ID.
-CURR_STAGE_ADDR = 0x805B388C # STRING[16]
+CURR_STAGE_ADDR = 0x805B388C  # STRING[16]
 
 # This is an array of length 0x10 where each element is a byte and contains item IDs for items to give the player.
 # 0xFF represents no item. The array is read and cleared every frame.
-GIVE_ITEM_ARRAY_ADDR = 0x0 # ARRAY[16]
+GIVE_ITEM_ARRAY_ADDR = 0x80678774  # ARRAY[16]
 # WILL BE UPDATED WHEN THE BUILD IS RELEASED
 
 # This is the address that holds the player's file name.
-FILE_NAME_ADDR = 0x80955D38 # ARRAY[16]
+FILE_NAME_ADDR = 0x80955D38  # ARRAY[16]
 
 AP_VISITED_STAGE_NAMES_KEY_FORMAT = "ss_visited_stages_%i"
+
+LINK_INVALID_STATES = [
+    b'\x00\x00\x00',
+    b'\x5A\x2C\x88', # Loading zone
+    b'\x5A\x32\x8C', # Door
+    b'\x5A\x12\xA8', # Diving
+    b'\xB4\xF4\x50', # Bird picking up link
+]
 
 # Valid addresses for storyflags (ending in zero - final bit is added to this address)
 VALID_STORYFLAG_ADDR = [
@@ -47,7 +55,7 @@ STAGE_TO_SCENEFLAG_ADDR = {
     "Lanayru Sand Sea": 0x80956F48,
     "Lanayru Gorge": 0x80956F58,
     "Sealed Grounds": 0x80956F68,
-    "Skyview Temple": 0x80956F78,
+    "Skyview": 0x80956F78,
     "Ancient Cistern": 0x80956F88,
     "Earth Temple": 0x80956FA8,
     "Fire Sanctuary": 0x80956FB8,
@@ -62,25 +70,48 @@ STAGE_TO_SCENEFLAG_ADDR = {
 }
 
 # DME Connection Messages for the client
-CONNECTION_REFUSED_GAME_STATUS = (
-    "Dolphin failed to connect. Please load a randomized ROM for Skyward Sword. Trying again in 5 seconds..."
-)
-CONNECTION_REFUSED_SAVE_STATUS = (
-    "Dolphin failed to connect. Please load into the save file. Trying again in 5 seconds..."
-)
-CONNECTION_LOST_STATUS = (
-    "Dolphin connection was lost. Please restart your emulator and make sure Skyward Sword is running."
-)
+CONNECTION_REFUSED_GAME_STATUS = "Dolphin failed to connect. Please load a randomized ROM for Skyward Sword. Trying again in 5 seconds..."
+CONNECTION_REFUSED_SAVE_STATUS = "Dolphin failed to connect. Please load into the save file. Trying again in 5 seconds..."
+CONNECTION_LOST_STATUS = "Dolphin connection was lost. Please restart your emulator and make sure Skyward Sword is running."
 CONNECTION_CONNECTED_STATUS = "Dolphin connected successfully."
 CONNECTION_INITIAL_STATUS = "Dolphin connection has not been initiated."
 
-OVERWORLD_REGIONS = { # Region: Connected regions
+FORCED_OPTIONS = {
+    # Options, for now, that must be a certain value
+    # Also serves as a list for me for what needs to be implemented
+    "triforce_shuffle": 2, # Anywhere
+    "got_dungeon_requirement": 0, # Required
+    "empty_unrequired_dungeons": 0, # False
+    "map_mode": 4, # Anywhere
+    "small_key_mode": 3, # Anywhere
+    "boss_key_mode": 2, # Anywhere
+    "trial_treasure_amount": 10,
+    "random_start_entrance": 0, # Vanilla, not logically implemented
+    "random_start_statues": 0, # False
+    "rupoor_mode": 0, # Off
+    "rupeesanity": 1, # True
+    "gondo_upgrades": 1, # True
+    "bit_patches": 0, # Disable
+    "song_hints": 0, # None
+    "chest_dowsing": 0, # Vanilla
+    "impa_sot_hint": 0, # False
+}
+
+OVERWORLD_REGIONS = {  # Region: Connected regions
     "Upper Skyloft": ["Central Skyloft", "Sky"],
     "Central Skyloft": ["Upper Skyloft", "Skyloft Village", "Beedle's Shop", "Sky"],
     "Skyloft Village": ["Central Skyloft", "Sky", "Batreaux's House"],
     "Beedle's Shop": ["Central Skyloft"],
     "Batreaux's House": ["Skyloft Village"],
-    "Sky": ["Upper Skyloft", "Central Skyloft", "Skyloft Village", "Thunderhead", "Lanayru Mine", "Eldin Volcano", "Sealed Grounds"],
+    "Sky": [
+        "Upper Skyloft",
+        "Central Skyloft",
+        "Skyloft Village",
+        "Thunderhead",
+        "Lanayru Mine",
+        "Eldin Volcano",
+        "Sealed Grounds",
+    ],
     "Thunderhead": ["Sky"],
     "Sealed Grounds": ["Sky", "Faron Woods", "Hylia's Realm"],
     "Faron Woods": ["Sealed Grounds", "Lake Floria", "Flooded Faron Woods"],
@@ -92,11 +123,50 @@ OVERWORLD_REGIONS = { # Region: Connected regions
     "Bokoblin Base": ["Eldin Volcano"],
     "Lanayru Mine": ["Sky", "Lanayru Desert", "Lanayru Caves"],
     "Lanayru Desert": ["Lanayru Mine", "Lanayru Caves"],
-    "Lanayru Caves": ["Lanayru Mine", "Lanayru Desert", "Lanayru Gorge", "Lanayru Sand Sea"],
+    "Lanayru Caves": [
+        "Lanayru Mine",
+        "Lanayru Desert",
+        "Lanayru Gorge",
+        "Lanayru Sand Sea",
+    ],
     "Lanayru Gorge": ["Lanayru Caves"],
     "Lanayru Sand Sea": ["Lanayru Caves"],
     "Hylia's Realm": ["Sealed Grounds"],
 }
+
+DUNGEON_LIST = [
+    "Skyview",
+    "Earth Temple",
+    "Lanayru Mining Facility",
+    "Ancient Cistern",
+    "Sandship",
+    "Fire Sanctuary",
+    "Sky Keep",
+]
+
+DUNGEON_ENTRANCE_LIST = [
+    "Dungeon Entrance in Deep Woods",
+    "Dungeon Entrance in Eldin Volcano",
+    "Dungeon Entrance in Lanayru Desert",
+    "Dungeon Entrance in Lake Floria",
+    "Dungeon Entrance in Lanayru Sand Sea",
+    "Dungeon Entrance in Volcano Summit",
+    "Dungeon Entrance on Skyloft",
+]
+
+TRIAL_LIST = [
+    "Skyloft Silent Realm",
+    "Faron Silent Realm",
+    "Eldin Silent Realm",
+    "Lanayru Silent Realm"
+]
+
+TRIAL_GATE_LIST = [
+    "Trial Gate on Skyloft",
+    "Trial Gate in Faron Woods",
+    "Trial Gate in Eldin Volcano",
+    "Trial Gate in Lanayru Desert",
+]
 
 DUNGEON_HC_CHECKS = {
     "Skyview": "Skyview - Heart Container",
