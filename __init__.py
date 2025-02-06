@@ -6,7 +6,7 @@ from typing import Any, ClassVar
 
 import yaml
 
-from BaseClasses import MultiWorld, Region, Tutorial
+from BaseClasses import MultiWorld, Region, Tutorial, LocationProgressType
 from Options import Toggle
 from worlds.AutoWorld import WebWorld, World
 from worlds.generic.Rules import add_item_rule
@@ -30,11 +30,12 @@ from .Names import HASH_NAMES
 from .Rando.Dungeons import DungeonRando
 from .Rando.Entrances import EntranceRando
 from .Rando.ItemPlacement import handle_itempool, item_classification
-from .Rando.HintPlacement import handle_hints
+from .Rando.HintPlacement import handle_hints, handle_impa_sot_hint
 
 AP_VERSION = [0, 5, 1]
 WORLD_VERSION = [0, 1, 0]
 RANDO_VERSION = [2, 2, 0]
+
 
 def run_client() -> None:
     """
@@ -55,6 +56,15 @@ components.append(
     )
 )
 
+class SSWeb(WebWorld):
+    """
+    This class handles the web interface.
+
+    The web interface includes the setup guide and the options page for generating YAMLs.
+    """
+
+    theme = "ice"
+    rich_text_options_doc = True
 
 class SSWorld(World):
     """
@@ -76,10 +86,14 @@ class SSWorld(World):
     origin_region_name: str = "Upper Skyloft"
 
     item_name_to_id: ClassVar[dict[str, int]] = {
-        name: SSItem.get_apid(data.code) for name, data in ITEM_TABLE.items() if data.code is not None
+        name: SSItem.get_apid(data.code)
+        for name, data in ITEM_TABLE.items()
+        if data.code is not None
     }
     location_name_to_id: ClassVar[dict[str, int]] = {
-        name: SSLocation.get_apid(data.code) for name, data in LOCATION_TABLE.items() if data.code is not None
+        name: SSLocation.get_apid(data.code)
+        for name, data in LOCATION_TABLE.items()
+        if data.code is not None
     }
 
     create_items = handle_itempool
@@ -107,9 +121,68 @@ class SSWorld(World):
         def add_flag(option: Toggle, flag: SSLocFlag) -> SSLocFlag:
             return flag if option else SSLocFlag.ALWAYS
 
+        enabled_flags = SSLocFlag.ALWAYS
+        enabled_flags |= SSLocFlag.GODDESS
+        enabled_flags |= SSLocFlag.CRYSTAL
+        enabled_flags |= SSLocFlag.SCRAPPR
+        enabled_flags |= SSLocFlag.MINIGME
+        enabled_flags |= (
+            SSLocFlag.BEEDLE
+        )  # Keep progressive even if vanilla b/c of bug net and pouches
+        enabled_flags |= SSLocFlag.BTREAUX
+        enabled_flags |= add_flag(self.options.rupeesanity, SSLocFlag.RUPEE)
+        enabled_flags |= add_flag(
+            self.options.treasuresanity_in_silent_realms, SSLocFlag.TRIAL
+        )
+        enabled_flags |= add_flag(self.options.tadtonesanity, SSLocFlag.TADTONE)
+
+        if self.options.empty_unrequired_dungeons:
+            enabled_flags |= (
+                SSLocFlag.D_SV
+                if "Skyview" in self.dungeons.required_dungeons
+                else SSLocFlag.ALWAYS
+            )
+            enabled_flags |= (
+                SSLocFlag.D_ET
+                if "Earth Temple" in self.dungeons.required_dungeons
+                else SSLocFlag.ALWAYS
+            )
+            enabled_flags |= (
+                SSLocFlag.D_LMF
+                if "Lanayru Mining Facility" in self.dungeons.required_dungeons
+                else SSLocFlag.ALWAYS
+            )
+            enabled_flags |= (
+                SSLocFlag.D_AC
+                if "Ancient Cistern" in self.dungeons.required_dungeons
+                else SSLocFlag.ALWAYS
+            )
+            enabled_flags |= (
+                SSLocFlag.D_SSH
+                if "Sandship" in self.dungeons.required_dungeons
+                else SSLocFlag.ALWAYS
+            )
+            enabled_flags |= (
+                SSLocFlag.D_FS
+                if "Fire Sanctuary" in self.dungeons.required_dungeons
+                else SSLocFlag.ALWAYS
+            )
+        else:
+            enabled_flags |= (
+                SSLocFlag.D_SV
+                | SSLocFlag.D_ET
+                | SSLocFlag.D_LMF
+                | SSLocFlag.D_AC
+                | SSLocFlag.D_SSH
+                | SSLocFlag.D_FS
+                | SSLocFlag.D_SK
+            )
+
         for loc, data in LOCATION_TABLE.items():
-            progress_locations.add(loc)
-            # For now, every location is progress
+            if data.flags & enabled_flags == data.flags:
+                progress_locations.add(loc)
+            else:
+                nonprogress_locations.add(loc)
 
         return progress_locations, nonprogress_locations
 
@@ -118,6 +191,12 @@ class SSWorld(World):
         Run before any other steps of the multiworld, but after options.
         """
 
+        # Shuffle required dungeons and entrances according to options
+        self.dungeons.randomize_required_dungeons()
+        self.entrances.randomize_dungeon_entrances(self.dungeons.required_dungeons)
+        self.entrances.randomize_trial_gates()
+
+        # Determine progress and nonprogress locations
         self.progress_locations, self.nonprogress_locations = (
             self.determine_progress_and_nonprogress_locations()
         )
@@ -143,10 +222,6 @@ class SSWorld(World):
                         Macros, get_access_rule(region)
                     )(state, self.player),
                 )
-
-        self.dungeons.randomize_required_dungeons()
-        self.entrances.randomize_dungeon_entrances(self.dungeons.required_dungeons)
-        self.entrances.randomize_trial_gates()
 
         for dun, conn in self.entrances.dungeon_connections.items():
             if conn == "dungeon_entrance_in_deep_woods":
@@ -200,6 +275,14 @@ class SSWorld(World):
             loc_region = self.get_region(loc_data.region)
             location = SSLocation(self.player, loc, loc_region, loc_data)
             loc_region.locations.append(location)
+        
+        for loc in self.nonprogress_locations:
+            loc_data = LOCATION_TABLE[loc]
+
+            loc_region = self.get_region(loc_data.region)
+            location = SSLocation(self.player, loc, loc_region, loc_data)
+            location.progress_type = LocationProgressType.EXCLUDED
+            loc_region.locations.append(location)
 
     def create_item(self, name: str) -> SSItem:
         """
@@ -224,6 +307,7 @@ class SSWorld(World):
         multiworld = self.multiworld
         player = self.player
         player_hash = self.multiworld.per_slot_randoms[player].sample(HASH_NAMES, 3)
+        mw_player_names = [self.multiworld.get_player_name(i + 1) for i in range(self.multiworld.players)]
 
         # Output seed name and slot number to seed RNG in randomizer client.
         output_data = {
@@ -231,14 +315,18 @@ class SSWorld(World):
             "World Version": list(WORLD_VERSION),
             "Hash": f"AP P{player} " + " ".join(player_hash),
             "AP Seed": multiworld.seed_name,
-            "Rando Seed": self.multiworld.per_slot_randoms[player].randint(0, 2**32 - 1),
+            "Rando Seed": self.multiworld.per_slot_randoms[player].randint(
+                0, 2**32 - 1
+            ),
             "Slot": player,
             "Name": self.player_name,
+            "All Players": mw_player_names,
             "Options": {},
             "Starting Items": self.starting_items,
             "Required Dungeons": self.dungeons.required_dungeons,
             "Locations": {},
             "Hints": handle_hints(self),
+            "SoT Location": handle_impa_sot_hint(self),
             "Dungeon Entrances": {},
             "Trial Entrances": {},
         }
@@ -250,7 +338,7 @@ class SSWorld(World):
             ).value
 
         # Output which item has been placed at each location.
-        locations = multiworld.get_locations(player)
+        locations = sorted(multiworld.get_locations(player), key=lambda loc: loc.code if loc.code is not None else 10000)
         for location in locations:
             if location.name != "Hylia's Realm - Defeat Demise":
                 if location.item:
@@ -259,16 +347,16 @@ class SSWorld(World):
                         "name": location.item.name,
                         "game": location.item.game,
                         "classification": location.item.classification.name,
-                        "chest_dowsing": 8,
                     }
                 else:
-                    print(f"No item in location: {location.name}. Defaulting to red rupee.")
+                    print(
+                        f"No item in location: {location.name}. Defaulting to red rupee."
+                    )
                     item_info = {
                         "player": location.item.player,
                         "name": "Red Rupee",
                         "game": "Skyward Sword",
                         "classification": "filler",
-                        "chest_dowsing": 8,
                     }
                 output_data["Locations"][location.name] = item_info
 
@@ -295,7 +383,6 @@ class SSWorld(World):
             trlconn[rando_friendly_gate_name] = trl
         for trl in sorted(trlconn.keys(), key=lambda i: TRIAL_GATE_LIST.index(i)):
             output_data["Trial Entrances"][trl] = trlconn[trl]
-        
 
         # Output the plando details to file.
         file_path = os.path.join(

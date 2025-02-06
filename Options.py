@@ -45,10 +45,10 @@ class TriforceShuffle(Choice):
     """
 
     display_name = "Triforce Shuffle"
-    # option_vanilla = 0
-    # option_sky_keep = 1
-    option_anywhere = 0 # 2
-    default = 0 # 2
+    option_vanilla = 0
+    option_sky_keep = 1
+    option_anywhere = 2
+    default = 2
 
 
 class GateOfTimeSwordRequirement(Choice):
@@ -74,7 +74,7 @@ class GateOfTimeDungeonRequirements(Choice):
 
     display_name = "Gate of Time Dungeon Requirements"
     option_required = 0
-    #option_unrequired = 1
+    option_unrequired = 1
     default = 0
 
 
@@ -188,53 +188,63 @@ class EmptyUnrequiredDungeons(Toggle): # DefaultOnToggle
 class MapMode(Choice):
     """
     Determines the placement of maps.
-    **Removed**: maps are removed.
+    **Start With**: start with all maps.
     **Vanilla**: maps appear in their vanilla locations.
-    **Restricted**: dungeon maps cannot appear on boss heart containers or the ending checks of dungeons.
-    **Unrestricted**: dungeon maps appear anywhere within their own dungeon.
-    **Anywhere**: maps can appear outside of dungeons.
+    **Own Dungeon**: dungeon maps appear anywhere within their own dungeon in your own world.
+    **Own Dungeon Any World**: dungeon maps appear anywhere within their own dungeon in any SS world.
+    **Anywhere**: maps can appear outside of dungeons in any world.
     """
 
     display_name = "Map Mode"
-    # option_removed = 0
-    # option_vanilla = 1
-    # option_own_dungeon_restricted = 2
-    # option_own_dungeon_unrestricted = 3
-    option_anywhere = 0 # 4
-    default = 0 # 2
+    option_start_with = 0
+    option_vanilla = 1
+    option_own_dungeon = 2
+    option_own_dungeon_any_world = 3
+    option_anywhere = 4
+    default = 3
 
 
 class SmallKeyMode(Choice):
     """
     Determines the placement of small keys.
     **Vanilla**: keys will be in their vanilla locations (The Skyview Digging Spot will not contain a key).
-    **Restricted**: keys will be within their own dungeons.
+    **Own Dungeon**: keys will be within their own dungeons in your own world.
+    **Own Dungeon Any World**: keys will be within their own dungeons in any SS world.
     **Lanayru Caves Key only**: shuffles the Lanayru Caves Small Key
-        (all other keys are shuffled within their own dungeon).
-    **Anywhere**: keys can appear outside of dungeons.
+        (all other keys are shuffled within their own dungeon in any SS world).
+    **Anywhere**: keys can appear outside of dungeons in any world.
+
+    Note, required small keys will not appear in unrequired dungeons of other worlds.
+    If no one else shares your required dungeon, that key will appear in that dungeon in your own world.
     """
 
     display_name = "Small Key Mode"
-    # option_vanilla = 0
-    # option_own_dungeon_restricted = 1
-    # option_lanayru_caves_key_only = 2
-    option_anywhere = 0 # 3
-    default = 0 # 1
+    option_vanilla = 0
+    option_own_dungeon = 1
+    option_own_dungeon_any_world = 2
+    option_lanayru_caves_key_only = 3
+    option_anywhere = 4
+    default = 3
 
 
 class BossKeyMode(Choice):
     """
     Determines the placement of boss keys.
     **Vanilla**: boss keys appear in their vanilla locations.
-    **Own Dungeon**: boss keys appear within their own dungeon.
-    **Anywhere**: boss keys can appear outside of dungeons.
+    **Own Dungeon**: boss keys appear within their own dungeon in your own world.
+    **Own Dungeon Any World**: boss keys appear within their own dungeon in any SS world.
+    **Anywhere**: boss keys can appear outside of dungeons in any world.
+
+    Note, required boss keys will not appear in unrequired dungeons of other worlds.
+    If no one else shares your required dungeon, that key will appear in that dungeon in your own world.
     """
 
     display_name = "Boss Key Mode"
-    # option_vanilla = 0
-    # option_own_dungeon = 1
-    option_anywhere = 0 # 2
-    default = 0 # 1
+    option_vanilla = 0
+    option_own_dungeon = 1
+    option_own_dungeon_any_world = 2
+    option_anywhere = 3
+    default = 2
 
 
 class FSLastRoomLavaFlow(Toggle):
@@ -279,9 +289,9 @@ class TrialTreasureAmount(Range):
     """
 
     display_name = "Trial Treasure Amount"
-    range_start = 10 # 1
+    range_start = 1
     range_end = 10
-    default = 10 # 5
+    default = 5
 
 
 # Entrances
@@ -369,9 +379,9 @@ class RupoorMode(Choice):
 
     display_name = "Rupoor Mode"
     option_off = 0
-    # option_added = 1
-    # option_rupoor_mayhem = 2
-    # option_rupoor_insanity = 3
+    option_added = 1
+    option_rupoor_mayhem = 2
+    option_rupoor_insanity = 3
     default = 0
 
 
@@ -474,8 +484,8 @@ class BiTPatches(Choice):
 
     display_name = "BiT Patches"
     option_disable = 0
-    # option_vanilla = 1
-    # option_fix_crashes = 2
+    option_vanilla = 1
+    option_fix_crashes = 2
     default = 0 # 1
 
 
@@ -699,9 +709,9 @@ class SongHints(Choice):
 
     display_name = "Song Hints"
     option_none = 0
-    # option_basic = 1
-    # option_advanced = 2
-    # option_direct = 3
+    option_basic = 1
+    option_advanced = 2
+    option_direct = 3
     default = 0
 
 
@@ -717,8 +727,8 @@ class ChestDowsing(Choice):
 
     display_name = "Chest Dowsing"
     option_vanilla = 0
-    # option_all_chests = 1
-    # option_progress_items = 2
+    option_all_chests = 1
+    option_progress_items = 2
     default = 0
 
 

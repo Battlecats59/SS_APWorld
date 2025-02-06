@@ -140,6 +140,21 @@ HINT_TABLE: dict[str, SSHint] = {
     ),
 }
 
+HINT_DISTRIBUTIONS = {
+    "Standard": {
+        "Fi": 0,
+        "Location": 10,
+        "Item": 5,
+    }
+}
+
+SONG_HINT_TO_TRIAL_GATE = {
+    "Song of the Hero - Trial Hint": "trial_gate_on_skyloft",
+    "Farore's Courage - Trial Hint": "trial_gate_in_faron_woods",
+    "Nayru's Wisdom - Trial Hint": "trial_gate_in_lanayru_desert",
+    "Din's Power - Trial Hint": "trial_gate_in_eldin_volcano",
+}
+
 JUNK_HINT_TEXT = [
     "They say that crashing in BiT is easy.",
     "They say that bookshelves can talk",

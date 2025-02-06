@@ -54,6 +54,9 @@ class SSLogic(LogicMixin):
             player
         ].dungeons.required_dungeon_checks
         return all(self.can_reach_location(loc, player) for loc in req_dungeon_checks)
+    
+    def _ss_option_unrequired_dungeons(self, player: int) -> bool:
+        return self.multiworld.worlds[player].options.got_dungeon_requirement == "unrequired"
 
     def _ss_option_upgraded_skyward_strike(self, player: int) -> bool:
         return self.multiworld.worlds[player].options.upgraded_skyward_strike
@@ -135,7 +138,7 @@ def set_rules(world: "SSWorld") -> None:
     )
     set_rule_if_progression(
         "Upper Skyloft - Item from Cawlin",
-        lambda state: state.has("Goddess Harp", player),
+        lambda state: state.has("Goddess's Harp", player),
     )
     set_rule_if_progression(
         "Upper Skyloft - Ghost/Pipit's Crystals",

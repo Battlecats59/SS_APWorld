@@ -496,7 +496,7 @@ def can_reach_past(state: CollectionState, player: int) -> bool:
         can_reach_sealed_temple(state, player)
         and can_raise_gate_of_time(state, player)
         and state._ss_sword_requirement_met(player)
-        and state._ss_can_beat_required_dungeons(player)
+        and (state._ss_can_beat_required_dungeons(player) or state._ss_option_unrequired_dungeons(player))
     )
 
 

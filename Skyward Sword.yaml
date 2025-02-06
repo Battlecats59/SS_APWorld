@@ -85,7 +85,9 @@ Skyward Sword:
     # **Vanilla**: Triforces are placed in their vanilla locations in Sky Keep.
     # **Sky Keep**: Triforces are shuffled only within Sky Keep.
     # **Anywhere**: Triforces are shuffled with all other valid locations in the game.
-    anywhere: 50 # DO NOT CHANGE
+    vanilla: 0
+    sky_keep: 0
+    anywhere: 50
 
   got_sword_requirement:
     # Determines the sword needed to open the Gate of Time.
@@ -99,7 +101,8 @@ Skyward Sword:
     # Enables dungeon requirements for opening the Gate of Time.
     # **Required**: beating the required dungeons is necessary to open the Gate of Time.
     # **Unrequired**: the Gate of Time can be opened without beating the required dungeons.
-    required: 50 # DO NOT CHANGE
+    required: 50
+    unrequired: 0
 
   imp2_skip:
     # If enabled, the requirement to defeat Imprisoned 2 at the end of the game is skipped.
@@ -161,8 +164,8 @@ Skyward Sword:
   empty_unrequired_dungeons:
     # If enabled, only the required dungeons will contain progression items.
     # If not enabled, all dungeons and Sky Keep can potentially contain progression items.
-    'false': 50 # DO NOT CHANGE
-    'true': 0 # DO NOT CHANGE
+    'false': 0
+    'true': 50
 
   map_mode:
     # Determines the placement of maps.
@@ -216,9 +219,9 @@ Skyward Sword:
     # How many treasures per Silent Realm you want to randomize.
     #
     # You can define additional values between the minimum and maximum values.
-    # Minimum value is 10
+    # Minimum value is 1
     # Maximum value is 10
-    10: 50 # DO NOT CHANGE
+    5: 50
     random: 0
     random-low: 0
     random-high: 0
@@ -274,7 +277,10 @@ Skyward Sword:
     # **Rupoor Mayhem**: replaces half of the junk items with Rupoors.
     # **Rupoor Insanity**: replaces all junk items with Rupoors.
     # Note, Rupoors may also be added if there are not enough junk items for the game to randomize.
-    'off': 50 # DO NOT CHANGE
+    'off': 50
+    added: 0
+    rupoor_mayhem: 0
+    rupoor_insanity: 0
 
   rupeesanity:
     # Shuffles freestanding rupees. When unshuffled, all freestanding rupees will remain vanilla.
@@ -348,7 +354,9 @@ Skyward Sword:
     # **Vanilla**: Keeps the vanilla game behaviour where BiT is possible but Eldin BiT (and others) will still crash.
     # **Fix BiT Crashes**: Does not load some arcs to make all areas accessible in BiT.
     # **WARNING**: All 3 files must be filled BEFORE activating BiT otherwise this will not work.
-    disable: 50 # DO NOT CHANGE
+    disable: 50
+    vanilla: 0
+    fix_crashes: 0
 
   dowsing_after_whitesword:
     # If enabled, obtaining the Goddess White Sword will unlock rupee, crystal, treasure and goddess cube dowsing.
@@ -520,7 +528,10 @@ Skyward Sword:
     # **Basic**: the song text indicates if beating the trial rewards a progress item.
     # **Advanced**: the song text indicates if beating the trial rewards a SotS, junk or potientially required item.
     # **Direct**: the song text states the reward for beating the trial directly.
-    none: 50 # DO NOT CHANGE
+    none: 50
+    basic: 0
+    advanced: 0
+    direct: 0
 
   chest_dowsing:
     # Determines the main quest (top) dowsing option.
@@ -529,7 +540,9 @@ Skyward Sword:
     # **All Chests**: dowsing points to all chests (regardless of their contents).
     # **Progress Items**: dowsing only points to chests containing progress items
     # (doesn't work with Goddess Chests).
-    vanilla: 50 # DO NOT CHANGE
+    vanilla: 50
+    all_chests: 0
+    progress_items: 0
 
   dungeon_dowsing:
     # If enabled, dowsing will be re-enabled in dungeons and other dungeon-like areas like the Great Tree and
@@ -540,8 +553,8 @@ Skyward Sword:
   impa_sot_hint:
     # If enabled, Impa in Hylia's Temple to give a hint to the location of the Stone of Trials.
     # Does not appear if the Stone of Trials is a starting item.
-    'false': 50 # DO NOT CHANGE
-    'true': 0 # DO NOT CHANGE
+    'false': 50
+    'true': 0
 
   cube_sots:
     # If enabled, when a SotS hint points to a Goddess Chest, the hint will change to indicate this and display

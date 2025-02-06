@@ -143,7 +143,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Upper Skyloft",
         "F000",
         SSLocType.BELL,
-        [SSLocCheckedFlag.SCENE, 0xF, 0x20, "Skyloft"],
+        [SSLocCheckedFlag.SCENE, 0x7, 0x20, "Skyloft"], # Dunno why it's setting this flag instead of Dx20 as rando documentation suggests
     ),
     "Upper Skyloft - Chest near Goddess Statue": SSLocData(
         4,
@@ -666,7 +666,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
     ),
     "Sky - Lumpy Pumpkin - Goddess Chest on the Roof": SSLocData(
         67,
-        SSLocFlag.GODDESS,
+        SSLocFlag.GODDESS | SSLocFlag.D_SV, # Cube in Skyview Spring, so consider this a dungeon check
         "Sky",
         "F020",
         SSLocType.T_BOX,
@@ -1789,7 +1789,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Skyview",
         "D100",
         SSLocType.T_BOX,
-        [SSLocCheckedFlag.SCENE, 0x5, 0x02, "Skyview"],  # CHECKTHIS
+        [SSLocCheckedFlag.SCENE, 0x5, 0x08, "Skyview"],
     ),
     "Skyview - Item behind Bars": SSLocData(
         206,
@@ -2517,7 +2517,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Skyloft Silent Realm",
         "S000",
         SSLocType.RELIC,
-        [SSLocCheckedFlag.SCENE, 0x0, 0x01, "Skyloft"],  # CHANGE
+        [SSLocCheckedFlag.SCENE, 0xD, 0x80, "Skyloft Silent Realm"],
     ),
     "Skyloft Silent Realm - Relic 2": SSLocData(
         296,
@@ -2525,7 +2525,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Skyloft Silent Realm",
         "S000",
         SSLocType.RELIC,
-        [SSLocCheckedFlag.SCENE, 0x0, 0x01, "Skyloft"],  # CHANGE
+        [SSLocCheckedFlag.SCENE, 0xC, 0x01, "Skyloft Silent Realm"],
     ),
     "Skyloft Silent Realm - Relic 3": SSLocData(
         297,
@@ -2533,7 +2533,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Skyloft Silent Realm",
         "S000",
         SSLocType.RELIC,
-        [SSLocCheckedFlag.SCENE, 0x0, 0x01, "Skyloft"],  # CHANGE
+        [SSLocCheckedFlag.SCENE, 0xC, 0x02, "Skyloft Silent Realm"],
     ),
     "Skyloft Silent Realm - Relic 4": SSLocData(
         298,
@@ -2541,7 +2541,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Skyloft Silent Realm",
         "S000",
         SSLocType.RELIC,
-        [SSLocCheckedFlag.SCENE, 0x0, 0x01, "Skyloft"],  # CHANGE
+        [SSLocCheckedFlag.SCENE, 0xC, 0x04, "Skyloft Silent Realm"],
     ),
     "Skyloft Silent Realm - Relic 5": SSLocData(
         299,
@@ -2549,7 +2549,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Skyloft Silent Realm",
         "S000",
         SSLocType.RELIC,
-        [SSLocCheckedFlag.SCENE, 0x0, 0x01, "Skyloft"],  # CHANGE
+        [SSLocCheckedFlag.SCENE, 0xC, 0x08, "Skyloft Silent Realm"],
     ),
     "Skyloft Silent Realm - Relic 6": SSLocData(
         300,
@@ -2557,7 +2557,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Skyloft Silent Realm",
         "S000",
         SSLocType.RELIC,
-        [SSLocCheckedFlag.SCENE, 0x0, 0x01, "Skyloft"],  # CHANGE
+        [SSLocCheckedFlag.SCENE, 0xC, 0x10, "Skyloft Silent Realm"],
     ),
     "Skyloft Silent Realm - Relic 7": SSLocData(
         301,
@@ -2565,7 +2565,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Skyloft Silent Realm",
         "S000",
         SSLocType.RELIC,
-        [SSLocCheckedFlag.SCENE, 0x0, 0x01, "Skyloft"],  # CHANGE
+        [SSLocCheckedFlag.SCENE, 0xC, 0x20, "Skyloft Silent Realm"],
     ),
     "Skyloft Silent Realm - Relic 8": SSLocData(
         302,
@@ -2573,7 +2573,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Skyloft Silent Realm",
         "S000",
         SSLocType.RELIC,
-        [SSLocCheckedFlag.SCENE, 0x0, 0x01, "Skyloft"],  # CHANGE
+        [SSLocCheckedFlag.SCENE, 0xC, 0x40, "Skyloft Silent Realm"],
     ),
     "Skyloft Silent Realm - Relic 9": SSLocData(
         303,
@@ -2581,7 +2581,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Skyloft Silent Realm",
         "S000",
         SSLocType.RELIC,
-        [SSLocCheckedFlag.SCENE, 0x0, 0x01, "Skyloft"],  # CHANGE
+        [SSLocCheckedFlag.SCENE, 0xC, 0x80, "Skyloft Silent Realm"],
     ),
     "Skyloft Silent Realm - Relic 10": SSLocData(
         304,
@@ -2589,7 +2589,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Skyloft Silent Realm",
         "S000",
         SSLocType.RELIC,
-        [SSLocCheckedFlag.SCENE, 0x0, 0x01, "Skyloft"],  # CHANGE
+        [SSLocCheckedFlag.SCENE, 0xF, 0x01, "Skyloft Silent Realm"],
     ),
     "Faron Silent Realm - Relic 1": SSLocData(
         305,
@@ -2597,7 +2597,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Faron Silent Realm",
         "S100",
         SSLocType.RELIC,
-        [SSLocCheckedFlag.SCENE, 0x0, 0x01, "Skyloft"],  # CHANGE
+        [SSLocCheckedFlag.SCENE, 0xD, 0x80, "Faron Silent Realm"],
     ),
     "Faron Silent Realm - Relic 2": SSLocData(
         306,
@@ -2605,7 +2605,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Faron Silent Realm",
         "S100",
         SSLocType.RELIC,
-        [SSLocCheckedFlag.SCENE, 0x0, 0x01, "Skyloft"],  # CHANGE
+        [SSLocCheckedFlag.SCENE, 0xC, 0x01, "Faron Silent Realm"],
     ),
     "Faron Silent Realm - Relic 3": SSLocData(
         307,
@@ -2613,7 +2613,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Faron Silent Realm",
         "S100",
         SSLocType.RELIC,
-        [SSLocCheckedFlag.SCENE, 0x0, 0x01, "Skyloft"],  # CHANGE
+        [SSLocCheckedFlag.SCENE, 0xC, 0x02, "Faron Silent Realm"],
     ),
     "Faron Silent Realm - Relic 4": SSLocData(
         308,
@@ -2621,7 +2621,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Faron Silent Realm",
         "S100",
         SSLocType.RELIC,
-        [SSLocCheckedFlag.SCENE, 0x0, 0x01, "Skyloft"],  # CHANGE
+        [SSLocCheckedFlag.SCENE, 0xC, 0x04, "Faron Silent Realm"],
     ),
     "Faron Silent Realm - Relic 5": SSLocData(
         309,
@@ -2629,7 +2629,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Faron Silent Realm",
         "S100",
         SSLocType.RELIC,
-        [SSLocCheckedFlag.SCENE, 0x0, 0x01, "Skyloft"],  # CHANGE
+        [SSLocCheckedFlag.SCENE, 0xC, 0x08, "Faron Silent Realm"],
     ),
     "Faron Silent Realm - Relic 6": SSLocData(
         310,
@@ -2637,7 +2637,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Faron Silent Realm",
         "S100",
         SSLocType.RELIC,
-        [SSLocCheckedFlag.SCENE, 0x0, 0x01, "Skyloft"],  # CHANGE
+        [SSLocCheckedFlag.SCENE, 0xC, 0x10, "Faron Silent Realm"],
     ),
     "Faron Silent Realm - Relic 7": SSLocData(
         311,
@@ -2645,7 +2645,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Faron Silent Realm",
         "S100",
         SSLocType.RELIC,
-        [SSLocCheckedFlag.SCENE, 0x0, 0x01, "Skyloft"],  # CHANGE
+        [SSLocCheckedFlag.SCENE, 0xC, 0x20, "Faron Silent Realm"],
     ),
     "Faron Silent Realm - Relic 8": SSLocData(
         312,
@@ -2653,7 +2653,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Faron Silent Realm",
         "S100",
         SSLocType.RELIC,
-        [SSLocCheckedFlag.SCENE, 0x0, 0x01, "Skyloft"],  # CHANGE
+        [SSLocCheckedFlag.SCENE, 0xC, 0x40, "Faron Silent Realm"],
     ),
     "Faron Silent Realm - Relic 9": SSLocData(
         313,
@@ -2661,7 +2661,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Faron Silent Realm",
         "S100",
         SSLocType.RELIC,
-        [SSLocCheckedFlag.SCENE, 0x0, 0x01, "Skyloft"],  # CHANGE
+        [SSLocCheckedFlag.SCENE, 0xC, 0x80, "Faron Silent Realm"],
     ),
     "Faron Silent Realm - Relic 10": SSLocData(
         314,
@@ -2669,7 +2669,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Faron Silent Realm",
         "S100",
         SSLocType.RELIC,
-        [SSLocCheckedFlag.SCENE, 0x0, 0x01, "Skyloft"],  # CHANGE
+        [SSLocCheckedFlag.SCENE, 0xF, 0x01, "Faron Silent Realm"],
     ),
     "Lanayru Silent Realm - Relic 1": SSLocData(
         315,
@@ -2677,7 +2677,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Lanayru Silent Realm",
         "S300",
         SSLocType.RELIC,
-        [SSLocCheckedFlag.SCENE, 0x0, 0x01, "Skyloft"],  # CHANGE
+        [SSLocCheckedFlag.SCENE, 0xD, 0x80, "Lanayru Silent Realm"],
     ),
     "Lanayru Silent Realm - Relic 2": SSLocData(
         316,
@@ -2685,7 +2685,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Lanayru Silent Realm",
         "S300",
         SSLocType.RELIC,
-        [SSLocCheckedFlag.SCENE, 0x0, 0x01, "Skyloft"],  # CHANGE
+        [SSLocCheckedFlag.SCENE, 0xC, 0x01, "Lanayru Silent Realm"],
     ),
     "Lanayru Silent Realm - Relic 3": SSLocData(
         317,
@@ -2693,7 +2693,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Lanayru Silent Realm",
         "S300",
         SSLocType.RELIC,
-        [SSLocCheckedFlag.SCENE, 0x0, 0x01, "Skyloft"],  # CHANGE
+        [SSLocCheckedFlag.SCENE, 0xC, 0x02, "Lanayru Silent Realm"],
     ),
     "Lanayru Silent Realm - Relic 4": SSLocData(
         318,
@@ -2701,7 +2701,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Lanayru Silent Realm",
         "S300",
         SSLocType.RELIC,
-        [SSLocCheckedFlag.SCENE, 0x0, 0x01, "Skyloft"],  # CHANGE
+        [SSLocCheckedFlag.SCENE, 0xC, 0x04, "Lanayru Silent Realm"],
     ),
     "Lanayru Silent Realm - Relic 5": SSLocData(
         319,
@@ -2709,7 +2709,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Lanayru Silent Realm",
         "S300",
         SSLocType.RELIC,
-        [SSLocCheckedFlag.SCENE, 0x0, 0x01, "Skyloft"],  # CHANGE
+        [SSLocCheckedFlag.SCENE, 0xC, 0x08, "Lanayru Silent Realm"],
     ),
     "Lanayru Silent Realm - Relic 6": SSLocData(
         320,
@@ -2717,7 +2717,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Lanayru Silent Realm",
         "S300",
         SSLocType.RELIC,
-        [SSLocCheckedFlag.SCENE, 0x0, 0x01, "Skyloft"],  # CHANGE
+        [SSLocCheckedFlag.SCENE, 0xC, 0x10, "Lanayru Silent Realm"],
     ),
     "Lanayru Silent Realm - Relic 7": SSLocData(
         321,
@@ -2725,7 +2725,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Lanayru Silent Realm",
         "S300",
         SSLocType.RELIC,
-        [SSLocCheckedFlag.SCENE, 0x0, 0x01, "Skyloft"],  # CHANGE
+        [SSLocCheckedFlag.SCENE, 0xC, 0x20, "Lanayru Silent Realm"],
     ),
     "Lanayru Silent Realm - Relic 8": SSLocData(
         322,
@@ -2733,7 +2733,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Lanayru Silent Realm",
         "S300",
         SSLocType.RELIC,
-        [SSLocCheckedFlag.SCENE, 0x0, 0x01, "Skyloft"],  # CHANGE
+        [SSLocCheckedFlag.SCENE, 0xC, 0x40, "Lanayru Silent Realm"],
     ),
     "Lanayru Silent Realm - Relic 9": SSLocData(
         323,
@@ -2741,7 +2741,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Lanayru Silent Realm",
         "S300",
         SSLocType.RELIC,
-        [SSLocCheckedFlag.SCENE, 0x0, 0x01, "Skyloft"],  # CHANGE
+        [SSLocCheckedFlag.SCENE, 0xC, 0x80, "Lanayru Silent Realm"],
     ),
     "Lanayru Silent Realm - Relic 10": SSLocData(
         324,
@@ -2749,7 +2749,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Lanayru Silent Realm",
         "S300",
         SSLocType.RELIC,
-        [SSLocCheckedFlag.SCENE, 0x0, 0x01, "Skyloft"],  # CHANGE
+        [SSLocCheckedFlag.SCENE, 0xF, 0x01, "Lanayru Silent Realm"],
     ),
     "Eldin Silent Realm - Relic 1": SSLocData(
         325,
@@ -2757,7 +2757,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Eldin Silent Realm",
         "S200",
         SSLocType.RELIC,
-        [SSLocCheckedFlag.SCENE, 0x0, 0x01, "Skyloft"],  # CHANGE
+        [SSLocCheckedFlag.SCENE, 0xD, 0x80, "Eldin Silent Realm"],
     ),
     "Eldin Silent Realm - Relic 2": SSLocData(
         326,
@@ -2765,7 +2765,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Eldin Silent Realm",
         "S200",
         SSLocType.RELIC,
-        [SSLocCheckedFlag.SCENE, 0x0, 0x01, "Skyloft"],  # CHANGE
+        [SSLocCheckedFlag.SCENE, 0xC, 0x01, "Eldin Silent Realm"],
     ),
     "Eldin Silent Realm - Relic 3": SSLocData(
         327,
@@ -2773,7 +2773,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Eldin Silent Realm",
         "S200",
         SSLocType.RELIC,
-        [SSLocCheckedFlag.SCENE, 0x0, 0x01, "Skyloft"],  # CHANGE
+        [SSLocCheckedFlag.SCENE, 0xC, 0x02, "Eldin Silent Realm"],
     ),
     "Eldin Silent Realm - Relic 4": SSLocData(
         328,
@@ -2781,7 +2781,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Eldin Silent Realm",
         "S200",
         SSLocType.RELIC,
-        [SSLocCheckedFlag.SCENE, 0x0, 0x01, "Skyloft"],  # CHANGE
+        [SSLocCheckedFlag.SCENE, 0xC, 0x04, "Eldin Silent Realm"],
     ),
     "Eldin Silent Realm - Relic 5": SSLocData(
         329,
@@ -2789,7 +2789,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Eldin Silent Realm",
         "S200",
         SSLocType.RELIC,
-        [SSLocCheckedFlag.SCENE, 0x0, 0x01, "Skyloft"],  # CHANGE
+        [SSLocCheckedFlag.SCENE, 0xC, 0x08, "Eldin Silent Realm"],
     ),
     "Eldin Silent Realm - Relic 6": SSLocData(
         330,
@@ -2797,7 +2797,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Eldin Silent Realm",
         "S200",
         SSLocType.RELIC,
-        [SSLocCheckedFlag.SCENE, 0x0, 0x01, "Skyloft"],  # CHANGE
+        [SSLocCheckedFlag.SCENE, 0xC, 0x10, "Eldin Silent Realm"],
     ),
     "Eldin Silent Realm - Relic 7": SSLocData(
         331,
@@ -2805,7 +2805,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Eldin Silent Realm",
         "S200",
         SSLocType.RELIC,
-        [SSLocCheckedFlag.SCENE, 0x0, 0x01, "Skyloft"],  # CHANGE
+        [SSLocCheckedFlag.SCENE, 0xC, 0x20, "Eldin Silent Realm"],
     ),
     "Eldin Silent Realm - Relic 8": SSLocData(
         332,
@@ -2813,7 +2813,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Eldin Silent Realm",
         "S200",
         SSLocType.RELIC,
-        [SSLocCheckedFlag.SCENE, 0x0, 0x01, "Skyloft"],  # CHANGE
+        [SSLocCheckedFlag.SCENE, 0xC, 0x40, "Eldin Silent Realm"],
     ),
     "Eldin Silent Realm - Relic 9": SSLocData(
         333,
@@ -2821,7 +2821,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Eldin Silent Realm",
         "S200",
         SSLocType.RELIC,
-        [SSLocCheckedFlag.SCENE, 0x0, 0x01, "Skyloft"],  # CHANGE
+        [SSLocCheckedFlag.SCENE, 0xC, 0x80, "Eldin Silent Realm"],
     ),
     "Eldin Silent Realm - Relic 10": SSLocData(
         334,
@@ -2829,7 +2829,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "Eldin Silent Realm",
         "S200",
         SSLocType.RELIC,
-        [SSLocCheckedFlag.SCENE, 0x0, 0x01, "Skyloft"],  # CHANGE
+        [SSLocCheckedFlag.SCENE, 0xF, 0x01, "Eldin Silent Realm"],
     ),
     "Hylia's Realm - Defeat Demise": SSLocData(
         None,

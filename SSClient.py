@@ -307,7 +307,7 @@ async def _give_item(ctx: SSContext, item_name: str) -> bool:
     :param item_name: Name of the item to give.
     :return: Whether the item was successfully given.
     """
-    if not (check_link_state_for_giveitem() and check_alive()):
+    if not can_receive_items():
         return False
 
     item_id = ITEM_TABLE[item_name].item_id  # In game item ID
@@ -316,9 +316,26 @@ async def _give_item(ctx: SSContext, item_name: str) -> bool:
     for idx in range(ctx.len_give_item_array):
         slot = dme_read_byte(GIVE_ITEM_ARRAY_ADDR + idx)
         if slot == 0xFF:
-            await asyncio.sleep(0.5)
+            await asyncio.sleep(0.25)
             logger.info(f"DEBUG: Gave item {item_id} to player {ctx.player_names[ctx.slot]}.")
             dme_write_byte(GIVE_ITEM_ARRAY_ADDR + idx, item_id)
+            await asyncio.sleep(0.25)
+            # If this happens, this may be an indicator that the player interrupted the itemget with something like a Fi call
+            # or bed which could delete the item, so we should check for a reload
+            if get_link_action() != ITEM_GET_ACTION:  
+                logger.info(f"DEBUG: Player did not immediately receive item. Watching for a reload...")
+                while get_link_action() != ITEM_GET_ACTION:
+                    await asyncio.sleep(0.1)
+                    # Stop trying if the player soft reset
+                    if check_on_title_screen():
+                        break
+                        
+                    # If state is 0, that means a reload occurred, so we should resend the item.
+                    if int.from_bytes(get_link_state()) == 0x0:
+                        logger.info(f"DEBUG: A reload occurred! Resending the item...")
+                        dme_write_byte(GIVE_ITEM_ARRAY_ADDR + idx, item_id)
+                        break
+            
             return True
 
     # If unable to place the item in the array, return False.
@@ -331,7 +348,7 @@ async def give_items(ctx: SSContext) -> None:
 
     :param ctx: The SS client context.
     """
-    if check_link_state_for_giveitem() and check_alive():
+    if can_receive_items():
         # Read the expected index of the player, which is the index of the latest item they've received.
         expected_idx = dme_read_short(EXPECTED_INDEX_ADDR)
 
@@ -356,44 +373,44 @@ async def check_locations(ctx: SSContext) -> None:
 
     :param ctx: The SS client context.
     """
-    # Loop through all locations to see if each has been checked.
-    for location, data in LOCATION_TABLE.items():
-        checked = False
-        [flag_type, flag_bit, flag_value, addr] = data.checked_flag
-        if data.type == SSLocType.RELIC:
-            continue  # NOT SUPPORTED YET
-        if flag_type == SSLocCheckedFlag.STORY:
-            flag = dme_read_byte(addr + flag_bit)
-            checked = bool(flag & flag_value)
-        elif flag_type == SSLocCheckedFlag.SCENE:
-            flag = dme_read_byte(STAGE_TO_SCENEFLAG_ADDR[addr] + flag_bit)
-            checked = bool(flag & flag_value)
-        elif flag_type == SSLocCheckedFlag.SPECL:
-            if location == "Upper Skyloft - Ghost/Pipit's Crystals":
-                flag1 = bool(dme_read_byte(0x805A9B16) & 0x80)  # 5 crystals from Pipit
-                flag2 = bool(dme_read_byte(0x805A9B16) & 0x04)  # 5 crystals from Ghost
-                checked = flag1 or flag2
-            if location == "Central Skyloft - Peater/Peatrice's Crystals":
-                flag1 = bool(
-                    dme_read_byte(0x805A9B1A) & 0x40
-                )  # 5 crystals from Peatrice
-                flag2 = bool(dme_read_byte(0x805A9B1D) & 0x02)  # 5 crystals from Peater
-                checked = flag1 or flag2
+    # Don't send locations from the title screen (BiT)
+    if can_send_items():
+        # Loop through all locations to see if each has been checked.
+        for location, data in LOCATION_TABLE.items():
+            checked = False
+            [flag_type, flag_bit, flag_value, addr] = data.checked_flag
+            if flag_type == SSLocCheckedFlag.STORY:
+                flag = dme_read_byte(addr + flag_bit)
+                checked = bool(flag & flag_value)
+            elif flag_type == SSLocCheckedFlag.SCENE:
+                flag = dme_read_byte(STAGE_TO_SCENEFLAG_ADDR[addr] + flag_bit)
+                checked = bool(flag & flag_value)
+            elif flag_type == SSLocCheckedFlag.SPECL:
+                if location == "Upper Skyloft - Ghost/Pipit's Crystals":
+                    flag1 = bool(dme_read_byte(0x805A9B16) & 0x80)  # 5 crystals from Pipit
+                    flag2 = bool(dme_read_byte(0x805A9B16) & 0x04)  # 5 crystals from Ghost
+                    checked = flag1 or flag2
+                if location == "Central Skyloft - Peater/Peatrice's Crystals":
+                    flag1 = bool(
+                        dme_read_byte(0x805A9B1A) & 0x40
+                    )  # 5 crystals from Peatrice
+                    flag2 = bool(dme_read_byte(0x805A9B1D) & 0x02)  # 5 crystals from Peater
+                    checked = flag1 or flag2
 
-        if checked:
-            if data.code is None:  # Defeat Demise
-                if not ctx.finished_game:
-                    await ctx.send_msgs(
-                        [{"cmd": "StatusUpdate", "status": ClientStatus.CLIENT_GOAL}]
-                    )
-                    ctx.finished_game = True
-            else:
-                ctx.locations_checked.add(SSLocation.get_apid(data.code))
+            if checked:
+                if data.code is None:  # Defeat Demise
+                    if not ctx.finished_game:
+                        await ctx.send_msgs(
+                            [{"cmd": "StatusUpdate", "status": ClientStatus.CLIENT_GOAL}]
+                        )
+                        ctx.finished_game = True
+                else:
+                    ctx.locations_checked.add(SSLocation.get_apid(data.code))
 
-    # Send the list of newly-checked locations to the server.
-    locations_checked = ctx.locations_checked.difference(ctx.checked_locations)
-    if locations_checked:
-        await ctx.send_msgs([{"cmd": "LocationChecks", "locations": locations_checked}]) 
+        # Send the list of newly-checked locations to the server.
+        locations_checked = ctx.locations_checked.difference(ctx.checked_locations)
+        if locations_checked:
+            await ctx.send_msgs([{"cmd": "LocationChecks", "locations": locations_checked}]) 
 
 
 async def check_current_stage_changed(ctx: SSContext) -> None:
@@ -446,7 +463,7 @@ async def check_death(ctx: SSContext) -> None:
 
     :return: `True` if the player is dead, otherwise `False`.
     """
-    if ctx.slot is not None and check_ingame():
+    if ctx.slot is not None and check_ingame() and not check_on_title_screen():
         cur_health = dme_read_short(CURR_HEALTH_ADDR)
         if cur_health <= 0:
             if not ctx.has_send_death and time.time() >= ctx.last_death_link + 3:
@@ -462,20 +479,62 @@ def check_ingame() -> bool:
 
     :return: `True` if the player is in-game, otherwise `False`.
     """
-    return dolphin_memory_engine.read_bytes(CURR_STATE_ADDR, 3) != 0x0
+    return int.from_bytes(dolphin_memory_engine.read_bytes(CURR_STATE_ADDR, 3)) != 0x0
 
-def check_link_state_for_giveitem() -> bool:
+def check_on_title_screen() -> bool:
+    """
+    Check if the player is on the Title Screen.
+    
+    :return: `True` if the player is on the title screen, otherwise `False`.
+    """
+    return dme_read_byte(GLOBAL_TITLE_LOADER_ADDR) != 0x0
+
+def get_link_state() -> bytes:
+    return dolphin_memory_engine.read_bytes(CURR_STATE_ADDR, 3)
+
+def get_link_action() -> int:
+    return dme_read_byte(LINK_ACTION_ADDR)
+
+def validate_link_state() -> bool:
     """
     Returns a bool determining whether Link is in a valid or invalid state to receive items.
 
     :return: True if Link is in a valid state, False if Link is in an invalid state
     """
-    linkstate = dolphin_memory_engine.read_bytes(CURR_STATE_ADDR, 4) != 0x0
-    if linkstate in LINK_INVALID_STATES:
+    if get_link_state() in LINK_INVALID_STATES:
         return False
     else:
         return True
 
+def validate_link_action() -> bool:
+    """
+    Returns a bool determining if Link is in a safe action to receive items.
+
+    :return: True if Link is in a safe action, False if Link is not in a safe action.
+    """
+    action = dme_read_byte(LINK_ACTION_ADDR)
+    return action <= MAX_SAFE_ACTION or (action == ITEM_GET_ACTION)
+
+def check_on_file_1() -> bool:
+    """
+    Returns a bool determining if the player is currently on File 1.
+
+    :return: True if File 1 last selected, False otherwise
+    """
+    file = dme_read_byte(SELECTED_FILE_ADDR)
+    return file == 0
+
+def can_receive_items() -> bool:
+    """
+    Link must be on File 1 in a valid state and action and not on the title screen to receive items.
+    """
+    return can_send_items() and check_alive() and validate_link_state() and validate_link_action()
+
+def can_send_items() -> bool:
+    """
+    Link must be on File 1 and not on the tile screen to send items.
+    """
+    return (not check_on_title_screen()) and check_on_file_1()
 
 async def dolphin_sync_task(ctx: SSContext) -> None:
     """

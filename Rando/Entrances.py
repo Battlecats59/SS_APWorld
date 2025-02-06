@@ -76,7 +76,7 @@ class EntranceRando:
         """
 
         if self.world.options.randomize_trials:
-            randomized_trial_gates = self.trialGates.copy()
+            randomized_trial_gates = self.trial_gates.copy()
             self.multiworld.random.shuffle(randomized_trial_gates)
             for trl in self.trials:
                 self.trial_connections[trl] = randomized_trial_gates.pop()

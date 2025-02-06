@@ -143,7 +143,7 @@ ITEM_TABLE: dict[str, SSItemData] = {
     "Eldin Song of the Hero Part":      SSItemData("Item",         IC.progression,         191,    1,  0xBF),
     "Lanayru Song of the Hero Part":    SSItemData("Item",         IC.progression,         192,    1,  0xC0),
 
-    "Life Tree Seedling":           SSItemData("Item",         IC.progression,         197,    1,  0xC5),
+    "Life Tree Seedling":           SSItemData("Item",         IC.progression,         197,    0,  0xC5),
     "Life Tree Fruit":              SSItemData("Item",         IC.progression,         198,    1,  0xC6),
     "Extra Wallet":                 SSItemData("Item",         IC.progression,         199,    3,  0xC7),
 

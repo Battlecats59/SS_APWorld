@@ -13,7 +13,7 @@ From now on, Archipelago may be referred to as "AP". Skyward Sword may be referr
 - The [Archipelago release of the Skyward Sword Randomizer](https://nightly.link/Battlecats59/sslib/workflows/build.yaml/archipelago)
 - The Skyward Sword AP World:
     - This includes the [APWorld file and the YAML options file](https://github.com/Battlecats59/SS_APWorld/releases/latest)
-    - A zip file including both of these can be downloaded [here](https://github.com/Battlecats59/SS_APWorld/releases/download/v0.1.0/APSkywardSword.zip)
+    - A zip file including both of these can be downloaded [here](https://github.com/Battlecats59/SS_APWorld/releases/latest)
 
 ### Useful Links
 - [Archipelago Setup Guide](https://archipelago.gg/tutorial/Archipelago/setup/en)
