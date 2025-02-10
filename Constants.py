@@ -7,8 +7,15 @@ CURR_STATE_ADDR = 0x80B76585
 # Link's action - make sure he is in a "normal" action (i.e. idle, moving on the ground, etc.)
 LINK_ACTION_ADDR = 0x80B7689B
 
+# Some memory addresses are offset by this value in FFW. I dunno why.
+FFW_MEMORY_OFFSET = 0x8960
+
 MAX_SAFE_ACTION = 0xD
 ITEM_GET_ACTION = 0x78
+DOOR_ACTIONS = [0x6E, 0x6F]
+SWIM_ACTIONS = [0x4F, 0x50, 0x51, 0x52]
+
+DEMISE_STAGE = "B400"
 
 # The byte at this address stores which save file is currently selected (0 indexed)
 SELECTED_FILE_ADDR = 0x8095FC98
@@ -24,7 +31,7 @@ CURR_STAGE_ADDR = 0x805B388C  # STRING[16]
 # This is an array of length 0x10 where each element is a byte and contains item IDs for items to give the player.
 # 0xFF represents no item. The array is read and cleared every frame.
 GIVE_ITEM_ARRAY_ADDR = 0x80678770  # ARRAY[16]
-# WILL BE UPDATED WHEN THE BUILD IS RELEASEDs
+# WILL BE UPDATED WHEN THE BUILD IS RELEASED
 
 # This is the address that holds the player's file name.
 FILE_NAME_ADDR = 0x80955D38  # ARRAY[16]
@@ -100,11 +107,6 @@ FORCED_OPTIONS = {
     # "boss_key_mode": 2, # Anywhere
     "random_start_entrance": 0, # Vanilla, not logically implemented
     "random_start_statues": 0, # False
-    "rupeesanity": 1, # True
-    "gondo_upgrades": 1, # True
-    "song_hints": 0, # None
-    # "chest_dowsing": 0, # Vanilla
-    "impa_sot_hint": 0, # False
 }
 
 OVERWORLD_REGIONS = {  # Region: Connected regions
@@ -239,15 +241,11 @@ POSSIBLE_RANDOM_STARTING_ITEMS = [
     "Spiral Charge",
 ]
 
-BEEDLES_SHOP_VANILLA_ITEMS = {
-    "Beedle's Shop - 300 Rupee Item": "Progressive Pouch",
-    "Beedle's Shop - 600 Rupee Item": "Progressive Pouch",
-    "Beedle's Shop - 1200 Rupee Item": "Progressive Pouch",
-    "Beedle's Shop - 800 Rupee Item": "Life Medal",
-    "Beedle's Shop - 1600 Rupee Item": "Heart Piece",
-    "Beedle's Shop - First 100 Rupee Item": "Extra Wallet",
-    "Beedle's Shop - Second 100 Rupee Item": "Extra Wallet",
-    "Beedle's Shop - Third 100 Rupee Item": "Extra Wallet",
-    "Beedle's Shop - 50 Rupee Item": "Progressive Bug Net",
-    "Beedle's Shop - 1000 Rupee Item": "Bug Medal",
-}
+GONDO_UPGRADES = [
+    "Progressive Beetle",
+    "Progressive Beetle",
+    "Progressive Slingshot",
+    "Progressive Bow",
+    "Progressive Bow",
+    "Progressive Bug Net",
+]

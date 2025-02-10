@@ -90,6 +90,9 @@ class SSLogic(LogicMixin):
     def _ss_option_shopsanity(self, player: int) -> bool:
         return self.multiworld.worlds[player].options.shopsanity
 
+    def _ss_option_gondo_upgrades(self, player: int) -> bool:
+        return self.multiworld.worlds[player].options.gondo_upgrades
+
 
 def set_rules(world: "SSWorld") -> None:
     """

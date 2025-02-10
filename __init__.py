@@ -2,12 +2,13 @@ import os
 from base64 import b64encode
 from collections.abc import Mapping
 from dataclasses import fields
+import threading
 from typing import Any, ClassVar
 
 import yaml
 
 from BaseClasses import MultiWorld, Region, Tutorial, LocationProgressType
-from Options import Toggle
+from Options import Toggle, OptionError
 from worlds.AutoWorld import WebWorld, World
 from worlds.generic.Rules import add_item_rule
 from worlds.LauncherComponents import (
@@ -30,9 +31,9 @@ from .Names import HASH_NAMES
 from .Rando.Dungeons import DungeonRando
 from .Rando.Entrances import EntranceRando
 from .Rando.ItemPlacement import handle_itempool, item_classification
-from .Rando.HintPlacement import handle_hints, handle_impa_sot_hint
+from .Rando.HintPlacement import Hints
 
-AP_VERSION = [0, 5, 1]
+AP_VERSION = [0, 6, 0]
 WORLD_VERSION = [0, 1, 0]
 RANDO_VERSION = [2, 2, 0]
 
@@ -56,6 +57,7 @@ components.append(
     )
 )
 
+
 class SSWeb(WebWorld):
     """
     This class handles the web interface.
@@ -65,6 +67,7 @@ class SSWeb(WebWorld):
 
     theme = "ice"
     rich_text_options_doc = True
+
 
 class SSWorld(World):
     """
@@ -107,6 +110,8 @@ class SSWorld(World):
 
         self.dungeons = DungeonRando(self)
         self.entrances = EntranceRando(self)
+        self.hint_data: Hints = None
+        self.hint_data_available = threading.Event()
 
     def determine_progress_and_nonprogress_locations(self) -> tuple[set[str], set[str]]:
         """
@@ -183,6 +188,17 @@ class SSWorld(World):
                 progress_locations.add(loc)
             else:
                 nonprogress_locations.add(loc)
+
+        for loc in self.options.exclude_locations.value:
+            if loc in progress_locations:
+                progress_locations.remove(loc)
+                nonprogress_locations.add(loc)
+            elif loc in nonprogress_locations:
+                pass
+            else:
+                raise OptionError(
+                    f"Unknown location in option `excluded locations`: {loc}"
+                )
 
         return progress_locations, nonprogress_locations
 
@@ -275,7 +291,7 @@ class SSWorld(World):
             loc_region = self.get_region(loc_data.region)
             location = SSLocation(self.player, loc, loc_region, loc_data)
             loc_region.locations.append(location)
-        
+
         for loc in self.nonprogress_locations:
             loc_data = LOCATION_TABLE[loc]
 
@@ -306,8 +322,12 @@ class SSWorld(World):
         """
         multiworld = self.multiworld
         player = self.player
-        player_hash = self.multiworld.per_slot_randoms[player].sample(HASH_NAMES, 3)
-        mw_player_names = [self.multiworld.get_player_name(i + 1) for i in range(self.multiworld.players)]
+        hints = Hints(self)
+        player_hash = self.random.sample(HASH_NAMES, 3)
+        mw_player_names = [
+            self.multiworld.get_player_name(i + 1)
+            for i in range(self.multiworld.players)
+        ]
 
         # Output seed name and slot number to seed RNG in randomizer client.
         output_data = {
@@ -315,7 +335,7 @@ class SSWorld(World):
             "World Version": list(WORLD_VERSION),
             "Hash": f"AP P{player} " + " ".join(player_hash),
             "AP Seed": multiworld.seed_name,
-            "Rando Seed": self.multiworld.per_slot_randoms[player].randint(
+            "Rando Seed": self.random.randint(
                 0, 2**32 - 1
             ),
             "Slot": player,
@@ -325,8 +345,8 @@ class SSWorld(World):
             "Starting Items": self.starting_items,
             "Required Dungeons": self.dungeons.required_dungeons,
             "Locations": {},
-            "Hints": handle_hints(self),
-            "SoT Location": handle_impa_sot_hint(self),
+            "Hints": hints.handle_hints(),
+            "SoT Location": hints.handle_impa_sot_hint(),
             "Dungeon Entrances": {},
             "Trial Entrances": {},
         }
@@ -338,7 +358,10 @@ class SSWorld(World):
             ).value
 
         # Output which item has been placed at each location.
-        locations = sorted(multiworld.get_locations(player), key=lambda loc: loc.code if loc.code is not None else 10000)
+        locations = sorted(
+            multiworld.get_locations(player),
+            key=lambda loc: loc.code if loc.code is not None else 10000,
+        )
         for location in locations:
             if location.name != "Hylia's Realm - Defeat Demise":
                 if location.item:
@@ -392,8 +415,12 @@ class SSWorld(World):
             f.write(
                 b64encode(bytes(yaml.safe_dump(output_data, sort_keys=False), "utf-8"))
             )
+        
+        self.hint_data = hints
+        self.hint_data_available.set()
 
     def fill_slot_data(self) -> Mapping[str, Any]:
+        self.hint_data_available.wait()
         """
         Return the `slot_data` field that will be in the `Connected` network package.
 
@@ -467,6 +494,7 @@ class SSWorld(World):
             "precise_item": self.options.precise_item.value,
             "starting_items": self.options.starting_items.value,
             "death_link": self.options.death_link.value,
+            "locations_for_hint": self.hint_data.locations_for_hint,
         }
 
         return slot_data

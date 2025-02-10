@@ -698,6 +698,21 @@ class StartWithMaxTreasures(Toggle):
 
 
 # Hints
+class HintDistribution(Choice):
+    """
+    Determines what hints are placed throughout the world.
+    **Standard**: The standard hint distribution.
+    **Junk**: 0 Fi hints, and only junk hints on gossip stones.
+
+    Note that this distribution is different from the original randomizer's hint distribution option.
+    Archipelago hints in game are placed differently than the original randomizer's hints.
+    """
+
+    display_name = "Archipelago Hint Distribution"
+    option_standard = 0
+    option_junk = 1
+    default = 0
+
 class SongHints(Choice):
     """
     Determines how hints appear on songs.
@@ -831,6 +846,7 @@ class SSOptions(PerGameCommonOptions):
     full_starting_wallet: StartWithFullWallet
     max_starting_bugs: StartWithMaxBugs
     max_starting_treasures: StartWithMaxTreasures
+    hint_distribution: HintDistribution
     song_hints: SongHints
     chest_dowsing: ChestDowsing
     dungeon_dowsing: AllowDowsingInDungeons

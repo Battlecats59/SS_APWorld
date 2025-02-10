@@ -190,10 +190,10 @@ Fire node - left ending chest
 125 - Ex20
 
 Fire node - right ending chest
-127 - Ex80 (Repurposed)
+107 - Cx08 (Repurposed)
 
 Lightning node - first chest
-107 - Cx08 (Repurposed)
+84 - Bx10 (Repurposed)
 
 Lightning node - second chest
 85 - Bx20 (Repurposed)

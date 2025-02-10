@@ -11,6 +11,12 @@ class SSHintType(Enum):
     FI = auto()  # Max 64 hints
     SONG = auto()  # Song hints
 
+    ALWAYS = auto()
+    SOMETIMES = auto()
+    ITEM = auto()
+    BARREN = auto()
+    JUNK = auto()
+
 
 class SSHint(NamedTuple):
     """
@@ -20,6 +26,66 @@ class SSHint(NamedTuple):
     code: int
     region: str
     type: SSHintType
+    checked_flag: list[
+        int, int, int
+    ]  # [ flag_bit (0x0-0xF), flag_value (0x01-0x80), story flag address (ending in zero)]
+
+
+class SSLocationHint:
+    """
+    Represents a location hint in Skyward Sword.
+    """
+
+    location: str = ""
+    region: str = ""
+    player_to_receive: str = ""
+    item: str = ""
+
+    def __init__(self, loc):
+        self.location = loc
+
+    def to_gossip_stone_text(self) -> str:
+        return f"They say that <r<{self.location}>> has <b+<{self.player_to_receive}'s>> <y<{self.item}>>."
+
+    def to_fi_text(self) -> str:
+        return f"My readings suggest that <r<{self.location}>> has <b+<{self.player_to_receive}'s>> <y<{self.item}>>."
+
+
+class SSItemHint:
+    """
+    Represents an item hint in Skyward Sword.
+    """
+
+    item: str = ""
+    player_to_find: str = ""
+    location: str = ""
+    region: str = ""
+
+    def __init__(self, itm):
+        self.item = itm
+
+    def to_gossip_stone_text(self) -> str:
+        return f"They say that your <y<{self.item}>> can be found by <b+<{self.player_to_find}>> at <r<{self.location}>>."
+
+    def to_fi_text(self) -> str:
+        return f"My readings suggest that your <y<{self.item}>> can be found by <b+<{self.player_to_find}>> at <r<{self.location}>>."
+
+
+class SSJunkHint:
+    """
+    Represents a junk (filler) hint in Skyward Sword
+    """
+
+    text: str = ""
+
+    def __init__(self, text):
+        self.text = text
+
+    def to_gossip_stone_text(self) -> str:
+        return self.text
+
+    def to_fi_text(self) -> str:
+        return self.text.replace("They say", "I conjecture")
 
 
 HINT_TABLE: dict[str, SSHint] = {
@@ -27,125 +93,162 @@ HINT_TABLE: dict[str, SSHint] = {
         0,
         None,
         SSHintType.FI,
+        [0xD, 0x10, 0x805A9AD0],  # Flag 36 (Tunic)
     ),
     "Central Skyloft - Gossip Stone on Waterfall Island": SSHint(
         1,
         "Central Skyloft",
         SSHintType.STONE,
+        [0x3, 0x40, 0x805A9B40],  # Flag 960
     ),
     "Sky - Gossip Stone on Lumpy Pumpkin": SSHint(
         2,
         "Sky",
         SSHintType.STONE,
+        [0x3, 0x80, 0x805A9B40],  # Flag 961
     ),
     "Sky - Gossip Stone on Volcanic Island": SSHint(
         3,
         "Sky",
         SSHintType.STONE,
+        [0x2, 0x01, 0x805A9B40],  # Flag 962
     ),
     "Sky - Gossip Stone on Bamboo Island": SSHint(
         4,
         "Sky",
         SSHintType.STONE,
+        [0x2, 0x02, 0x805A9B40],  # Flag 963
     ),
     "Thunderhead - Gossip Stone near Bug Heaven": SSHint(
         5,
         "Thunderhead",
         SSHintType.STONE,
+        [0x2, 0x04, 0x805A9B40],  # Flag 964
     ),
     "Sealed Grounds - Gossip Stone behind the Temple": SSHint(
         6,
         "Sealed Grounds",
         SSHintType.STONE,
+        [0x2, 0x08, 0x805A9B40],  # Flag 965
     ),
     "Faron Woods - Gossip Stone in Deep Woods": SSHint(
         7,
         "Faron Woods",
         SSHintType.STONE,
+        [0x2, 0x10, 0x805A9B40],  # Flag 966
     ),
     "Lake Floria - Gossip Stone outside Ancient Cistern": SSHint(
         8,
         "Lake Floria",
         SSHintType.STONE,
+        [0x2, 0x20, 0x805A9B40],  # Flag 967
     ),
     "Eldin Volcano - Gossip Stone next to Earth Temple": SSHint(
         9,
         "Eldin Volcano",
         SSHintType.STONE,
+        [0x2, 0x40, 0x805A9B40],  # Flag 968
     ),
     "Eldin Volcano - Gossip Stone in Thrill Digger Cave": SSHint(
         10,
         "Eldin Volcano",
         SSHintType.STONE,
+        [0x2, 0x80, 0x805A9B40],  # Flag 969
     ),
     "Eldin Volcano - Gossip Stone in Lower Platform Cave": SSHint(
         11,
         "Eldin Volcano",
         SSHintType.STONE,
+        [0x5, 0x01, 0x805A9B40],  # Flag 970
     ),
     "Eldin Volcano - Gossip Stone in Upper Platform Cave": SSHint(
         12,
         "Eldin Volcano",
         SSHintType.STONE,
+        [0x5, 0x02, 0x805A9B40],  # Flag 971
     ),
     "Volcano Summit - Gossip Stone near Second Thirsty Frog": SSHint(
         13,
         "Volcano Summit",
         SSHintType.STONE,
+        [0x5, 0x04, 0x805A9B40],  # Flag 972
     ),
     "Volcano Summit - Gossip Stone in Waterfall Area": SSHint(
         14,
         "Volcano Summit",
         SSHintType.STONE,
+        [0x5, 0x08, 0x805A9B40],  # Flag 973
     ),
     "Temple of Time - Gossip Stone in Temple of Time Area": SSHint(
         15,
         "Lanayru Desert",
         SSHintType.STONE,
+        [0x5, 0x10, 0x805A9B40],  # Flag 974
     ),
     "Lanayru Sand Sea - Gossip Stone in Shipyard": SSHint(
         16,
         "Lanayru Sand Sea",
         SSHintType.STONE,
+        [0x5, 0x20, 0x805A9B40],  # Flag 975
     ),
     "Lanayru Caves - Gossip Stone in Center": SSHint(
         17,
         "Lanayru Caves",
         SSHintType.STONE,
+        [0x5, 0x40, 0x805A9B40],  # Flag 976
     ),
     "Lanayru Caves - Gossip Stone towards Lanayru Gorge": SSHint(
         18,
         "Lanayru Caves",
         SSHintType.STONE,
+        [0x5, 0x80, 0x805A9B40],  # Flag 977
     ),
     "Song of the Hero - Trial Hint": SSHint(
         19,
         None,
         SSHintType.SONG,
+        [0x3, 0x80, 0x805A9B00],  # Flag 369
     ),
     "Farore's Courage - Trial Hint": SSHint(
         20,
         None,
         SSHintType.SONG,
+        [0x5, 0x80, 0x805A9AE0],  # Flag 71
     ),
     "Nayru's Wisdom - Trial Hint": SSHint(
         21,
         None,
         SSHintType.SONG,
+        [0x9, 0x20, 0x805A9AE0],  # Flag 72
     ),
     "Din's Power - Trial Hint": SSHint(
         22,
         None,
         SSHintType.SONG,
+        [0x9, 0x40, 0x805A9AE0],  # Flag 73
     ),
 }
 
 HINT_DISTRIBUTIONS = {
     "Standard": {
-        "Fi": 0,
-        "Location": 10,
-        "Item": 5,
-    }
+        "fi": 0,
+        "hints_per_stone": 2,
+        "max_order": 3,
+        "distribution": {
+            "always": {"order": 0, "weight": 0.0, "fixed": 0, "copies": 1},
+            "sometimes": {"order": 1, "weight": 1.0, "fixed": 6, "copies": 1},
+            "item": {"order": 2, "weight": 2.0, "fixed": 6, "copies": 1},
+            "junk": {"order": 3, "weight": 0.5, "fixed": 0, "copies": 1},
+        },
+    },
+    "Junk": {
+        "fi": 0,
+        "hints_per_stone": 2,
+        "max_order": 0,
+        "distribution": {
+            "junk": {"order": 0, "weight": 1.0, "fixed": 0, "copies": 1},
+        },
+    },
 }
 
 SONG_HINT_TO_TRIAL_GATE = {

@@ -286,8 +286,8 @@ Skyward Sword:
     # Shuffles freestanding rupees. When unshuffled, all freestanding rupees will remain vanilla.
     # Note, it is not possible to shuffle some freestanding rupees yet (e.g. the rupees on the Lumpy Pumpkin
     # chandelier).
-    'false': 0 # DO NOT CHANGE
-    'true': 50 # DO NOT CHANGE
+    'false': 0
+    'true': 50
 
   tadtonesanity:
     # If enabled, 17 "Group of Tadtones" items will be shuffled throughout the world and each of the tadtone
@@ -300,8 +300,8 @@ Skyward Sword:
     # If enabled, the extra progressive items upgradeable in the Scrap Shop in vanilla will be shuffled.
     # Includes: Quick Beetle, Tough Beetle, Iron Bow, Sacred Bow, Big Bug Net and Scattershot.
     # Note, there are no random items obtainable by talking to Gondo at the Scrap Shop.
-    'false': 0 # DO NOT CHANGE
-    'true': 50 # DO NOT CHANGE
+    'false': 0
+    'true': 50
 
   sword_dungeon_reward:
     # Determines if swords should be rewarded for beating required dungeons.
@@ -522,6 +522,16 @@ Skyward Sword:
     'false': 50
     'true': 0
 
+  hint_distribution:
+    # Determines what hints are placed throughout the world.
+    # **Standard**: The standard hint distribution.
+    # **Junk**: 0 Fi hints, and only junk hints on gossip stones.
+    # 
+    # Note that this distribution is different from the original randomizer's hint distribution option.
+    # Archipelago hints in game are placed differently than the original randomizer's hints.
+    standard: 50
+    junk: 0
+
   song_hints:
     # Determines how hints appear on songs.
     # **None**: Silent Realm rewards will be hinted on Gossip Stones.
@@ -590,7 +600,7 @@ Skyward Sword:
     # Start with these items and don't place them in the world.
     # 
     # The game decides what the replacement items will be.
-    {} # DO NOT CHANGE
+    {}
 
   start_hints:
     # Start with these item's locations prefilled into the ``!hint`` command.
@@ -602,7 +612,7 @@ Skyward Sword:
 
   exclude_locations:
     # Prevent these locations from having an important item.
-    [] # DO NOT CHANGE
+    []
 
   priority_locations:
     # Prevent these locations from having an unimportant item.

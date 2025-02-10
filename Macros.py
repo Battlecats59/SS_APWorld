@@ -47,14 +47,17 @@ def has_beetle(state: CollectionState, player: int) -> bool:
 def has_hook_beetle(state: CollectionState, player: int) -> bool:
     return state.has("Progressive Beetle", player, 2)
 
-
 def has_quick_beetle(state: CollectionState, player: int) -> bool:
-    return state.has("Progressive Beetle", player, 3)
-
+    return (
+        (state.has("Progressive Beetle", player, 3) and state._ss_option_gondo_upgrades(player))
+        or (can_upgrade_to_quick_beetle(state, player) and not state._ss_option_gondo_upgrades(player))
+    )
 
 def has_tough_beetle(state: CollectionState, player: int) -> bool:
-    return state.has("Progressive Beetle", player, 4)
-
+    return (
+        (state.has("Progressive Beetle", player, 4) and state._ss_option_gondo_upgrades(player))
+        or (can_upgrade_to_tough_beetle(state, player) and not state._ss_option_gondo_upgrades(player))
+    )
 
 def has_bow(state: CollectionState, player: int) -> bool:
     return state.has("Progressive Bow", player, 1)
@@ -179,6 +182,34 @@ def can_hit_timeshift_stone(state: CollectionState, player: int) -> bool:
         or has_practice_sword(state, player)
         or state.has("Whip", player)
         or state.has("Bomb Bag", player)
+    )
+
+def can_upgrade_to_quick_beetle(state: CollectionState, player: int) -> bool:
+    return(
+        has_hook_beetle(state, player)
+        and can_access_deep_woods(state, player) # Larvae farming
+        and (
+            lanayru_mine_ancient_flower_farming(state, player)
+            or lanayru_desert_ancient_flower_farming(state, player)
+            or lanayru_desert_ancient_flower_farming_near_main_node(state, player)
+            or pirate_stronghold_ancient_flower_farming(state, player)
+            or lanayru_gorge_ancient_flower_farming(state, player)
+        ) # Ancient flower farming
+        and clean_cut_minigame(state, player) # Gold Skull farming
+    )
+
+def can_upgrade_to_tough_beetle(state: CollectionState, player: int) -> bool:
+    return(
+        can_upgrade_to_quick_beetle(state, player)
+        and can_reach_most_of_faron_woods(state, player) # Amber relic farming
+        and (
+            lanayru_mine_ancient_flower_farming(state, player)
+            or lanayru_desert_ancient_flower_farming(state, player)
+            or lanayru_desert_ancient_flower_farming_near_main_node(state, player)
+            or pirate_stronghold_ancient_flower_farming(state, player)
+            or lanayru_gorge_ancient_flower_farming(state, player)
+        ) # Ancient flower farming
+        and clean_cut_minigame(state, player) # Plume/Blue feather farming
     )
 
 
