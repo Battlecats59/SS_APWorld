@@ -1,4 +1,5 @@
 import os
+import zipfile
 from base64 import b64encode
 from collections.abc import Mapping
 from dataclasses import fields
@@ -10,6 +11,7 @@ import yaml
 from BaseClasses import MultiWorld, Region, Tutorial, LocationProgressType
 from Options import Toggle, OptionError
 from worlds.AutoWorld import WebWorld, World
+from worlds.Files import APContainer, AutoPatchRegister
 from worlds.generic.Rules import add_item_rule
 from worlds.LauncherComponents import (
     Component,
@@ -64,10 +66,41 @@ class SSWeb(WebWorld):
 
     The web interface includes the setup guide and the options page for generating YAMLs.
     """
-
+    tutorials = [Tutorial(
+        "Skyward Sword Setup Guide",
+        "A guide to setting up SSR for Archipelago on your computer.",
+        "English",
+        "setup_en.md",
+        "setup/en",
+        ["bcats"]
+    )]
     theme = "ice"
     rich_text_options_doc = True
 
+
+class SSContainer(APContainer, metaclass=AutoPatchRegister):
+    """
+    This class defines the container file for Skyward Sword.
+    """
+
+    game: str = "Skyward Sword"
+    patch_file_ending: str = ".apssr"
+
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        if "data" in kwargs:
+            self.data = kwargs["data"]
+            del kwargs["data"]
+
+        super().__init__(*args, **kwargs)
+
+    def write_contents(self, opened_zipfile: zipfile.ZipFile) -> None:
+        """
+        Write the contents of the container file.
+        """
+        super().write_contents(opened_zipfile)
+
+        # Record the data for the game under the key `plando`.
+        opened_zipfile.writestr("plando", b64encode(bytes(yaml.safe_dump(self.data, sort_keys=False), "utf-8")))
 
 class SSWorld(World):
     """
@@ -85,6 +118,7 @@ class SSWorld(World):
 
     game: ClassVar[str] = "Skyward Sword"
     topology_present: bool = True
+    web = SSWeb()
     required_client_version: tuple[int, int, int] = (0, 5, 1)
     origin_region_name: str = "Upper Skyloft"
 
@@ -408,14 +442,16 @@ class SSWorld(World):
             output_data["Trial Entrances"][trl] = trlconn[trl]
 
         # Output the plando details to file.
-        file_path = os.path.join(
-            output_directory, f"{multiworld.get_out_file_name_base(player)}.apssr"
+        apssr = SSContainer(
+            path=os.path.join(
+                output_directory, f"{multiworld.get_out_file_name_base(player)}{SSContainer.patch_file_ending}"
+            ),
+            player=player,
+            player_name=self.player_name,
+            data=output_data,
         )
-        with open(file_path, "wb") as f:
-            f.write(
-                b64encode(bytes(yaml.safe_dump(output_data, sort_keys=False), "utf-8"))
-            )
-        
+        apssr.write()
+
         self.hint_data = hints
         self.hint_data_available.set()
 
