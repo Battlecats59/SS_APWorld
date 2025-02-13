@@ -547,7 +547,13 @@ def can_access_faron_woods(state: CollectionState, player: int) -> bool:
 
 
 def can_reach_most_of_faron_woods(state: CollectionState, player: int) -> bool:
-    return can_cut_trees(state, player) or state.has("Clawshots", player)
+    return (
+        can_access_faron_woods(state, player)
+        and (
+            can_cut_trees(state, player)
+            or state.has("Clawshots", player)
+        )
+    )
 
 
 def can_reach_oolo(state: CollectionState, player: int) -> bool:
@@ -1553,16 +1559,16 @@ def can_beat_SK(state: CollectionState, player: int) -> bool:
 
 # Silent Realms
 def can_access_skyloft_silent_realm(state: CollectionState, player: int) -> bool:
-    return can_open_trial_gate_on_skyloft(state, player)
+    return state.can_reach_region("Skyloft Silent Realm", player)
 
 
 def can_access_faron_silent_realm(state: CollectionState, player: int) -> bool:
-    return can_open_trial_gate_in_faron_woods(state, player)
+    return state.can_reach_region("Faron Silent Realm", player)
 
 
 def can_access_eldin_silent_realm(state: CollectionState, player: int) -> bool:
-    return can_open_trial_gate_in_eldin_volcano(state, player)
+    return state.can_reach_region("Eldin Silent Realm", player)
 
 
 def can_access_lanayru_silent_realm(state: CollectionState, player: int) -> bool:
-    return can_open_trial_gate_in_lanayru_desert(state, player)
+    return state.can_reach_region("Lanayru Silent Realm", player)

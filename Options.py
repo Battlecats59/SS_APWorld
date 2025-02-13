@@ -175,8 +175,51 @@ class OpenLakeFloria(Choice):
     default = 0
 
 
+# Progression Groups for AP
+# These options only exist for AP
+class ProgressionGoddessChests(DefaultOnToggle):
+    """
+    If enabled, Goddess Chests can contain progression items.
+    If not enabled, all Goddess Chests will contain junk (filler) items.
+    """
+
+    display_name = "Progression in Goddess Chests"
+
+class ProgressionMinigames(DefaultOnToggle):
+    """
+    If enabled, Minigames can contain progression items.
+    If not enabled, all Minigames will contain junk (filler) items.
+    """
+
+    display_name = "Progression in Minigames"
+
+class ProgressionCrystals(DefaultOnToggle):
+    """
+    If enabled, Crystal Quests can contain progression items.
+    If not enabled, all Crystals Quests will contain junk (filler) items.
+    """
+
+    display_name = "Progression in Gratitude Crystal Quests"
+
+class ProgressionScrapper(DefaultOnToggle):
+    """
+    If enabled, Scrapper Quests can contain progression items.
+    If not enabled, all Scrapper Quests will contain junk (filler) items.
+    """
+
+    display_name = "Progression in Scrapper Quests"
+
+class ProgressionBatreaux(DefaultOnToggle):
+    """
+    If enabled, Batreaux's Rewards can contain progression items.
+    If not enabled, all Batreaux Rewards will contain junk (filler) items.
+    """
+
+    display_name = "Progression in Batreaux's Rewards"
+
+
 # Dungeons
-class EmptyUnrequiredDungeons(Toggle): # DefaultOnToggle
+class EmptyUnrequiredDungeons(DefaultOnToggle):
     """
     If enabled, only the required dungeons will contain progression items.
     If not enabled, all dungeons and Sky Keep can potentially contain progression items.
@@ -190,18 +233,19 @@ class MapMode(Choice):
     Determines the placement of maps.
     **Start With**: start with all maps.
     **Vanilla**: maps appear in their vanilla locations.
-    **Own Dungeon**: dungeon maps appear anywhere within their own dungeon in your own world.
-    **Own Dungeon Any World**: dungeon maps appear anywhere within their own dungeon in any SS world.
+    **Own Dungeon - Restricted**: dungeon maps cannot appear on boss heart containers or the ending checks of dungeons.
+    **Own Dungeon - Unrestricted**: dungeon maps appear anywhere within their own dungeon.
     **Anywhere**: maps can appear outside of dungeons in any world.
     """
 
     display_name = "Map Mode"
     option_start_with = 0
     option_vanilla = 1
-    option_own_dungeon = 2
-    option_own_dungeon_any_world = 3
+    option_own_dungeon_restricted = 2
+    option_own_dungeon_unrestricted = 3
+    # option_own_dungeon_any_world = 0
     option_anywhere = 4
-    default = 3
+    default = 2
 
 
 class SmallKeyMode(Choice):
@@ -209,22 +253,18 @@ class SmallKeyMode(Choice):
     Determines the placement of small keys.
     **Vanilla**: keys will be in their vanilla locations (The Skyview Digging Spot will not contain a key).
     **Own Dungeon**: keys will be within their own dungeons in your own world.
-    **Own Dungeon Any World**: keys will be within their own dungeons in any SS world.
     **Lanayru Caves Key only**: shuffles the Lanayru Caves Small Key
-        (all other keys are shuffled within their own dungeon in any SS world).
+        (all other keys are shuffled within their own dungeon).
     **Anywhere**: keys can appear outside of dungeons in any world.
-
-    Note, required small keys will not appear in unrequired dungeons of other worlds.
-    If no one else shares your required dungeon, that key will appear in that dungeon in your own world.
     """
 
     display_name = "Small Key Mode"
     option_vanilla = 0
     option_own_dungeon = 1
-    option_own_dungeon_any_world = 2
-    option_lanayru_caves_key_only = 3
-    option_anywhere = 4
-    default = 3
+    # option_own_dungeon_any_world = 0
+    option_lanayru_caves_key_only = 2
+    option_anywhere = 3
+    default = 2
 
 
 class BossKeyMode(Choice):
@@ -232,19 +272,15 @@ class BossKeyMode(Choice):
     Determines the placement of boss keys.
     **Vanilla**: boss keys appear in their vanilla locations.
     **Own Dungeon**: boss keys appear within their own dungeon in your own world.
-    **Own Dungeon Any World**: boss keys appear within their own dungeon in any SS world.
     **Anywhere**: boss keys can appear outside of dungeons in any world.
-
-    Note, required boss keys will not appear in unrequired dungeons of other worlds.
-    If no one else shares your required dungeon, that key will appear in that dungeon in your own world.
     """
 
     display_name = "Boss Key Mode"
     option_vanilla = 0
     option_own_dungeon = 1
-    option_own_dungeon_any_world = 2
-    option_anywhere = 3
-    default = 2
+    # option_own_dungeon_any_world = 0
+    option_anywhere = 2
+    default = 1
 
 
 class FSLastRoomLavaFlow(Toggle):
@@ -803,6 +839,11 @@ class SSOptions(PerGameCommonOptions):
     open_et: OpenEarthTemple
     open_lmf: OpenLanayruMiningFacility
     open_lake_floria: OpenLakeFloria
+    progression_goddess_chests: ProgressionGoddessChests
+    progression_minigames: ProgressionMinigames
+    progression_crystals: ProgressionCrystals
+    progression_scrapper: ProgressionScrapper
+    progression_batreaux: ProgressionBatreaux
     empty_unrequired_dungeons: EmptyUnrequiredDungeons
     map_mode: MapMode
     small_key_mode: SmallKeyMode

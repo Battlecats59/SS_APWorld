@@ -6,6 +6,7 @@ from worlds.AutoWorld import LogicMixin
 from worlds.generic.Rules import set_rule
 
 from .Macros import *
+from .Locations import LOCATION_TABLE
 
 if TYPE_CHECKING:
     from . import SSWorld
@@ -102,6 +103,9 @@ def set_rules(world: "SSWorld") -> None:
     def set_rule_if_progression(
         loc: str, rule: Callable[[CollectionState], bool]
     ) -> None:
+        if loc not in LOCATION_TABLE.keys():
+            raise Exception(f"Tried to set logic for unknown location: {loc}")
+            # Since I apparently can't spell right anymore
         if loc in world.progress_locations:
             set_rule(world.get_location(loc), rule)
 
@@ -154,7 +158,7 @@ def set_rules(world: "SSWorld") -> None:
 
     set_rule_if_progression("Central Skyloft - Potion Lady's Gift", lambda state: True)
     set_rule_if_progression(
-        "Centra; Skyloft - Repair Gondo's Junk",
+        "Central Skyloft - Repair Gondo's Junk",
         lambda state: state.has("Amber Tablet", player)
         and (
             lanayru_mine_ancient_flower_farming(state, player)
@@ -968,29 +972,29 @@ def set_rules(world: "SSWorld") -> None:
 
     # Fire node
     set_rule_if_progression(
-        "Lanayru Desert - Shortcut Chest",
+        "Lanayru Desert - Fire Node - Shortcut Chest",
         lambda state: can_reach_second_part_of_lanayru_desert(state, player)
         and can_defeat_ampilus(state, player),
     )
     set_rule_if_progression(
-        "Lanayru Desert - First Small Chest",
+        "Lanayru Desert - Fire Node - First Small Chest",
         lambda state: can_reach_second_part_of_lanayru_desert(state, player)
         and state.has("Bomb Bag", player),
     )
     set_rule_if_progression(
-        "Lanayru Desert - Second Small Chest",
+        "Lanayru Desert - Fire Node - Second Small Chest",
         lambda state: can_reach_second_part_of_lanayru_desert(state, player)
         and state.has("Bomb Bag", player),
     )
     set_rule_if_progression(
-        "Lanayru Desert - Left Ending Chest",
+        "Lanayru Desert - Fire Node - Left Ending Chest",
         lambda state: can_reach_second_part_of_lanayru_desert(state, player)
         and can_defeat_ampilus(state, player)
         and state.has("Bomb Bag", player)
         and has_hook_beetle(state, player),
     )
     set_rule_if_progression(
-        "Lanayru Desert - Right Ending Chest",
+        "Lanayru Desert - Fire Node - Right Ending Chest",
         lambda state: can_reach_second_part_of_lanayru_desert(state, player)
         and can_defeat_ampilus(state, player)
         and state.has("Bomb Bag", player)
@@ -999,17 +1003,17 @@ def set_rules(world: "SSWorld") -> None:
 
     # Lightning node
     set_rule_if_progression(
-        "Lanayru Desert - First Chest",
+        "Lanayru Desert - Lightning Node - First Chest",
         lambda state: can_reach_second_part_of_lanayru_desert(state, player)
         and state.has("Bomb Bag", player),
     )
     set_rule_if_progression(
-        "Lanayru Desert - Second Chest",
+        "Lanayru Desert - Lightning Node - Second Chest",
         lambda state: can_reach_second_part_of_lanayru_desert(state, player)
         and state.has("Bomb Bag", player),
     )
     set_rule_if_progression(
-        "Lanayru Desert - Raised Chest near Generator",
+        "Lanayru Desert - Lightning Node - Raised Chest near Generator",
         lambda state: can_reach_second_part_of_lanayru_desert(state, player)
         and state.has("Bomb Bag", player)
         and (has_beetle(state, player) or has_bow(state, player)),

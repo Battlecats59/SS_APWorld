@@ -22,6 +22,7 @@ class Hints:
         self.multiworld = world.multiworld
 
         self.placed_hints: dict[str, list] = {}
+        self.placed_hints_log: dict[str, list] = {}
         self.locations_for_hint: dict[str, list] = {}
         self.hinted_locations: list[str] = []
         self.hinted_item_locations: list = []
@@ -57,12 +58,12 @@ class Hints:
                 self.hintable_items.remove(itm)
         self.all_hints = []
 
-    def handle_hints(self) -> dict[str, list]:
+    def handle_hints(self) -> tuple[dict[str, list], dict[str, list]]:
         """
         Handles hints for Skyward Sword during the APSSR file output.
 
         :param world: The SS game world.
-        :return: Dict containing hints for Fi, each Gossip Stone, and songs.
+        :return: A tuple of a dict containing in-game hints for Fi, each Gossip Stone, and songs; and a dict of log hints.
         """
         if self.world.options.song_hints == "direct":
             self.sometimes_locations = [
@@ -111,19 +112,21 @@ class Hints:
                 for _ in range(self.distribution["fi"]):
                     fi_hints.append(self.all_hints.pop())
                 self.placed_hints["Fi"] = [fh.to_fi_text() for fh in fi_hints]
+                self.placed_hints_log["Fi"] = [fh.to_log_text() for fh in fi_hints]
                 self.locations_for_hint["Fi"] = [fh.location for fh in fi_hints if isinstance(fh, SSLocationHint)]
             elif data.type == SSHintType.STONE:
                 stone_hints = []
                 for _ in range(self.distribution["hints_per_stone"]):
                     stone_hints.append(self.all_hints.pop())
-                self.placed_hints[hint] = [
-                    sh.to_gossip_stone_text() for sh in stone_hints
-                ]
+                self.placed_hints[hint] = [sh.to_stone_text() for sh in stone_hints]
+                self.placed_hints_log[hint] = [sh.to_log_text() for sh in stone_hints]
                 self.locations_for_hint[hint] = [sh.location for sh in stone_hints if isinstance(sh, SSLocationHint)]
             elif data.type == SSHintType.SONG:
-                self.placed_hints[hint] = self._handle_song_hints(hint)
+                song_hints = self._handle_song_hints(hint)
+                self.placed_hints[hint] = song_hints
+                self.placed_hints_log[hint] = song_hints
 
-        return self.placed_hints
+        return self.placed_hints, self.placed_hints_log
 
     def handle_impa_sot_hint(self) -> tuple[str, str] | None:
         """

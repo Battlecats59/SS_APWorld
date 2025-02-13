@@ -161,6 +161,36 @@ Skyward Sword:
     talk_to_yerbal: 0
     open: 0
 
+  progression_goddess_chests:
+    # If enabled, Goddess Chests can contain progression items.
+    # If not enabled, all Goddess Chests will contain junk (filler) items.
+    'false': 0
+    'true': 50
+
+  progression_minigames:
+    # If enabled, Minigames can contain progression items.
+    # If not enabled, all Minigames will contain junk (filler) items.
+    'false': 0
+    'true': 50
+
+  progression_crystals:
+    # If enabled, Crystal Quests can contain progression items.
+    # If not enabled, all Crystals Quests will contain junk (filler) items.
+    'false': 0
+    'true': 50
+
+  progression_scrapper:
+    # If enabled, Scrapper Quests can contain progression items.
+    # If not enabled, all Scrapper Quests will contain junk (filler) items.
+    'false': 0
+    'true': 50
+
+  progression_batreaux:
+    # If enabled, Batreaux's Rewards can contain progression items.
+    # If not enabled, all Batreaux Rewards will contain junk (filler) items.
+    'false': 0
+    'true': 50
+
   empty_unrequired_dungeons:
     # If enabled, only the required dungeons will contain progression items.
     # If not enabled, all dungeons and Sky Keep can potentially contain progression items.
@@ -169,28 +199,37 @@ Skyward Sword:
 
   map_mode:
     # Determines the placement of maps.
-    # **Removed**: maps are removed.
+    # **Start With**: start with all maps.
     # **Vanilla**: maps appear in their vanilla locations.
-    # **Restricted**: dungeon maps cannot appear on boss heart containers or the ending checks of dungeons.
-    # **Unrestricted**: dungeon maps appear anywhere within their own dungeon.
-    # **Anywhere**: maps can appear outside of dungeons.
-    anywhere: 50 # DO NOT CHANGE
+    # **Own Dungeon - Restricted**: dungeon maps cannot appear on boss heart containers or the ending checks of dungeons.
+    # **Own Dungeon - Unrestricted**: dungeon maps appear anywhere within their own dungeon.
+    # **Anywhere**: maps can appear outside of dungeons in any world.
+    start_with: 0
+    vanilla: 0
+    own_dungeon_restricted: 50
+    own_dungeon_unrestricted: 0
+    anywhere: 0
 
   small_key_mode:
     # Determines the placement of small keys.
     # **Vanilla**: keys will be in their vanilla locations (The Skyview Digging Spot will not contain a key).
-    # **Restricted**: keys will be within their own dungeons.
+    # **Own Dungeon**: keys will be within their own dungeons in your own world.
     # **Lanayru Caves Key only**: shuffles the Lanayru Caves Small Key
-    # (all other keys are shuffled within their own dungeon).
-    # **Anywhere**: keys can appear outside of dungeons.
-    anywhere: 50 # DO NOT CHANGE
+    # # (all other keys are shuffled within their own dungeon).
+    # **Anywhere**: keys can appear outside of dungeons in any world.
+    vanilla: 0
+    own_dungeon: 0
+    lanayru_caves_key_only: 50
+    anywhere: 0
 
   boss_key_mode:
     # Determines the placement of boss keys.
     # **Vanilla**: boss keys appear in their vanilla locations.
-    # **Own Dungeon**: boss keys appear within their own dungeon.
-    # **Anywhere**: boss keys can appear outside of dungeons.
-    anywhere: 50 # DO NOT CHANGE
+    # **Own Dungeon**: boss keys appear within their own dungeon in your own world.
+    # **Anywhere**: boss keys can appear outside of dungeons in any world.
+    vanilla: 0
+    own_dungeon: 50
+    anywhere: 0
 
   fs_lava_flow:
     # If enabled, the lava in the last room of Fire Sanctuary will be flowing by default (without needing to

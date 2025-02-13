@@ -4,8 +4,6 @@ This is the official Archipelago World for Skyward Sword.
 
 From now on, Archipelago may be referred to as "AP". Skyward Sword may be referred to as "SS".
 
-![image](./assets/APSetup_Image0.png)
-
 ### What you'll Need
 - The latest release of [Archipelago](https://github.com/ArchipelagoMW/Archipelago/releases/latest)
 - [Dolphin Emulator](https://dolphin-emu.org/download/) (use the dev version!)
@@ -13,7 +11,7 @@ From now on, Archipelago may be referred to as "AP". Skyward Sword may be referr
 - The [Archipelago release of the Skyward Sword Randomizer](https://nightly.link/Battlecats59/sslib/workflows/build.yaml/archipelago)
 - The Skyward Sword AP World:
     - This includes the [APWorld file and the YAML options file](https://github.com/Battlecats59/SS_APWorld/releases/latest)
-    - A zip file including both of these can be downloaded [here](https://github.com/Battlecats59/SS_APWorld/releases/latest)
+    - A zip file including both of these can be downloaded [here](https://github.com/Battlecats59/SS_APWorld/releases/latest/download/APSkywardSword.zip)
 
 ### Useful Links
 - [Archipelago Setup Guide](https://archipelago.gg/tutorial/Archipelago/setup/en)
@@ -40,15 +38,14 @@ From now on, Archipelago may be referred to as "AP". Skyward Sword may be referr
 - Open the AP release of the Skyward Sword Randomizer. Set your output folder to wherever you would like the randomized iso placed. Set the APSSR file in the randomizer window to the APSSR file that you just received from the host. **MAKE SURE that you put in the correct APSSR file.**
 - Set your cosmetic options in the randomizer window and select randomize.
 - After randomization, open the randomized iso in Dolphin. Next, see [Setting up your Client](#setting-up-your-client).
-    - The randomizer window should look like this:
-
-![image](./assets/APSetup_Image1.png)
 
 ### Setting up your Client
 - After opening the randomized iso in Dolphin, open the `Skyward Sword Client` in Archipelago.
     - Make sure your in game hash (on the top of the file select screen) is the same that the randomizer gave you when you generated the iso. It should be `AP P{player id} {three random words}`.
+    - If your client does not open, follow the steps listed [here](https://github.com/Battlecats59/SS_APWorld/releases/tag/DME) to make sure the DME package is installed.
 - Make sure the client hooks to Dolphin, then begin a new file in game.
-    - **NOTE: Make sure all 3 files in-game are EMPTY. AP reads locations based on scene flags, so if you are planning on doing the Back in Time glitch (BiT), you must not have any pre-made files or it will screw with AP.**
+    - **NOTE: It is recommended that all 3 files in-game are empty. This will prevent any confusion with the client later on.**
+    - **NOTE: You MUST play the multiworld on file 1. To prevent issues with location checking in BiT, the client will only send locations and give items if it detects you on file 1. You may use the other 2 files for BiT Magic files or corrupt files, however.**
     - Also, make sure your filename in game is the exact same as your AP name that you set in your YAML.
 - Connect to the room in your client by running `/connect {address}`. The link to the room should be given to you by the multiworld host. The address will be in the form of `archipelago.gg:XXXXX`.
 - The client will not connect you if you have not started a new file with the same name as what is in your YAML. If you fail to connect, make sure that you have started a new file, you are in Link's room, and your filename is the same as your AP name.
@@ -57,9 +54,32 @@ From now on, Archipelago may be referred to as "AP". Skyward Sword may be referr
 
 ### Playing the Game
 - Once the game is started, you will receive items that other players pick up for you while Link is in a state where he can receive items.
-- If you find an item that belongs to someone else, it will appear as a Life Tree Fruit and the game will say that you received an Archipelago item.
-- When you beat the game, **MAKE SURE you skip through at least 3 cutscenes at the end of the game.**
-    - The third cutscene after Demise, which is right before the staff roll (credits), sets the flag that you beat Demise, which tells AP that you beat the game. **Skipping this cutscene will also set the flag**. Just make sure that you get to the staff roll so the other players can receive any items that are still in your world.
+- If you find an item that belongs to someone else, it will appear as a letter and the game will say that you received an Archipelago item.
+    - Some AP items from other Skyward Sword games, such as B items and boss keys, will appear as their normal model, held in front of link. The game will say that you found someone else's (item name).
+    - AP items in Beedle's shop will tell you what item it is and who it belongs to, so you know if you should purchase it or not. Keep in mind, you may need to buy some items to unlock or view items hidden behind that item.
+- When you beat the game, make sure the client detects that and releases your items to the other players.
+    - The game should release your items upon landing the final blow on Demise. If the `skip-demise` option is enabled, it will release your items upon clearing the Fi text before entering the Demise portal.
+- Keep an eye on the client while playing. If you check a location that isn't sent over AP, you may need the host to run `/send_location (player name) (location name)`. Alternatively, if the client says that you received an item, yet you're standing still, on the ground, in game and you haven't received the item, you may need the host to manually send the item again.
+
+### Trackers
+**There are several trackers you can use with Skyward Sword for Archipelago:**
+- [Skyward Sword Randomizer Web Tracker](https://robojumper.github.io/SS-Randomizer-Tracker/)
+    - Set the release to "Latest Development Build (ssrando/main)"
+    - You can manually put in all of the settings, or paste in a settings string **(recommended)**.
+        - The settings string for the last generated seed can be copied from the randomizer application, in the box right above the "Randomize" button.
+        - The settings string is also printed into the console that opens alongside the randomizer application. After seed generation, you can open the console and copy the settings string from there.
+        - The settings string can also be found in the spoiler log generated by the SSR patcher itself.
+            - Locate your ssrando.exe application, and find the logs folder in that directory.
+            - Find the spoiler log corresponding to your current run. The seed and hash that were generated will also be in the spoiler log.
+            - The settings string will be the "permalink" in the spoiler log file.
+        - If you paste in a settings string, it is significantly quicker and it will include all of the starting items and excluded locations from the seed.
+- Archipelago Universal Tracker
+
+**Other useful tools:**
+- [Skyward Sword Randomizer Location Guide](https://docs.google.com/document/d/1F8AmQccCvtblnRhw_kEAVTME_xX1-O_9Ln16TVDPx6w/edit?tab=t.0#heading=h.9bzfdyr09f0y)
+    - Helpful if this is one of your first times playing the randomizer
+- [Thrill Digger Solver](https://lepelog.github.io/thrill-digger/) by lepelog
+- [BiT Tutorial Playlist](https://www.youtube.com/playlist?list=PLYgB2odQu_OYCJ6EgT-KM-orvbv3Qet2l) by Peppernicus
 
 ### Generating a multiworld
 For information on generating an AP world, visit the [Archipelago Setup Guide](https://archipelago.gg/tutorial/Archipelago/setup/en#generating-a-multiplayer-game).
@@ -104,8 +124,10 @@ Discussion regarding this APWorld is in the [Archipelago Main Discord](https://d
 ### Credits
 
 - **Battlecats59**: Archipelago implementation
+- **YourAverageLink**: Archipelago implementation and client work
+- **Trez**: Archipelago web implementation
+- **Fireworkspinner**: Early Archipelago manual designs
 - **lepelog**: SS Rando creator, arc work for multiworld
-- **SS Rando Devs**: Creating this lovely randomizer
-- Testers will go here too
-
-![image](./assets//APSetup_Image2.png)
+- **SS Rando Devs**: Creating the Skyward Sword Randomizer
+- **tanjo3 and TWW APWorld Devs**: Created the TWW APWorld, which provided a lot of code for the SS APWorld
+- **All of our APWorld testers**: Synii, Tyler Abernathy, Fireworkspinner, limited_fears, Harmjan387, DayKat, Yuvraj823, Germeister, and others

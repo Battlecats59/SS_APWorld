@@ -44,11 +44,14 @@ class SSLocationHint:
     def __init__(self, loc):
         self.location = loc
 
-    def to_gossip_stone_text(self) -> str:
+    def to_stone_text(self) -> str:
         return f"They say that <r<{self.location}>> has <b+<{self.player_to_receive}'s>> <y<{self.item}>>."
 
     def to_fi_text(self) -> str:
         return f"My readings suggest that <r<{self.location}>> has <b+<{self.player_to_receive}'s>> <y<{self.item}>>."
+    
+    def to_log_text(self) -> str:
+        return f"{self.location} has {self.player_to_receive}'s {self.item}."
 
 
 class SSItemHint:
@@ -64,11 +67,14 @@ class SSItemHint:
     def __init__(self, itm):
         self.item = itm
 
-    def to_gossip_stone_text(self) -> str:
+    def to_stone_text(self) -> str:
         return f"They say that your <y<{self.item}>> can be found by <b+<{self.player_to_find}>> at <r<{self.location}>>."
 
     def to_fi_text(self) -> str:
         return f"My readings suggest that your <y<{self.item}>> can be found by <b+<{self.player_to_find}>> at <r<{self.location}>>."
+    
+    def to_log_text(self) -> str:
+        return f"Your {self.item} is in {self.player_to_find}'s world at {self.location}."
 
 
 class SSJunkHint:
@@ -81,11 +87,14 @@ class SSJunkHint:
     def __init__(self, text):
         self.text = text
 
-    def to_gossip_stone_text(self) -> str:
+    def to_stone_text(self) -> str:
         return self.text
 
     def to_fi_text(self) -> str:
         return self.text.replace("They say", "I conjecture")
+    
+    def to_log_text(self) -> str:
+        return self.text
 
 
 HINT_TABLE: dict[str, SSHint] = {

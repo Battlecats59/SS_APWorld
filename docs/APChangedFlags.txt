@@ -35,7 +35,7 @@ floating island goddess chest
 81 - Bx02
 
 waterfall goddess chest
-80 - Bx01 (repurposed moonlight merchant)
+48 - 7x01
 
 batreaux's 30 crystals chest
 93 - Ax20

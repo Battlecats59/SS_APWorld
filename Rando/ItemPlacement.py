@@ -33,7 +33,7 @@ def handle_itempool(world: "SSWorld") -> None:
 
     # Create the pool of the remaining shuffled items.
     items = [world.create_item(itm) for itm in pool]
-    world.multiworld.random.shuffle(items)
+    world.random.shuffle(items)
 
     world.multiworld.itempool += items
 
@@ -47,11 +47,14 @@ def _create_itempool(world: "SSWorld") -> tuple[list[str], list[str]]:
     """
     pool: list[str] = []
     starting_items: list[str] = []
-    eud = bool(world.options.empty_unrequired_dungeons)
 
-    # Split items into three different pools: progression, useful, and filler.
+    # Split items into five different pools: progression, useful, dungeon-filler, filler, and vanilla.
+    # Main pool is filled with progression, useful, dungeon filler, and vanilla first
+    # Vanilla items will be removed from the pool and placed later
+    # Filler pool is adjusted to fill what's left, then replaced with rupoors depending on options, then added to pool.
     progression_pool: list[str] = []
     useful_pool: list[str] = []
+    dungeon_filler_pool: list[str] = []
     filler_pool: list[str] = []
     vanilla_pool: list[str] = []
     for item, data in ITEM_TABLE.items():
@@ -84,7 +87,17 @@ def _create_itempool(world: "SSWorld") -> tuple[list[str], list[str]]:
             elif classification == IC.useful:
                 useful_pool.extend([item] * data.quantity)
             else:
-                filler_pool.extend([item] * data.quantity)
+                # Handle filler items
+                # If dungeon items can be anywhere, consider them filler
+                # Otherwise, put them in the dungeon filler pool to manually place them
+                if data.type == "Small Key" and world.options.small_key_mode == "anywhere":
+                    filler_pool.extend([item] * data.quantity)
+                elif data.type == "Boss Key" and world.options.boss_key_mode == "anywhere":
+                    filler_pool.extend([item] * data.quantity)
+                elif data.type == "Map" and world.options.map_mode == "anywhere":
+                    filler_pool.extend([item] * data.quantity)
+                else:
+                    dungeon_filler_pool.extend([item] * data.quantity)
 
     if not world.options.rupeesanity:
         vanilla_pool.extend([data.vanilla_item for loc, data in LOCATION_TABLE.items() if data.flags & SSLocFlag.RUPEE])
@@ -147,9 +160,11 @@ def _create_itempool(world: "SSWorld") -> tuple[list[str], list[str]]:
     # Should have more than enough locations available to place progression/useful/vanilla items.
     pool.extend(progression_pool)
     pool.extend(useful_pool)
+    pool.extend(dungeon_filler_pool)
     pool.extend(vanilla_pool)
     num_items_left_to_place -= len(progression_pool)
     num_items_left_to_place -= len(useful_pool)
+    num_items_left_to_place -= len(dungeon_filler_pool)
     num_items_left_to_place -= len(vanilla_pool)
 
     starting_items.extend(_handle_starting_items(world))
@@ -157,7 +172,7 @@ def _create_itempool(world: "SSWorld") -> tuple[list[str], list[str]]:
         starting_items
     )  # Since these items are removed from the pool, make sure they get filled.
     for itm in starting_items:
-        if itm in ["Heart Container", "Heart Piece"]:
+        if item_classification(world, itm) == IC.filler and ITEM_TABLE[itm].type != "Map":
             filler_pool.remove(itm)
         else:
             pool.remove(itm)
@@ -171,13 +186,13 @@ def _create_itempool(world: "SSWorld") -> tuple[list[str], list[str]]:
     num_consumables_needed = num_items_left_to_place - len(filler_pool)
     consumable_pool = []
 
-    consumable_pool.extend(world.multiworld.random.choices(
+    consumable_pool.extend(world.random.choices(
         list(CONSUMABLE_ITEMS.keys()),
         weights=list(CONSUMABLE_ITEMS.values()),
         k=num_consumables_needed,
     ))
     filler_pool.extend(consumable_pool)
-    world.multiworld.random.shuffle(filler_pool)
+    world.random.shuffle(filler_pool)
 
     # Now fill rupoors
     if world.options.rupoor_mode == "added":
@@ -196,7 +211,7 @@ def _create_itempool(world: "SSWorld") -> tuple[list[str], list[str]]:
         filler_pool = ["Rupoor"] * len(filler_pool)
         # Replace the entire filler pool with rupoors
 
-    world.multiworld.random.shuffle(filler_pool)
+    world.random.shuffle(filler_pool)
     pool.extend(filler_pool)
 
     return pool, starting_items
@@ -235,7 +250,7 @@ def _handle_starting_items(world: "SSWorld") -> list[str]:
     if starting_tablet_option == 0:
         pass
     else:
-        randomized_tablets = world.multiworld.random.sample(
+        randomized_tablets = world.random.sample(
             tablets, starting_tablet_option
         )
         starting_items.extend(randomized_tablets)
@@ -277,7 +292,7 @@ def _handle_starting_items(world: "SSWorld") -> list[str]:
                 possible_items_to_give.remove(itm)
         if len(possible_items_to_give) == 0:
             raise OptionError("Tried to give a random starting item, but couldn't find any items to give.")
-        rs_item = world.multiworld.random.choice(possible_items_to_give)
+        rs_item = world.random.choice(possible_items_to_give)
         starting_items.append(rs_item)
 
     # Start with Hylian Shield
@@ -285,7 +300,12 @@ def _handle_starting_items(world: "SSWorld") -> list[str]:
     if starting_hylian_option:
         starting_items.append("Hylian Shield")
 
-    # starting_items.extend(world.options.starting_items)
+    # Start with Maps
+    map_mode_option = options.map_mode
+    if map_mode_option == "start_with":
+        for itm, data in ITEM_TABLE.items():
+            if data.type == "Map":
+                starting_items.append(itm)
 
     return starting_items
 
@@ -318,7 +338,7 @@ def _handle_placements(world: "SSWorld", pool: list[str]) -> list[str]:
         num_relics = options.trial_treasure_amount.value
         for trl in TRIAL_LIST:
             all_relics = [loc for loc in world.multiworld.get_locations(world.player) if loc.parent_region == world.get_region(trl) and loc.type == SSLocType.RELIC]
-            relics_to_place = world.multiworld.random.sample(all_relics, 10 - num_relics)
+            relics_to_place = world.random.sample(all_relics, 10 - num_relics)
             for rel in relics_to_place:
                 rel.place_locked_item(world.create_item("Dusk Relic"))
                 placed.append("Dusk Relic")
@@ -351,7 +371,7 @@ def _handle_placements(world: "SSWorld", pool: list[str]) -> list[str]:
         num_swords_to_place = pool.count("Progressive Sword")
         if num_swords_to_place < len(world.dungeons.required_dungeons):
             # More dungeons than swords to place, place as many as possible
-            dungeons_to_place_swords = world.multiworld.random.sample(
+            dungeons_to_place_swords = world.random.sample(
                 world.dungeons.required_dungeons, num_swords_to_place
             )
         elif num_swords_to_place >= len(world.dungeons.required_dungeons):
@@ -375,8 +395,8 @@ def _handle_placements(world: "SSWorld", pool: list[str]) -> list[str]:
         placed.extend(["Triforce of Power", "Triforce of Wisdom", "Triforce of Courage"])
     elif options.triforce_shuffle == "sky_keep":
         locations_to_place = [loc for loc in world.multiworld.get_locations(world.player) if loc.parent_region == world.get_region("Sky Keep")]
-        triforce_locations = world.multiworld.random.sample(locations_to_place, 3)
-        world.multiworld.random.shuffle(triforce_locations)
+        triforce_locations = world.random.sample(locations_to_place, 3)
+        world.random.shuffle(triforce_locations)
         for i, tri in enumerate(["Triforce of Power", "Triforce of Wisdom", "Triforce of Courage"]):
             triforce_locations[i].place_locked_item(world.create_item(tri))
         placed.extend(["Triforce of Power", "Triforce of Wisdom", "Triforce of Courage"])
@@ -385,6 +405,11 @@ def _handle_placements(world: "SSWorld", pool: list[str]) -> list[str]:
         placed.extend(GONDO_UPGRADES)
         # We're not actually going to place these in the world, the rando will patch them in
         # Still, remove them from the item pool
+
+    if options.map_mode != "start_with":
+        placed.extend(world.dungeons.key_handler.place_dungeon_maps())
+    placed.extend(world.dungeons.key_handler.place_small_keys())
+    placed.extend(world.dungeons.key_handler.place_boss_keys())
 
     return placed
 

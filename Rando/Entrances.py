@@ -43,7 +43,7 @@ class EntranceRando:
             ]
             print(req_dungeons)
             print(dungeon_entrances_only_required)
-            self.multiworld.random.shuffle(dungeon_entrances_only_required)
+            self.world.random.shuffle(dungeon_entrances_only_required)
             for dun in self.dungeons:
                 if dun in req_dungeons:  # TODO CHECK
                     self.dungeon_connections[dun] = (
@@ -55,7 +55,7 @@ class EntranceRando:
         if self.world.options.randomize_entrances == "all_surface_dungeons":
             dungeon_entrances_no_sky_keep = self.dungeon_entrances.copy()
             dungeon_entrances_no_sky_keep.remove("dungeon_entrance_on_skyloft")
-            self.multiworld.random.shuffle(dungeon_entrances_no_sky_keep)
+            self.world.random.shuffle(dungeon_entrances_no_sky_keep)
             for dun in self.dungeons:
                 if dun != "Sky Keep":
                     self.dungeon_connections[dun] = dungeon_entrances_no_sky_keep.pop()
@@ -66,7 +66,7 @@ class EntranceRando:
             == "all_surface_dungeons_and_sky_keep"
         ):
             dungeon_entrances = self.dungeon_entrances.copy()
-            self.multiworld.random.shuffle(dungeon_entrances)
+            self.world.random.shuffle(dungeon_entrances)
             for dun in self.dungeons:
                 self.dungeon_connections[dun] = dungeon_entrances.pop()
 
@@ -77,7 +77,7 @@ class EntranceRando:
 
         if self.world.options.randomize_trials:
             randomized_trial_gates = self.trial_gates.copy()
-            self.multiworld.random.shuffle(randomized_trial_gates)
+            self.world.random.shuffle(randomized_trial_gates)
             for trl in self.trials:
                 self.trial_connections[trl] = randomized_trial_gates.pop()
         else:

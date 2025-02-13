@@ -35,8 +35,8 @@ from .Rando.Entrances import EntranceRando
 from .Rando.ItemPlacement import handle_itempool, item_classification
 from .Rando.HintPlacement import Hints
 
-AP_VERSION = [0, 6, 0]
-WORLD_VERSION = [0, 1, 0]
+AP_VERSION = [0, 5, 1]
+WORLD_VERSION = [0, 3, 1]
 RANDO_VERSION = [2, 2, 0]
 
 
@@ -160,21 +160,23 @@ class SSWorld(World):
         def add_flag(option: Toggle, flag: SSLocFlag) -> SSLocFlag:
             return flag if option else SSLocFlag.ALWAYS
 
+        # Keep these always enabled
         enabled_flags = SSLocFlag.ALWAYS
-        enabled_flags |= SSLocFlag.GODDESS
-        enabled_flags |= SSLocFlag.CRYSTAL
-        enabled_flags |= SSLocFlag.SCRAPPR
-        enabled_flags |= SSLocFlag.MINIGME
-        enabled_flags |= (
-            SSLocFlag.BEEDLE
-        )  # Keep progressive even if vanilla b/c of bug net and pouches
-        enabled_flags |= SSLocFlag.BTREAUX
-        enabled_flags |= add_flag(self.options.rupeesanity, SSLocFlag.RUPEE)
-        enabled_flags |= add_flag(
-            self.options.treasuresanity_in_silent_realms, SSLocFlag.TRIAL
-        )
-        enabled_flags |= add_flag(self.options.tadtonesanity, SSLocFlag.TADTONE)
+        enabled_flags |= SSLocFlag.TADTONE
+        enabled_flags |= SSLocFlag.BEEDLE
 
+        # AP Progression Groups
+        enabled_flags |= add_flag(self.options.progression_goddess_chests, SSLocFlag.GODDESS)
+        enabled_flags |= add_flag(self.options.progression_minigames, SSLocFlag.MINIGME)
+        enabled_flags |= add_flag(self.options.progression_crystals, SSLocFlag.CRYSTAL)
+        enabled_flags |= add_flag(self.options.progression_scrapper, SSLocFlag.SCRAPPR)
+        enabled_flags |= add_flag(self.options.progression_batreaux, SSLocFlag.BTREAUX)
+
+        # Other flags
+        enabled_flags |= add_flag(self.options.rupeesanity, SSLocFlag.RUPEE)
+        enabled_flags |= add_flag(self.options.treasuresanity_in_silent_realms, SSLocFlag.TRIAL)
+
+        # Empty Unrequired Dungeons
         if self.options.empty_unrequired_dungeons:
             enabled_flags |= (
                 SSLocFlag.D_SV
@@ -357,6 +359,7 @@ class SSWorld(World):
         multiworld = self.multiworld
         player = self.player
         hints = Hints(self)
+        game_hints, log_hints = hints.handle_hints()
         player_hash = self.random.sample(HASH_NAMES, 3)
         mw_player_names = [
             self.multiworld.get_player_name(i + 1)
@@ -376,10 +379,12 @@ class SSWorld(World):
             "Name": self.player_name,
             "All Players": mw_player_names,
             "Options": {},
+            "Excluded Locations": self.nonprogress_locations,
             "Starting Items": self.starting_items,
             "Required Dungeons": self.dungeons.required_dungeons,
             "Locations": {},
-            "Hints": hints.handle_hints(),
+            "Hints": game_hints,
+            "Log Hints": log_hints,
             "SoT Location": hints.handle_impa_sot_hint(),
             "Dungeon Entrances": {},
             "Trial Entrances": {},
