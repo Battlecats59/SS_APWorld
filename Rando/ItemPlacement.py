@@ -66,7 +66,7 @@ def _create_itempool(world: "SSWorld") -> tuple[list[str], list[str]]:
                 else adjusted_classification
             )
 
-            if classification == IC.progression:
+            if classification == IC.progression or classification == IC.progression_skip_balancing:
                 progression_pool.extend([item] * data.quantity)
             elif classification == IC.useful:
                 useful_pool.extend([item] * data.quantity)
@@ -82,7 +82,7 @@ def _create_itempool(world: "SSWorld") -> tuple[list[str], list[str]]:
                 else adjusted_classification
             )
 
-            if classification == IC.progression:
+            if classification == IC.progression or classification == IC.progression_skip_balancing:
                 progression_pool.extend([item] * data.quantity)
             elif classification == IC.useful:
                 useful_pool.extend([item] * data.quantity)
@@ -109,7 +109,7 @@ def _create_itempool(world: "SSWorld") -> tuple[list[str], list[str]]:
         for loc, data in LOCATION_TABLE.items():
             if data.type == SSLocType.SHOP:
                 itm = data.vanilla_item
-                if ITEM_TABLE[itm].classification == IC.progression:
+                if ITEM_TABLE[itm].classification == IC.progression or classification == IC.progression_skip_balancing:
                     progression_pool.remove(itm)
                     vanilla_pool.append(itm)
                 if ITEM_TABLE[itm].classification == IC.useful:
@@ -406,10 +406,10 @@ def _handle_placements(world: "SSWorld", pool: list[str]) -> list[str]:
         # We're not actually going to place these in the world, the rando will patch them in
         # Still, remove them from the item pool
 
-    if options.map_mode != "start_with":
-        placed.extend(world.dungeons.key_handler.place_dungeon_maps())
     placed.extend(world.dungeons.key_handler.place_small_keys())
     placed.extend(world.dungeons.key_handler.place_boss_keys())
+    if options.map_mode != "start_with":
+        placed.extend(world.dungeons.key_handler.place_dungeon_maps())
 
     return placed
 
@@ -426,7 +426,11 @@ def item_classification(world: "SSWorld", name: str) -> IC | None:
     item_type = ITEM_TABLE[name].type
 
     # Dungeon Entrance Access Items
-    if world.options.randomize_entrances == "none" and world.options.empty_unrequired_dungeons:
+    if (
+        world.options.randomize_entrances == "none"
+        and world.options.empty_unrequired_dungeons
+        and world.options.accessibility != "full"
+    ):
         if "Earth Temple" not in world.dungeons.required_dungeons:
             if name == "Key Piece":
                 adjusted_classification = IC.filler
@@ -465,25 +469,11 @@ def item_classification(world: "SSWorld", name: str) -> IC | None:
                 # If boss key not a required dungeon, make it filler
                 # Otherwise, it will be progression
 
-    # Swords
-    if world.options.starting_sword.value >= world.options.got_sword_requirement.value + 2:
-        if name == "Progressive Sword":
-            adjusted_classification = IC.useful
-            # If our starting sword is equal to or greater than the required sword, make
-            # progressive swords useful rather than progression
-
     # Triforces
     if not world.options.triforce_required:
         if "Triforce" in name:
             adjusted_classification = IC.useful
             # If Triforce is not required, make it useful
-    
-    # Pouches
-    if "Progressive Pouch" in world.options.starting_items:
-        if name == "Progressive Pouch":
-            adjusted_classification = IC.useful
-            # If we start with a pouch, then further upgrades will be useful rather
-            # than progression
 
     # Items for single checks
     if "Upper Skyloft - Ghost/Pipit's Crystals" in world.options.exclude_locations:

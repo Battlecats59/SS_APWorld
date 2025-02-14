@@ -49,7 +49,7 @@ class Hints:
                 if item_classification(self.world, itm) is None
                 else item_classification(self.world, itm)
             )
-            if classification & IC.progression:
+            if classification == IC.progression or classification == IC.progression_skip_balancing:
                 if data.code is None:
                     continue
                 self.hintable_items.extend([itm] * data.quantity)
@@ -281,11 +281,12 @@ class Hints:
             return (
                 [useful_text]
                 if trial_item.classification == IC.progression
+                or trial_item.classification == IC.progression_skip_balancing
                 or trial_item.classification == IC.useful
                 else [useless_text]
             )
         if self.world.options.song_hints == "advanced":
-            if trial_item.classification == IC.progression:
+            if trial_item.classification == IC.progression or trial_item.classification == IC.progression_skip_balancing:
                 return [required_text]
             elif trial_item.classification == IC.useful:
                 return [useful_text]

@@ -36,7 +36,7 @@ from .Rando.ItemPlacement import handle_itempool, item_classification
 from .Rando.HintPlacement import Hints
 
 AP_VERSION = [0, 5, 1]
-WORLD_VERSION = [0, 3, 1]
+WORLD_VERSION = [0, 3, 3]
 RANDO_VERSION = [2, 2, 0]
 
 
@@ -208,6 +208,8 @@ class SSWorld(World):
                 if "Fire Sanctuary" in self.dungeons.required_dungeons
                 else SSLocFlag.ALWAYS
             )
+            if self.options.triforce_required and self.options.triforce_shuffle != "anywhere":
+                enabled_flags |= SSLocFlag.D_SK
         else:
             enabled_flags |= (
                 SSLocFlag.D_SV
@@ -299,7 +301,7 @@ class SSWorld(World):
                 apreg,
                 rule=lambda state, entrance=conn: getattr(
                     Macros, f"can_reach_{entrance}"
-                ),
+                )(state, self.player),
             )
 
         for trl, conn in self.entrances.trial_connections.items():
@@ -317,7 +319,10 @@ class SSWorld(World):
             self.multiworld.regions.append(apreg)
 
             self.get_region(trl_gate_region).connect(
-                apreg, rule=lambda state, gate=conn: getattr(Macros, f"can_open_{gate}")
+                apreg,
+                rule=lambda state, gate=conn: getattr(Macros, f"can_open_{gate}")(
+                    state, self.player
+                ),
             )
 
         # Place locations within the regions

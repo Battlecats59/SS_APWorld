@@ -9,6 +9,7 @@ from Options import (
     PerGameCommonOptions,
     Range,
     StartInventoryPool,
+    ProgressionBalancing,
     Toggle,
 )
 
@@ -818,6 +819,13 @@ class PreciseItemHints(Toggle):
 
     display_name = "Precise Item Hints"
 
+class SSProgressionBalancing(ProgressionBalancing):
+    """
+    Algorithm for moving progression items into earlier spheres to make the gameplay experience a bit smoother.
+    The higher the value, the more frontloaded the world is.
+    """
+    default = 70
+
 
 @dataclass
 class SSOptions(PerGameCommonOptions):
@@ -896,3 +904,4 @@ class SSOptions(PerGameCommonOptions):
     precise_item: PreciseItemHints
     starting_items: StartInventoryPool
     death_link: DeathLink
+    progression_balancing: SSProgressionBalancing

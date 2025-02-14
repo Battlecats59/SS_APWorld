@@ -1536,7 +1536,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "F201_4",
         "Silver Rupee",
         SSLocType.T_BOX,
-        [SSLocCheckedFlag.SCENE, 0xC, 0x01, "Boko Base/Volcano Summit"],
+        [SSLocCheckedFlag.SCENE, 0xE, 0x80, "Boko Base/Volcano Summit"],
     ),
     "Volcano Summit - Item behind Digging": SSLocData(
         152,
@@ -1545,7 +1545,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "F201_3",
         "Heart Piece",
         SSLocType.ITEM,
-        [SSLocCheckedFlag.SCENE, 0xE, 0x80, "Boko Base/Volcano Summit"],
+        [SSLocCheckedFlag.SCENE, 0xC, 0x01, "Boko Base/Volcano Summit"],
         SSHintType.SOMETIMES,
     ),
     # Bokoblin Base

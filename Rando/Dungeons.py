@@ -64,7 +64,7 @@ class DungeonRando:
             ]
         )
 
-        self.key_handler.set_required_dungeons(self.required_dungeons)
+        self.key_handler.set_progress_dungeons(self.required_dungeons)
 
 
 class DungeonKeyHandler:
@@ -92,13 +92,13 @@ class DungeonKeyHandler:
             if dun != "Sky Keep":
                 self.all_bkeys[dun] = f"{dun} Boss Key"
 
-    def set_required_dungeons(self, req_dun):
+    def set_progress_dungeons(self, req_dun):
         if self.world.options.empty_unrequired_dungeons:
-            self.progression_dungeons = req_dun
+            self.progression_dungeons = deepcopy(req_dun)
             if self.world.options.triforce_required and self.world.options.triforce_shuffle != "anywhere":
                 self.progression_dungeons.append("Sky Keep")
         else:
-            self.progression_dungeons = DUNGEON_LIST.copy()
+            self.progression_dungeons = deepcopy(DUNGEON_LIST)
         
     def place_dungeon_maps(self) -> list[str]:
         """

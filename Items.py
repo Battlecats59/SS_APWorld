@@ -65,13 +65,13 @@ ITEM_TABLE: dict[str, SSItemData] = {
     "Clawshots":            SSItemData("Item",         IC.progression,         20,     1,  0x14),
     "Spiral Charge":        SSItemData("Item",         IC.progression,         21,     1,  0x15),
 
-    "Ancient Cistern Boss Key":         SSItemData("Boss Key",     IC.progression,         25,  1,  0x19),
-    "Fire Sanctuary Boss Key":          SSItemData("Boss Key",     IC.progression,         26,  1,  0x1A),
-    "Sandship Boss Key":                SSItemData("Boss Key",     IC.progression,         27,  1,  0x1B),
-    "Key Piece":                        SSItemData("Item",         IC.progression,         28,  5,  0x1C),
-    "Skyview Boss Key":                 SSItemData("Boss Key",     IC.progression,         29,  1,  0x1D),
-    "Earth Temple Boss Key":            SSItemData("Boss Key",     IC.progression,         30,  1,  0x1E),
-    "Lanayru Mining Facility Boss Key": SSItemData("Boss Key",     IC.progression,         31,  1,  0x1F),
+    "Ancient Cistern Boss Key":         SSItemData("Boss Key",     IC.progression_skip_balancing,         25,  1,  0x19),
+    "Fire Sanctuary Boss Key":          SSItemData("Boss Key",     IC.progression_skip_balancing,         26,  1,  0x1A),
+    "Sandship Boss Key":                SSItemData("Boss Key",     IC.progression_skip_balancing,         27,  1,  0x1B),
+    "Key Piece":                        SSItemData("Item",         IC.progression,                        28,  5,  0x1C),
+    "Skyview Boss Key":                 SSItemData("Boss Key",     IC.progression_skip_balancing,         29,  1,  0x1D),
+    "Earth Temple Boss Key":            SSItemData("Boss Key",     IC.progression_skip_balancing,         30,  1,  0x1E),
+    "Lanayru Mining Facility Boss Key": SSItemData("Boss Key",     IC.progression_skip_balancing,         31,  1,  0x1F),
 
     "Silver Rupee":         SSItemData("Consumable",   IC.filler,              32,     24, 0x20),
     "Gold Rupee":           SSItemData("Consumable",   IC.filler,              33,     11, 0x21),
@@ -95,9 +95,11 @@ ITEM_TABLE: dict[str, SSItemData] = {
     "Bomb Bag":                     SSItemData("Item",         IC.progression,         92,     1,  0x5C),
     "Heart Container":              SSItemData("Item",         IC.filler,              93,     6,  0x5D),
     "Heart Piece":                  SSItemData("Item",         IC.filler,              94,     24, 0x5E),
-    "Triforce of Courage":          SSItemData("Item",         IC.progression,         95,     1,  0x5F),
-    "Triforce of Power":            SSItemData("Item",         IC.progression,         96,     1,  0x60),
-    "Triforce of Wisdom":           SSItemData("Item",         IC.progression,         97,     1,  0x61),
+
+    "Triforce of Courage":          SSItemData("Item",         IC.progression_skip_balancing,         95,     1,  0x5F),
+    "Triforce of Power":            SSItemData("Item",         IC.progression_skip_balancing,         96,     1,  0x60),
+    "Triforce of Wisdom":           SSItemData("Item",         IC.progression_skip_balancing,         97,     1,  0x61),
+
     "Sea Chart":                    SSItemData("Item",         IC.progression,         98,     1,  0x62),
 
     "Heart Medal":                  SSItemData("Item",         IC.filler,              100,    2,  0x64),
