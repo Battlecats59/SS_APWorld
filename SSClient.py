@@ -73,6 +73,7 @@ class SSContext(CommonContext):
         self.last_rcvd_index: int = -1
         self.has_send_death: bool = False
         self.locations_for_hint: dict[str, list] = {}
+        self.beedle_items_purchased = [0, 0, 0, 0] # slots from left to right
 
         # Name of the current stage as read from the game's memory. Sent to trackers whenever its value changes to
         # facilitate automatically switching to the map of the current stage.
@@ -271,18 +272,18 @@ def dme_read_string(console_address: int, strlen: int) -> str:
         .decode()
     )
 
-def dme_read_filename() -> str:
+def dme_read_slot() -> str:
     """
-    Read the filename in dolphin memory.
+    Read the slot name from dolphin memory.
+    Slot name is 16 bytes, offset 20 bytes from the AP array.
+    Slot name is encoded in UTF-8.
 
-    :return: The string containing the filename.
+    :return: The string containing the slot name.
     """
-    filename_bytes = dolphin_memory_engine.read_bytes(FILE_NAME_ADDR, 0x10)
-    filename_bytes = filename_bytes.replace(b"\x00\x00", b"")
-    filename_bytes = filename_bytes.replace(b"\x7F\x7F", b"")
-    filename_bytes = filename_bytes.replace(b"\xFF\xFF", b"")
+    slot_bytes = dolphin_memory_engine.read_bytes(ARCHIPELAGO_ARRAY_ADDR + 0x14, 0x10)
+    slot_bytes = slot_bytes.replace(b"\xFF", b"")
 
-    return filename_bytes.decode("utf_16_be")
+    return slot_bytes.decode("utf-8")
 
 
 
@@ -317,11 +318,11 @@ async def _give_item(ctx: SSContext, item_name: str) -> bool:
 
     # Loop through the item array, placing the item in an empty slot (0xFF).
     for idx in range(ctx.len_give_item_array):
-        slot = dme_read_byte(GIVE_ITEM_ARRAY_ADDR + idx)
+        slot = dme_read_byte(ARCHIPELAGO_ARRAY_ADDR + idx)
         if slot == 0xFF:
             await asyncio.sleep(0.25)
             logger.info(f"DEBUG: Gave item {item_id} to player {ctx.player_names[ctx.slot]}.")
-            dme_write_byte(GIVE_ITEM_ARRAY_ADDR + idx, item_id)
+            dme_write_byte(ARCHIPELAGO_ARRAY_ADDR + idx, item_id)
             await asyncio.sleep(0.25)
             # If this happens, this may be an indicator that the player interrupted the itemget with something like a Fi call
             # or bed which could delete the item, so we should check for a reload
@@ -414,6 +415,10 @@ async def check_locations(ctx: SSContext) -> None:
                         ctx.finished_game = True
                 else:
                     ctx.locations_checked.add(SSLocation.get_apid(data.code))
+                    for slot, checks in enumerate(BEEDLE_CHECKS):
+                        if ctx.beedle_items_purchased[slot] < len(BEEDLE_CHECKS[slot]) - 1:
+                            ctx.beedle_items_purchased[slot] += (data.code == checks[ctx.beedle_items_purchased[slot]])
+                            
         
         hints_checked = set()
         for hint, data in HINT_TABLE.items():
@@ -448,6 +453,8 @@ async def check_current_stage_changed(ctx: SSContext) -> None:
     current_stage_name = ctx.current_stage_name
 
     if new_stage_name != current_stage_name:
+        if new_stage_name == BEEDLE_STAGE:
+            await scout_beedle_checks(ctx)
         ctx.current_stage_name = new_stage_name
         # Send a Bounced message containing the new stage name to all trackers connected to the current slot.
         data_to_send = {"ss_stage_name": new_stage_name}
@@ -468,6 +475,13 @@ async def check_current_stage_changed(ctx: SSContext) -> None:
             visited_stage_names.add(new_stage_name)
             await ctx.update_visited_stages(new_stage_name)
 
+async def scout_beedle_checks(ctx: SSContext) -> None:
+    locs_to_scout = set()
+    for slot, purchased_idx in enumerate(ctx.beedle_items_purchased):
+        if len(BEEDLE_CHECKS[slot]) > purchased_idx:
+            locs_to_scout.add(SSLocation.get_apid(BEEDLE_CHECKS[slot][purchased_idx]))
+    
+    await ctx.send_msgs([{"cmd": "LocationScouts", "locations": locs_to_scout, "create_as_hint": 2}]) 
 
 def check_alive() -> bool:
     """
@@ -517,6 +531,15 @@ def check_on_title_screen() -> bool:
     """
     return dme_read_byte(GLOBAL_TITLE_LOADER_ADDR) != 0x0
 
+def check_in_minigame(in_ffw: bool = False) -> bool:
+    """
+    Check if the player is in a minigame.
+    
+    :return: `True` if the player is in a minigame, false if not.
+    """
+    # Can't be playing minigames while in FFW so just return false in case the address is different
+    return not in_ffw and dme_read_byte(MINIGAME_STATE_ADDR) == 0x0
+
 def get_link_state(in_ffw: bool = False) -> bytes:
     return dolphin_memory_engine.read_bytes(CURR_STATE_ADDR - (FFW_MEMORY_OFFSET if in_ffw else 0), 3)
 
@@ -556,7 +579,8 @@ def can_receive_items(ctx: SSContext) -> bool:
     """
     Link must be on File 1 in a valid state and action and not on the title screen to receive items.
     """
-    return can_send_items() and check_alive() and validate_link_state(check_in_ffw(ctx)) and validate_link_action(check_in_ffw(ctx)) and ctx.current_stage_name != DEMISE_STAGE
+    in_ffw = check_in_ffw(ctx)
+    return all((can_send_items(),check_alive(),validate_link_state(in_ffw),validate_link_action(in_ffw), not check_in_minigame(in_ffw), ctx.current_stage_name != DEMISE_STAGE))
 
 def can_send_items() -> bool:
     """
@@ -581,7 +605,7 @@ async def dolphin_sync_task(ctx: SSContext) -> None:
             ):
                 if not check_ingame(check_in_ffw(ctx)):
                     # Reset the give item array while not in the game.
-                    # dolphin_memory_engine.write_bytes(GIVE_ITEM_ARRAY_ADDR, bytes([0xFF] * ctx.len_give_item_array))
+                    # dolphin_memory_engine.write_bytes(ARCHIPELAGO_ARRAY_ADDR, bytes([0xFF] * ctx.len_give_item_array))
                     await asyncio.sleep(0.1)
                     continue
                 if ctx.slot is not None:
@@ -592,7 +616,7 @@ async def dolphin_sync_task(ctx: SSContext) -> None:
                     await check_current_stage_changed(ctx)
                 else:
                     if not ctx.auth:
-                        ctx.auth = dme_read_filename()
+                        ctx.auth = dme_read_slot()
                     if ctx.awaiting_rom:
                         await ctx.server_auth()
                 await asyncio.sleep(0.1)

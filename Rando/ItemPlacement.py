@@ -394,7 +394,7 @@ def _handle_placements(world: "SSWorld", pool: list[str]) -> list[str]:
         world.get_location("Sky Keep - Sacred Power of Farore").place_locked_item(world.create_item("Triforce of Courage"))
         placed.extend(["Triforce of Power", "Triforce of Wisdom", "Triforce of Courage"])
     elif options.triforce_shuffle == "sky_keep":
-        locations_to_place = [loc for loc in world.multiworld.get_locations(world.player) if loc.parent_region == world.get_region("Sky Keep")]
+        locations_to_place = [loc for loc in world.multiworld.get_locations(world.player) if loc.parent_region == world.get_region("Sky Keep") and not loc.item]
         triforce_locations = world.random.sample(locations_to_place, 3)
         world.random.shuffle(triforce_locations)
         for i, tri in enumerate(["Triforce of Power", "Triforce of Wisdom", "Triforce of Courage"]):

@@ -1749,7 +1749,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         "F300",
         "Heart Piece",
         SSLocType.T_BOX,
-        [SSLocCheckedFlag.SCENE, 0x7, 0x40, "Lanayru Desert"],  # CHECKTHIS
+        [SSLocCheckedFlag.SCENE, 0xA, 0x40, "Lanayru Desert"],  # CHECKTHIS
         SSHintType.SOMETIMES,
     ),
     "Lanayru Desert - Fire Node - Shortcut Chest": SSLocData(

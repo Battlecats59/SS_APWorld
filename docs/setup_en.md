@@ -46,9 +46,10 @@ From now on, Archipelago may be referred to as "AP". Skyward Sword may be referr
 - Make sure the client hooks to Dolphin, then begin a new file in game.
     - **NOTE: It is recommended that all 3 files in-game are empty. This will prevent any confusion with the client later on.**
     - **NOTE: You MUST play the multiworld on file 1. To prevent issues with location checking in BiT, the client will only send locations and give items if it detects you on file 1. You may use the other 2 files for BiT Magic files or corrupt files, however.**
-    - Also, make sure your filename in game is the exact same as your AP name that you set in your YAML.
+    - Your filename in game does not need to match your AP slot name
 - Connect to the room in your client by running `/connect {address}`. The link to the room should be given to you by the multiworld host. The address will be in the form of `archipelago.gg:XXXXX`.
-- The client will not connect you if you have not started a new file with the same name as what is in your YAML. If you fail to connect, make sure that you have started a new file, you are in Link's room, and your filename is the same as your AP name.
+    - If you get an invalid slot error, make sure you generated with the latest build of the randomizer, you generated using the correct APSSR file, and you opened the correct iso in Dolphin.
+    - Your slot name will be hardcoded into the game itself, and your client will read that from memory to connect you to the room.
 - Wait until everyone is in game and ready before you leave Link's room. See [Playing the Game](#playing-the-game).
 - Run `/help` in the client to see all commands.
 
@@ -74,6 +75,8 @@ From now on, Archipelago may be referred to as "AP". Skyward Sword may be referr
             - The settings string will be the "permalink" in the spoiler log file.
         - If you paste in a settings string, it is significantly quicker and it will include all of the starting items and excluded locations from the seed.
 - Archipelago Universal Tracker
+    - It is recommended that you hide excluded locations in the tracker, as they will all appear as sphere 0 checks.
+    - Don't worry, these locations will always contain junk items.
 
 **Other useful tools:**
 - [Skyward Sword Randomizer Location Guide](https://docs.google.com/document/d/1F8AmQccCvtblnRhw_kEAVTME_xX1-O_9Ln16TVDPx6w/edit?tab=t.0#heading=h.9bzfdyr09f0y)
@@ -125,9 +128,10 @@ Discussion regarding this APWorld is in the [Archipelago Main Discord](https://d
 
 - **Battlecats59**: Archipelago implementation
 - **YourAverageLink**: Archipelago implementation and client work
+- **robojumper**: Client and logic work
 - **Trez**: Archipelago web implementation
 - **Fireworkspinner**: Early Archipelago manual designs
 - **lepelog**: SS Rando creator, arc work for multiworld
 - **SS Rando Devs**: Creating the Skyward Sword Randomizer
 - **tanjo3 and TWW APWorld Devs**: Created the TWW APWorld, which provided a lot of code for the SS APWorld
-- **All of our APWorld testers**: Synii, Tyler Abernathy, Fireworkspinner, limited_fears, Harmjan387, DayKat, Yuvraj823, Germeister, and others
+- **All of our APWorld testers**: Synii, Tyler Abernathy, Fireworkspinner, limited_fears, Harmjan387, DayKat, Yuvraj823, Germeister, 64bit_link, Zeldex72, spencer2585, CubeDavid, robojumper, Sledge, and others

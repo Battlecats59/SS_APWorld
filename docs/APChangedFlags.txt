@@ -143,10 +143,16 @@ Raised chest in volcano summit
 First chest in volcano summit
 54 - 7x40
 
+Chest in alcove (added to VS, already in BB)
+62 - 6x40
+
 Chest behind bombable wall in waterfall area
 127 - Ex80
 
 __ LANAYRU DESERT __
+Note: Ax20 (93) is available to repurpose as well
+Those bokos don't spawn in rando
+
 Lanayru mine - chest at first landing
 47 - 4x80
 
@@ -175,7 +181,7 @@ Chest near sand oasis
 72 - 8x01
 
 Secret passageway chest
-54 - 7x40 (Repurposed)
+94 - Ax40 (Repurposed)
 
 Fire node - shortcut chest
 82 - Bx04

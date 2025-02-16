@@ -20,8 +20,8 @@
 #    You can also verify that your Archipelago options are valid at this site:
 #        https://archipelago.gg/check
 
-# Your name in-game, limited to 8 characters.
-# You MUST use this name as your filename to connect to the server
+# Your slot name, limited to 16 characters.
+# This does not need to match your filename in game. Follow utf-8 encoding.
 #     {player} will be replaced with the player's slot number.
 #     {PLAYER} will be replaced with the player's slot number, if that slot number is greater than 1.
 #     {number} will be replaced with the counter value of the name.
@@ -38,18 +38,18 @@ requires:
 Skyward Sword:
   # Game Options
   progression_balancing:
-    # A system that can move progression earlier, to try and prevent the player from getting stuck and bored early.
-    # 
-    # A lower setting means more getting stuck. A higher setting means less getting stuck.
+    # Algorithm for moving progression items into earlier spheres to make the gameplay experience a bit smoother.
+    # The higher the value, the more frontloaded the world is.
     #
     # You can define additional values between the minimum and maximum values.
     # Minimum value is 0
     # Maximum value is 99
+    70: 50
     random: 0
     random-low: 0
     random-high: 0
     disabled: 0 # equivalent to 0
-    normal: 50 # equivalent to 50
+    normal: 0 # equivalent to 50
     extreme: 0 # equivalent to 99
 
   accessibility:
@@ -215,7 +215,7 @@ Skyward Sword:
     # **Vanilla**: keys will be in their vanilla locations (The Skyview Digging Spot will not contain a key).
     # **Own Dungeon**: keys will be within their own dungeons in your own world.
     # **Lanayru Caves Key only**: shuffles the Lanayru Caves Small Key
-    # # (all other keys are shuffled within their own dungeon).
+    #     (all other keys are shuffled within their own dungeon).
     # **Anywhere**: keys can appear outside of dungeons in any world.
     vanilla: 0
     own_dungeon: 0
@@ -288,6 +288,8 @@ Skyward Sword:
     # **Any Surface Region**: You will spawn at any valid surface entrance or Link's bedroom.
     # **Any**: You will spawn at any valid entrance.
     # **TIP**: You can ask Fi to warp you back to the starting point.
+    #
+    # NOT SUPPORTED: MUST BE VANILLA
     vanilla: 50 # DO NOT CHANGE
 
   limit_start_entrance:
@@ -299,6 +301,8 @@ Skyward Sword:
   random_start_statues:
     # If enabled, the starting statue for each surface region will be randomized. All overworld statues
     # except Inside the Volcano and Inside Fire Sanctuary may be chosen.
+    #
+    # NOT SUPPORTED: MUST BE FALSE
     'false': 50 # DO NOT CHANGE
     'true': 0 # DO NOT CHANGE
 
@@ -525,6 +529,8 @@ Skyward Sword:
     # You can define additional values between the minimum and maximum values.
     # Minimum value is 0
     # Maximum value is 17
+    #
+    # NOTE: If tadtonesanity if OFF, make sure this is ZERO (0)
     0: 50
     random: 0
     random-low: 0
@@ -585,10 +591,10 @@ Skyward Sword:
   chest_dowsing:
     # Determines the main quest (top) dowsing option.
     # **Vanilla**: dowsing points to Trial Gates and the Sandship
-    # (after obtaining the necessary song or Sea Chart first).
+    #     (after obtaining the necessary song or Sea Chart first).
     # **All Chests**: dowsing points to all chests (regardless of their contents).
     # **Progress Items**: dowsing only points to chests containing progress items
-    # (doesn't work with Goddess Chests).
+    #     (doesn't work with Goddess Chests).
     vanilla: 50
     all_chests: 0
     progress_items: 0
@@ -635,12 +641,6 @@ Skyward Sword:
     # Start with these items.
     {} # DO NOT CHANGE
 
-  starting_items:
-    # Start with these items and don't place them in the world.
-    # 
-    # The game decides what the replacement items will be.
-    {}
-
   start_hints:
     # Start with these item's locations prefilled into the ``!hint`` command.
     []
@@ -655,8 +655,15 @@ Skyward Sword:
 
   priority_locations:
     # Prevent these locations from having an unimportant item.
-    [] # DO NOT CHANGE
+    []
 
   item_links:
     # Share part of your item pool with other players.
     []
+
+  starting_items:
+    # Start with these items and don't place them in the world.
+    # 
+    # The game decides what the replacement items will be.
+    # Do NOT add dungeon items here! This includes maps, small keys, and boss keys
+    {}

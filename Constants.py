@@ -16,6 +16,21 @@ DOOR_ACTIONS = [0x6E, 0x6F]
 SWIM_ACTIONS = [0x4F, 0x50, 0x51, 0x52]
 
 DEMISE_STAGE = "B400"
+BEEDLE_STAGE = "F002r"
+
+# Location indices for Beedle checks (used for scouting their items)
+BEEDLE_LEFTMOST_CHECKS = [41, 42, 43]
+BEEDLE_LEFT_MIDDLE_CHECKS = [44, 45]
+BEEDLE_RIGHT_MIDDLE_CHECKS = [46, 47, 48]
+BEEDLE_RIGHTMOST_CHECKS = [49, 50]
+BEEDLE_CHECKS = (
+    BEEDLE_LEFTMOST_CHECKS,
+    BEEDLE_LEFT_MIDDLE_CHECKS,
+    BEEDLE_RIGHT_MIDDLE_CHECKS,
+    BEEDLE_RIGHTMOST_CHECKS
+)
+
+MINIGAME_STATE_ADDR = 0x80572250
 
 # The byte at this address stores which save file is currently selected (0 indexed)
 SELECTED_FILE_ADDR = 0x8095FC98
@@ -30,7 +45,7 @@ CURR_STAGE_ADDR = 0x805B388C  # STRING[16]
 
 # This is an array of length 0x10 where each element is a byte and contains item IDs for items to give the player.
 # 0xFF represents no item. The array is read and cleared every frame.
-GIVE_ITEM_ARRAY_ADDR = 0x80678770  # ARRAY[16]
+ARCHIPELAGO_ARRAY_ADDR = 0x80678770 # ARRAY[16]
 # WILL BE UPDATED WHEN THE BUILD IS RELEASED
 
 # This is the address that holds the player's file name.
@@ -50,6 +65,7 @@ LINK_INVALID_STATES = [
     # b'\xB7\xA6\x7C', # Bed dialogue option
     b'\x5A\x31\xAC', # Sleeping
     b'\x5A\x33\x6C', # Waking up
+    b'\x97\x96\xBC', # Load transition maybe?
 ]
 
 # Valid addresses for storyflags (ending in zero - final bit is added to this address)
@@ -102,9 +118,6 @@ CONNECTION_INITIAL_STATUS = "Dolphin connection has not been initiated."
 FORCED_OPTIONS = {
     # Options, for now, that must be a certain value
     # Also serves as a list for me for what needs to be implemented
-    "map_mode": 4, # Anywhere
-    # "small_key_mode": 3, # Anywhere
-    # "boss_key_mode": 2, # Anywhere
     "random_start_entrance": 0, # Vanilla, not logically implemented
     "random_start_statues": 0, # False
 }

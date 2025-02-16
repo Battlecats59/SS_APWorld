@@ -36,7 +36,7 @@ from .Rando.ItemPlacement import handle_itempool, item_classification
 from .Rando.HintPlacement import Hints
 
 AP_VERSION = [0, 5, 1]
-WORLD_VERSION = [0, 3, 3]
+WORLD_VERSION = [0, 4, 0]
 RANDO_VERSION = [2, 2, 0]
 
 
