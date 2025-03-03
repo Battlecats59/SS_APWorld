@@ -593,7 +593,7 @@ class SSWorld(World):
             "full_starting_wallet": self.options.full_starting_wallet.value,
             "max_starting_bugs": self.options.max_starting_bugs.value,
             "max_starting_treasures": self.options.max_starting_treasures.value,
-            "ap_hint_distribution": self.options.hint_distribution,
+            "ap_hint_distribution": self.options.hint_distribution.value,
             "song_hints": self.options.song_hints.value,
             "chest_dowsing": self.options.chest_dowsing.value,
             "dungeon_dowsing": self.options.dungeon_dowsing.value,
