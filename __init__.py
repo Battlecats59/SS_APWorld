@@ -603,6 +603,8 @@ class SSWorld(World):
             "starting_items": self.options.starting_items.value,
             "death_link": self.options.death_link.value,
             "locations_for_hint": self.hint_data.locations_for_hint,
+            "excluded_locations": self.nonprogress_locations,
+            "required_dungeons": self.dungeons.required_dungeons,
         }
 
         return slot_data

@@ -1,16 +1,16 @@
-# Constants and helper functions for the Skyward Sword Client
+# dAcPy_c::LINK
+LINK_PTR = 0x8057578C
 
 # This address is used to check/set the player's health for DeathLink.
 CURR_HEALTH_ADDR = 0x8095A76A  # HALFWORD
 
 # Link's state- make sure he is not in a loading zone
-CURR_STATE_ADDR = 0x80B76585
+# fBase_c::actor_list.mpLast
+CURR_STATE_OFFSET = 0x59
 
 # Link's action - make sure he is in a "normal" action (i.e. idle, moving on the ground, etc.)
-LINK_ACTION_ADDR = 0x80B7689B
-
-# Some memory addresses are offset by this value in FFW. I dunno why.
-FFW_MEMORY_OFFSET = 0x8960
+# dAcPy_c::mCurrentAction
+LINK_ACTION_OFFSET = 0x36F
 
 MAX_SAFE_ACTION = 0xD
 ITEM_GET_ACTION = 0x78

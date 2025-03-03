@@ -1,7 +1,7 @@
 import asyncio
 import time
 import traceback
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any, List, Optional
 
 import dolphin_memory_engine
 
@@ -326,7 +326,7 @@ async def _give_item(ctx: SSContext, item_name: str) -> bool:
             await asyncio.sleep(0.25)
             # If this happens, this may be an indicator that the player interrupted the itemget with something like a Fi call
             # or bed which could delete the item, so we should check for a reload
-            while get_link_action(check_in_ffw(ctx)) != ITEM_GET_ACTION:
+            while is_link_not_in_action(get_link_ptr(), [ITEM_GET_ACTION]):
                 await asyncio.sleep(0.1)
                 # Stop trying if the player soft reset
                 # Also stop trying if the player is using a door, since doors don't actually delete items
@@ -335,13 +335,13 @@ async def _give_item(ctx: SSContext, item_name: str) -> bool:
                 # momentarily be action 0x03.
                 # The patched game *will* still give them the item, but it won't give them the item action,
                 # so we shouldn't resend the item, or else it will be duplicated.
-                if check_on_title_screen() or get_link_action(check_in_ffw(ctx)) in DOOR_ACTIONS + SWIM_ACTIONS:
+                if check_on_title_screen() or is_link_in_action(get_link_ptr(), DOOR_ACTIONS + SWIM_ACTIONS):
                     break
                     
                 # If state is 0, that means a reload occurred, so we should resend the item.
                 # However, we shouldn't resend the item if the user immediately enters the item get action anyway
                 # (which can happen if this reload occurs due to a door, in which case the original item will still be received)
-                if not check_ingame(check_in_ffw(ctx)):
+                if not check_ingame(get_link_ptr()):
                     logger.info(f"DEBUG: A reload deleted the item. Resending the item...")
                     return False
             
@@ -509,19 +509,15 @@ async def check_death(ctx: SSContext) -> None:
         else:
             ctx.has_send_death = False
 
-def check_in_ffw(ctx: SSContext) -> bool:
-    """
-    Check if the player is in Flooded Faron Woods (as this offsets certain memory addresses)
-    """
-    return "F103" in ctx.current_stage_name
-
-def check_ingame(in_ffw: bool = False) -> bool:
+def check_ingame(link_ptr: int) -> bool:
     """
     Check if the player is currently in-game.
 
     :return: `True` if the player is in-game, otherwise `False`.
     """
-    return int.from_bytes(get_link_state(in_ffw)) != 0x0
+    if link_ptr == 0x0:
+        return False
+    return int.from_bytes(get_link_state(link_ptr)) != 0x0
 
 def check_on_title_screen() -> bool:
     """
@@ -531,40 +527,56 @@ def check_on_title_screen() -> bool:
     """
     return dme_read_byte(GLOBAL_TITLE_LOADER_ADDR) != 0x0
 
-def check_in_minigame(in_ffw: bool = False) -> bool:
+def check_in_minigame() -> bool:
     """
     Check if the player is in a minigame.
     
     :return: `True` if the player is in a minigame, false if not.
     """
-    # Can't be playing minigames while in FFW so just return false in case the address is different
-    return not in_ffw and dme_read_byte(MINIGAME_STATE_ADDR) == 0x0
+    return dme_read_byte(MINIGAME_STATE_ADDR) == 0x0
 
-def get_link_state(in_ffw: bool = False) -> bytes:
-    return dolphin_memory_engine.read_bytes(CURR_STATE_ADDR - (FFW_MEMORY_OFFSET if in_ffw else 0), 3)
+def get_link_ptr() -> int:
+    return dolphin_memory_engine.read_word(LINK_PTR)
 
-def get_link_action(in_ffw: bool = False) -> int:
-    return dme_read_byte(LINK_ACTION_ADDR - (FFW_MEMORY_OFFSET if in_ffw else 0))
+def get_link_state(link_ptr: int) -> bytes:
+    return dolphin_memory_engine.read_bytes(link_ptr + CURR_STATE_OFFSET, 3)
 
-def validate_link_state(in_ffw: bool = False) -> bool:
+def get_link_action(link_ptr: int) -> int:
+    return dme_read_byte(link_ptr + LINK_ACTION_OFFSET)
+
+def validate_link_state(link_ptr: int) -> bool:
     """
     Returns a bool determining whether Link is in a valid or invalid state to receive items.
 
     :return: True if Link is in a valid state, False if Link is in an invalid state
     """
-    if get_link_state(in_ffw) in LINK_INVALID_STATES:
+    if link_ptr == 0x0 or get_link_state(link_ptr) in LINK_INVALID_STATES:
         return False
     else:
         return True
 
-def validate_link_action(in_ffw: bool = False) -> bool:
+def validate_link_action(link_ptr: int) -> bool:
     """
     Returns a bool determining if Link is in a safe action to receive items.
 
     :return: True if Link is in a safe action, False if Link is not in a safe action.
     """
-    action = dme_read_byte(LINK_ACTION_ADDR - (FFW_MEMORY_OFFSET if in_ffw else 0))
+    if link_ptr == 0x0:
+        return False
+    action = dme_read_byte(link_ptr + LINK_ACTION_OFFSET)
     return action <= MAX_SAFE_ACTION or (action == ITEM_GET_ACTION)
+
+def is_link_not_in_action(link_ptr: int, actions: List[int]) -> bool:
+    if link_ptr == 0x0:
+        return True
+
+    return get_link_action(link_ptr) not in actions
+
+def is_link_in_action(link_ptr: int, actions: List[int]) -> bool:
+    if link_ptr == 0x0:
+        return False
+
+    return get_link_action(link_ptr) in actions
 
 def check_on_file_1() -> bool:
     """
@@ -573,14 +585,23 @@ def check_on_file_1() -> bool:
     :return: True if File 1 last selected, False otherwise
     """
     file = dme_read_byte(SELECTED_FILE_ADDR)
-    return file == 0
+    return file == 0x0
 
 def can_receive_items(ctx: SSContext) -> bool:
     """
     Link must be on File 1 in a valid state and action and not on the title screen to receive items.
     """
-    in_ffw = check_in_ffw(ctx)
-    return all((can_send_items(),check_alive(),validate_link_state(in_ffw),validate_link_action(in_ffw), not check_in_minigame(in_ffw), ctx.current_stage_name != DEMISE_STAGE))
+
+    link_ptr = get_link_ptr()
+    return (
+        link_ptr != 0x0
+        and can_send_items()
+        and check_alive()
+        and validate_link_state(link_ptr)
+        and validate_link_action(link_ptr)
+        and not check_in_minigame()
+        and ctx.current_stage_name != DEMISE_STAGE
+    )
 
 def can_send_items() -> bool:
     """
@@ -603,7 +624,7 @@ async def dolphin_sync_task(ctx: SSContext) -> None:
                 dolphin_memory_engine.is_hooked()
                 and ctx.dolphin_status == CONNECTION_CONNECTED_STATUS
             ):
-                if not check_ingame(check_in_ffw(ctx)):
+                if not check_ingame(get_link_ptr()):
                     # Reset the give item array while not in the game.
                     # dolphin_memory_engine.write_bytes(ARCHIPELAGO_ARRAY_ADDR, bytes([0xFF] * ctx.len_give_item_array))
                     await asyncio.sleep(0.1)
