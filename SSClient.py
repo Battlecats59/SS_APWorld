@@ -19,7 +19,7 @@ from NetUtils import ClientStatus, NetworkItem
 from .Items import ITEM_TABLE, LOOKUP_ID_TO_NAME
 from .Locations import LOCATION_TABLE, SSLocation, SSLocFlag, SSLocType, SSLocCheckedFlag
 from .Hints import HINT_TABLE, SSHint
-from .Constants import *
+from .SSClientUtils import *
 
 if TYPE_CHECKING:
     import kvui

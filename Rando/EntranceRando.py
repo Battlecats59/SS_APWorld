@@ -2,9 +2,12 @@ from typing import TYPE_CHECKING
 
 from Options import OptionError
 
+from ..Entrances import *
 from ..Locations import LOCATION_TABLE
 from ..Options import SSOptions
 from ..Constants import *
+
+from ..logic.Logic import ALL_REQUIREMENTS
 
 if TYPE_CHECKING:
     from .. import SSWorld
@@ -26,6 +29,9 @@ class EntranceRando:
         self.dungeon_entrances: list[str] = list(VANILLA_DUNGEON_CONNECTIONS.values())
         self.trials: list[str] = list(VANILLA_TRIAL_CONNECTIONS.keys())
         self.trial_gates: list[str] = list(VANILLA_TRIAL_CONNECTIONS.values())
+
+        self.starting_entrance: dict = {}
+        self.starting_statues: dict[str, tuple] = {}
 
     def randomize_dungeon_entrances(self, req_dungeons: list[str]) -> None:
         """
@@ -83,3 +89,76 @@ class EntranceRando:
         else:
             for trl in self.trials:
                 self.trial_connections[trl] = VANILLA_TRIAL_CONNECTIONS[trl]
+
+    def randomize_starting_statues(self) -> None:
+        """
+        Randomize the starting statues for each province based on the player's options.
+        """
+
+        possible_starting_statues = {}
+        if self.world.options.random_start_statues:
+            for prov in ["Faron Province", "Eldin Province", "Lanayru Province"]:
+                possible_starting_statues[prov] = [
+                    ent for ent in GAME_ENTRANCE_TABLE
+                    if ent.type == "Statue"
+                    and ent.statue_name != "Inside the Volcano"
+                    and ent.province == prov
+                ]
+        else:
+            for prov in ["Faron Province", "Eldin Province", "Lanayru Province"]:
+                possible_starting_statues[prov] = [
+                    ent for ent in GAME_ENTRANCE_TABLE
+                    if ent.type == "Statue"
+                    and ent.vanilla_statue
+                    and ent.province == prov
+                ]
+
+        for prov, statues in possible_starting_statues.items():
+            statue = self.world.random.choice(statues)
+            self.starting_statues[prov] = (
+                statue.name,
+                {
+                    "type": "entrance",
+                    "subtype": "bird-statue-entrance",
+                    "province": statue.province,
+                    "statue-name": statue.statue_name,
+                    "stage": statue.stage,
+                    "room": statue.room,
+                    "layer": statue.layer,
+                    "entrance": statue.entrance,
+                    "tod": statue.tod,
+                    "flag-space": statue.flag_space,
+                    "flag": statue.flag,
+                    "vanilla-start-statue": statue.vanilla_statue,
+                    "hint_region": ALL_REQUIREMENTS[statue.apregion]["hint_region"],
+                    "apregion": statue.apregion,
+                },
+            )
+
+    def randomize_starting_entrance(self) -> None:
+        """
+        Randomize the starting spawn based on the player's options.
+        """
+        ser = self.world.options.random_start_entrance
+        #limit_ser = self.world.options.limit_start_entrance
+
+        if ser == "vanilla":
+            possible_starting_entrances = [ent for ent in GAME_ENTRANCE_TABLE if ent.type == "Vanilla"]
+        elif ser == "bird_statues":
+            possible_starting_entrances = [ent for ent in GAME_ENTRANCE_TABLE if ent.type == "Statue" or ent.type == "Vanilla"]
+        elif ser == "any_surface_region":
+            possible_starting_entrances = [ent for ent in GAME_ENTRANCE_TABLE if ent.province != "The Sky" or ent.type == "Vanilla"]
+        else:
+            possible_starting_entrances = [ent for ent in GAME_ENTRANCE_TABLE]
+        
+        starting_entrance = self.world.random.choice(possible_starting_entrances)
+
+        self.starting_entrance = {
+            "statue-name": starting_entrance.statue_name if starting_entrance.statue_name is not None else starting_entrance.name,
+            "stage": starting_entrance.stage,
+            "room": starting_entrance.room,
+            "layer": starting_entrance.layer,
+            "entrance": starting_entrance.entrance,
+            "day-night": starting_entrance.tod,
+            "apregion": starting_entrance.apregion,
+        }

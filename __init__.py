@@ -1,6 +1,8 @@
 import os
 import zipfile
+import json
 from base64 import b64encode
+from copy import deepcopy
 from collections.abc import Mapping
 from dataclasses import fields
 import threading
@@ -23,20 +25,23 @@ from worlds.LauncherComponents import (
 
 from .Constants import *
 
-from .Macros import *
 from .Items import ITEM_TABLE, SSItem
 from .Locations import LOCATION_TABLE, SSLocation, SSLocFlag
 from .Options import SSOptions
 from .Rules import set_rules
 from .Names import HASH_NAMES
+from .Entrances import AP_ENTRANCE_TABLE
 
-from .Rando.Dungeons import DungeonRando
-from .Rando.Entrances import EntranceRando
-from .Rando.ItemPlacement import handle_itempool, item_classification
-from .Rando.HintPlacement import Hints
+from .rando.DungeonRando import DungeonRando
+from .rando.EntranceRando import EntranceRando
+from .rando.ItemPlacement import handle_itempool, item_classification
+from .rando.HintPlacement import Hints
+
+from .logic.LogicParser import parse_expression
+from .logic.Logic import ALL_REQUIREMENTS
 
 AP_VERSION = [0, 5, 1]
-WORLD_VERSION = [0, 4, 0]
+WORLD_VERSION = [0, 5, 0]
 RANDO_VERSION = [2, 2, 0]
 
 
@@ -120,7 +125,7 @@ class SSWorld(World):
     topology_present: bool = True
     web = SSWeb()
     required_client_version: tuple[int, int, int] = (0, 5, 1)
-    origin_region_name: str = "Upper Skyloft"
+    origin_region_name: str = "" # This is set later
 
     item_name_to_id: ClassVar[dict[str, int]] = {
         name: SSItem.get_apid(data.code)
@@ -250,6 +255,14 @@ class SSWorld(World):
         self.entrances.randomize_dungeon_entrances(self.dungeons.required_dungeons)
         self.entrances.randomize_trial_gates()
 
+        self.entrances.randomize_starting_statues()
+        self.entrances.randomize_starting_entrance()
+        self.origin_region_name = self.entrances.starting_entrance["apregion"]
+
+        print(self.entrances.starting_statues)
+        print(self.entrances.starting_entrance)
+        print(self.origin_region_name)
+
         # Determine progress and nonprogress locations
         self.progress_locations, self.nonprogress_locations = (
             self.determine_progress_and_nonprogress_locations()
@@ -260,86 +273,114 @@ class SSWorld(World):
         Create and connect regions.
         """
 
-        def get_access_rule(region: str) -> str:
-            formatted_region = region.lower().replace("'", "").replace(" ", "_")
-            return f"can_access_{formatted_region}"
+        for reg_name, data in ALL_REQUIREMENTS.items():
+            region = Region(reg_name, self.player, self.multiworld)
+            for short_loc_name, rule in data["locations"].items():
+                full_loc_name = f"{data["hint_region"]} - {short_loc_name}"
+                location = SSLocation(self.player, full_loc_name, region, LOCATION_TABLE[full_loc_name])
+                if full_loc_name in self.nonprogress_locations:
+                    location.progress_type = LocationProgressType.EXCLUDED
+                region.locations.append(location)
+            self.multiworld.regions.append(region)
 
-        for reg in OVERWORLD_REGIONS.keys():
-            apreg = Region(reg, self.player, self.multiworld)
-            self.multiworld.regions.append(apreg)
+        self.connected_regions = set()
+        self.connected_entrances = set()
 
-        for reg, conn in OVERWORLD_REGIONS.items():
-            for conn_reg in conn:
-                self.get_region(reg).connect(
-                    self.get_region(conn_reg),
-                    rule=lambda state, region=conn_reg: getattr(
-                        Macros, get_access_rule(region)
-                    )(state, self.player),
-                )
+        self.connect_regions(self.origin_region_name)
 
-        for dun, conn in self.entrances.dungeon_connections.items():
-            if conn == "dungeon_entrance_in_deep_woods":
-                dun_entrance_region = "Faron Woods"
-            elif conn == "dungeon_entrance_in_lake_floria":
-                dun_entrance_region = "Lake Floria"
-            elif conn == "dungeon_entrance_in_eldin_volcano":
-                dun_entrance_region = "Eldin Volcano"
-            elif conn == "dungeon_entrance_in_volcano_summit":
-                dun_entrance_region = "Volcano Summit"
-            elif conn == "dungeon_entrance_in_lanayru_desert":
-                dun_entrance_region = "Lanayru Desert"
-            elif conn == "dungeon_entrance_in_lanayru_sand_sea":
-                dun_entrance_region = "Lanayru Sand Sea"
-            elif conn == "dungeon_entrance_on_skyloft":
-                dun_entrance_region = "Central Skyloft"
+        for loc in LOCATION_TABLE.keys():
+            assert self.get_location(loc), f"Location found in location table, but not in requirements: {loc}"
 
-            apreg = Region(dun, self.player, self.multiworld)
-            apreg.connect(self.get_region(dun_entrance_region))
-            self.multiworld.regions.append(apreg)
+        for loc in self.multiworld.get_locations(self.player):
+            assert LOCATION_TABLE[loc.name], f"Location found in requirements, but not in location table: {loc}"
 
-            self.get_region(dun_entrance_region).connect(
-                apreg,
-                rule=lambda state, entrance=conn: getattr(
-                    Macros, f"can_reach_{entrance}"
-                )(state, self.player),
-            )
+    def connect_regions(self, region_name) -> None:
+        """
+        This function connects all regions starting from the origin region and going out.
+        This function is to be called **once** outside of this function, with the region_name
+        parameter as the origin region. This is a recursive function that will automatically
+        connect all regions outside of the origin region.
 
-        for trl, conn in self.entrances.trial_connections.items():
-            if conn == "trial_gate_on_skyloft":
-                trl_gate_region = "Central Skyloft"
-            elif conn == "trial_gate_in_faron_woods":
-                trl_gate_region = "Faron Woods"
-            elif conn == "trial_gate_in_eldin_volcano":
-                trl_gate_region = "Eldin Volcano"
-            elif conn == "trial_gate_in_lanayru_desert":
-                trl_gate_region = "Lanayru Desert"
+        :param region_name: The region to connect.
+        """
+        appended_regions = []
 
-            apreg = Region(trl, self.player, self.multiworld)
-            apreg.connect(self.get_region(trl_gate_region))
-            self.multiworld.regions.append(apreg)
+        if region_name not in self.connected_regions:
+            for exit_short_name, rule in ALL_REQUIREMENTS[region_name]["exits"].items():
+                exit_full_name = f"{region_name} - {exit_short_name}"
+                if exit_full_name in self.connected_entrances:
+                    continue
+                entrance = [ent for ent in AP_ENTRANCE_TABLE if ent.exit_name == exit_full_name].pop()
+                entrance_region = entrance.entrance_region
+                entrance_full_name = entrance.entrance_name
+                region = self.get_region(region_name)
 
-            self.get_region(trl_gate_region).connect(
-                apreg,
-                rule=lambda state, gate=conn: getattr(Macros, f"can_open_{gate}")(
-                    state, self.player
-                ),
-            )
+                if entrance.group == 10:
+                    if exit_full_name == "Sky - Emerald Pillar":
+                        prov = "Faron Province"
+                    elif exit_full_name == "Sky - Ruby Pillar":
+                        prov = "Eldin Province"
+                    elif exit_full_name == "Sky - Amber Pillar":
+                        prov = "Lanayru Province"
+                    statue = self.entrances.starting_statues[prov][1]
+                    entrance_region = statue["apregion"]
+                    entrance_full_name = None
 
-        # Place locations within the regions
-        for loc in self.progress_locations:
-            loc_data = LOCATION_TABLE[loc]
+                if entrance.group == 2:
+                    dungeon_entrance = exit_short_name.lower().replace(" ", "_")
+                    dungeon = [dun for dun, conn in self.entrances.dungeon_connections.items() if conn == dungeon_entrance].pop()
+                    entrance_region = DUNGEON_INITIAL_REGIONS[dungeon]
+                    entrance_full_name = None
 
-            loc_region = self.get_region(loc_data.region)
-            location = SSLocation(self.player, loc, loc_region, loc_data)
-            loc_region.locations.append(location)
+                if entrance.group == 4 or entrance.group == 6:
+                    dungeon = ALL_REQUIREMENTS[region_name]["hint_region"]
+                    dungeon_entrance = self.entrances.dungeon_connections[dungeon]
+                    entrance_region = DUNGEON_ENTRANCE_REGIONS[dungeon_entrance]
+                    entrance_full_name = None
 
-        for loc in self.nonprogress_locations:
-            loc_data = LOCATION_TABLE[loc]
+                # Add exits- with logic if overworld or req dungeon, no logic if unreq dungeon
+                if (
+                    (
+                        ALL_REQUIREMENTS[region_name]["hint_region"] in self.dungeons.banned_dungeons
+                        or ALL_REQUIREMENTS[entrance_region]["hint_region"] in self.dungeons.banned_dungeons
+                        or (
+                            (
+                                ALL_REQUIREMENTS[region_name]["hint_region"] == "Sky Keep"
+                                or ALL_REQUIREMENTS[entrance_region]["hint_region"] == "Sky Keep"
+                            )
+                            and not self.dungeons.sky_keep_required
+                        )
+                    )
+                    and self.options.empty_unrequired_dungeons
+                ):
+                    region.add_exits(
+                        {entrance_region: exit_full_name},
+                        {entrance_region: lambda state: True}
+                    )
+                else:
+                    region.add_exits(
+                        {entrance_region: exit_full_name},
+                        {entrance_region: eval(f"lambda state, player=self.player: {parse_expression(rule)}")}
+                    )
 
-            loc_region = self.get_region(loc_data.region)
-            location = SSLocation(self.player, loc, loc_region, loc_data)
-            location.progress_type = LocationProgressType.EXCLUDED
-            loc_region.locations.append(location)
+                # if entrance_full_name is None:
+                #     # One way entrance
+                #     self.connected_entrances.add(exit_full_name)
+                # else:
+                #     # Two way entrance
+                #     self.connected_entrances.update({exit_full_name, entrance_full_name})
+
+                # Treat all exits as one way now
+
+                self.connected_entrances.add(exit_full_name)
+                appended_regions.append(entrance_region)
+
+            self.connected_regions.add(region_name)
+
+            for reg in deepcopy(appended_regions):
+                if reg in self.connected_regions:
+                    continue
+                self.connect_regions(reg)
 
     def create_item(self, name: str) -> SSItem:
         """
@@ -354,6 +395,24 @@ class SSWorld(World):
                 name, self.player, ITEM_TABLE[name], item_classification(self, name)
             )
         raise KeyError(f"Invalid item name: {name}")
+    
+    # def post_fill(self):
+    #     spheres = self.multiworld.get_spheres()
+    #     locs = {}
+    #     for i, sphere in enumerate(spheres):
+    #         locs[i] = sorted([(loc.name, loc.item.name) for loc in sphere], key=lambda loc: loc[0])
+    #     with open("./worlds/ss/Playthrough.json", "w") as f:
+    #         json.dump(locs, f, indent=2)
+
+    def region_to_hint_region(self, region: Region) -> str:
+        """
+        Returns the hint region for a region object.
+
+        :param region: The region object.
+        :return: A string of the hint region.
+        """
+
+        return ALL_REQUIREMENTS[region.name]["hint_region"]
 
     def generate_output(self, output_directory: str) -> None:
         """
@@ -393,6 +452,8 @@ class SSWorld(World):
             "SoT Location": hints.handle_impa_sot_hint(),
             "Dungeon Entrances": {},
             "Trial Entrances": {},
+            "Starting Statues": self.entrances.starting_statues,
+            "Starting Entrance": self.entrances.starting_entrance,
         }
 
         # Output options to file.
@@ -501,7 +562,7 @@ class SSWorld(World):
             "randomize_entrances": self.options.randomize_entrances.value,
             "randomize_trials": self.options.randomize_trials.value,
             "random_start_entrance": self.options.random_start_entrance.value,
-            "limit_start_entrance": self.options.limit_start_entrance.value,
+            #"limit_start_entrance": self.options.limit_start_entrance.value,
             "random_start_statues": self.options.random_start_statues.value,
             "shopsanity": self.options.shopsanity.value,
             "rupoor_mode": self.options.rupoor_mode.value,
@@ -532,6 +593,7 @@ class SSWorld(World):
             "full_starting_wallet": self.options.full_starting_wallet.value,
             "max_starting_bugs": self.options.max_starting_bugs.value,
             "max_starting_treasures": self.options.max_starting_treasures.value,
+            "ap_hint_distribution": self.options.hint_distribution,
             "song_hints": self.options.song_hints.value,
             "chest_dowsing": self.options.chest_dowsing.value,
             "dungeon_dowsing": self.options.dungeon_dowsing.value,

@@ -65,6 +65,7 @@ From now on, Archipelago may be referred to as "AP". Skyward Sword may be referr
 ### Trackers
 **There are several trackers you can use with Skyward Sword for Archipelago:**
 - [Skyward Sword Randomizer Web Tracker](https://robojumper.github.io/SS-Randomizer-Tracker/)
+    - [Web Tracker Guide](https://robojumper.github.io/SS-Randomizer-Tracker/guide)
     - Set the release to "Latest Development Build (ssrando/main)"
     - You can manually put in all of the settings, or paste in a settings string **(recommended)**.
         - The settings string for the last generated seed can be copied from the randomizer application, in the box right above the "Randomize" button.

@@ -80,6 +80,7 @@ ITEM_TABLE: dict[str, SSItemData] = {
     "Gratitude Crystal Pack":       SSItemData("Item",         IC.progression,         35,     13, 0x23),
     "5 Bombs":                      SSItemData("Item",         IC.filler,              40,     1,  0x28),
     "10 Bombs":                     SSItemData("Item",         IC.filler,              41,     0,  0x29), # Rupin
+    "Gratitude Crystal":            SSItemData("Item",         IC.progression,         48,     15, 0x30), # Locked
     "Gust Bellows":                 SSItemData("Item",         IC.progression,         49,     1,  0x31),
     "Map":                          SSItemData("Item",         IC.filler,              50,     0,  0x32), # unused
     "Progressive Slingshot":        SSItemData("Item",         IC.progression,         52,     2,  0x34),
