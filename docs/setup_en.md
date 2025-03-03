@@ -12,10 +12,12 @@ From now on, Archipelago may be referred to as "AP". Skyward Sword may be referr
 - The Skyward Sword AP World:
     - This includes the [APWorld file and the YAML options file](https://github.com/Battlecats59/SS_APWorld/releases/latest)
     - A zip file including both of these can be downloaded [here](https://github.com/Battlecats59/SS_APWorld/releases/latest/download/APSkywardSword.zip)
+    - To see all releases and pre-releases, visit the [SS AP release page](https://github.com/Battlecats59/SS_APWorld/releases)
 
 ### Useful Links
 - [Archipelago Setup Guide](https://archipelago.gg/tutorial/Archipelago/setup/en)
 - [Archipelago Main Discord](https://discord.gg/8Z65BR2)
+- [Trackers and other useful tools](#trackers)
 
 ### Setting up Archipelago
 - Open the Archipelago launcher and click the `Install APWorld` button
@@ -64,7 +66,13 @@ From now on, Archipelago may be referred to as "AP". Skyward Sword may be referr
 
 ### Trackers
 **There are several trackers you can use with Skyward Sword for Archipelago:**
-- [Skyward Sword Randomizer Web Tracker](https://robojumper.github.io/SS-Randomizer-Tracker/)
+- [Skyward Sword Archipelago Web Tracker](https://youraveragelink.github.io/SSR-AP-Tracker) (created by YourAverageLink and robojumper)
+    - This is the recommended tracker for multiworld via archipelago, since it will auto track items and locations.
+    - On the setup screen, input the AP room address and your slot name to connect.
+    - When you click "connect", the tracker will automatically input all settings and locations for you.
+        - Once you are connected, click "launch new tracker" to begin.
+- [Skyward Sword Randomizer Web Tracker](https://robojumper.github.io/SS-Randomizer-Tracker/) (created by robojumper)
+    - This is recommended if you want to manually track your game.
     - Set the release to "Latest Development Build (ssrando/main)"
     - You can manually put in all of the settings, or paste in a settings string **(recommended)**.
         - The settings string for the last generated seed can be copied from the randomizer application, in the box right above the "Randomize" button.
@@ -127,7 +135,7 @@ Discussion regarding this APWorld is in the [Archipelago Main Discord](https://d
 ### Credits
 
 - **Battlecats59**: Archipelago implementation
-- **YourAverageLink**: Archipelago implementation and client work
+- **YourAverageLink**: Archipelago implementation, client work, tracker implementation
 - **robojumper**: Client and logic work
 - **Trez**: Archipelago web implementation
 - **Fireworkspinner**: Early Archipelago manual designs
