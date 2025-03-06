@@ -90,6 +90,13 @@ DUNGEON_ENTRANCE_REGIONS = {
     "dungeon_entrance_on_skyloft": "Central Skyloft",
 }
 
+TRIAL_GATE_REGIONS = {
+    "trial_gate_on_skyloft": "Central Skyloft",
+    "trial_gate_in_faron_woods": "Faron Woods - Viewing Platform",
+    "trial_gate_in_eldin_volcano": "Eldin Volcano - Volcano Ascent",
+    "trial_gate_in_lanayru_desert": "Lanayru Desert - North Desert",
+}
+
 SWORD_COUNTS = {
     "swordless": 0,
     "practice_sword": 1,

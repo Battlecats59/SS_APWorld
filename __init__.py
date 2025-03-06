@@ -259,10 +259,6 @@ class SSWorld(World):
         self.entrances.randomize_starting_entrance()
         self.origin_region_name = self.entrances.starting_entrance["apregion"]
 
-        print(self.entrances.starting_statues)
-        print(self.entrances.starting_entrance)
-        print(self.origin_region_name)
-
         # Determine progress and nonprogress locations
         self.progress_locations, self.nonprogress_locations = (
             self.determine_progress_and_nonprogress_locations()
@@ -337,6 +333,20 @@ class SSWorld(World):
                     dungeon_entrance = self.entrances.dungeon_connections[dungeon]
                     entrance_region = DUNGEON_ENTRANCE_REGIONS[dungeon_entrance]
                     entrance_full_name = None
+
+                if entrance.group == 3:
+                    if region_name.endswith(" Silent Realm"):
+                        # exiting silent realm
+                        trial = region_name
+                        trial_gate = self.entrances.trial_connections[trial]
+                        entrance_region = TRIAL_GATE_REGIONS[trial_gate]
+                        entrance_full_name = f"{entrance_region} - {trial_gate}"
+                    else:
+                        # entering silent realm
+                        trial_gate = exit_short_name.lower().replace(" ", "_")
+                        trial = [trl for trl, conn in self.entrances.trial_connections.items() if conn == trial_gate].pop()
+                        entrance_region = trial
+                        entrance_full_name = f"{trial} - Trial Gate"
 
                 # Add exits- with logic if overworld or req dungeon, no logic if unreq dungeon
                 if (

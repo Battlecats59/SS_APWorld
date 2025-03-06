@@ -47,8 +47,6 @@ class EntranceRando:
                 for dun in self.dungeons
                 if dun in req_dungeons
             ]
-            print(req_dungeons)
-            print(dungeon_entrances_only_required)
             self.world.random.shuffle(dungeon_entrances_only_required)
             for dun in self.dungeons:
                 if dun in req_dungeons:  # TODO CHECK
@@ -57,7 +55,6 @@ class EntranceRando:
                     )
                 else:
                     self.dungeon_connections[dun] = VANILLA_DUNGEON_CONNECTIONS[dun]
-            print(self.dungeon_connections)
         if self.world.options.randomize_entrances == "all_surface_dungeons":
             dungeon_entrances_no_sky_keep = self.dungeon_entrances.copy()
             dungeon_entrances_no_sky_keep.remove("dungeon_entrance_on_skyloft")
