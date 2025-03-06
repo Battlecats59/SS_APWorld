@@ -297,7 +297,8 @@ def _give_death(ctx: SSContext) -> None:
         ctx.slot is not None
         and dolphin_memory_engine.is_hooked()
         and ctx.dolphin_status == CONNECTION_CONNECTED_STATUS
-        and check_ingame()
+        and check_ingame(get_link_ptr())
+        and not check_in_minigame()
     ):
         ctx.has_send_death = True
         dme_write_short(CURR_HEALTH_ADDR, 0)
@@ -320,7 +321,6 @@ async def _give_item(ctx: SSContext, item_name: str) -> bool:
     for idx in range(ctx.len_give_item_array):
         slot = dme_read_byte(ARCHIPELAGO_ARRAY_ADDR + idx)
         if slot == 0xFF:
-            await asyncio.sleep(0.25)
             logger.info(f"DEBUG: Gave item {item_id} to player {ctx.player_names[ctx.slot]}.")
             dme_write_byte(ARCHIPELAGO_ARRAY_ADDR + idx, item_id)
             await asyncio.sleep(0.25)
@@ -328,20 +328,19 @@ async def _give_item(ctx: SSContext, item_name: str) -> bool:
             # or bed which could delete the item, so we should check for a reload
             while is_link_not_in_action(get_link_ptr(), [ITEM_GET_ACTION]):
                 await asyncio.sleep(0.1)
-                # Stop trying if the player soft reset
-                # Also stop trying if the player is using a door, since doors don't actually delete items
-                # And, while the client won't initiate an item send while the player is swimming, the player
-                # can still receive items when going through underwater loading zones, as their action will
-                # momentarily be action 0x03.
-                # The patched game *will* still give them the item, but it won't give them the item action,
+                # While the client won't initiate an item send while the player is swimming, the player
+                # can still receive items underwater if they're sent one just before entering the water.
+                # The patched game *will* still give them the item, but it won't put them in the item action,
                 # so we shouldn't resend the item, or else it will be duplicated.
-                if check_on_title_screen() or is_link_in_action(get_link_ptr(), DOOR_ACTIONS + SWIM_ACTIONS):
+                if is_link_in_action(get_link_ptr(), SWIM_ACTIONS):
                     break
                     
                 # If state is 0, that means a reload occurred, so we should resend the item.
                 # However, we shouldn't resend the item if the user immediately enters the item get action anyway
                 # (which can happen if this reload occurs due to a door, in which case the original item will still be received)
                 if not check_ingame(get_link_ptr()):
+                    # Reset the value at this array index to 0, to avoid duplicating the item if it was never read in the first place
+                    dme_write_byte(ARCHIPELAGO_ARRAY_ADDR + idx, 0xFF)
                     logger.info(f"DEBUG: A reload deleted the item. Resending the item...")
                     return False
             
@@ -367,7 +366,7 @@ async def give_items(ctx: SSContext) -> None:
             if expected_idx <= idx:
                 # Attempt to give the item and increment the expected index.
                 while not await _give_item(ctx, LOOKUP_ID_TO_NAME[item.item]):
-                    await asyncio.sleep(1)
+                    await asyncio.sleep(0.25)
 
                 # Increment the expected index.
                 dme_write_short(EXPECTED_INDEX_ADDR, idx + 1)
@@ -432,8 +431,8 @@ async def check_locations(ctx: SSContext) -> None:
                     hints_checked.add(SSLocation.get_apid(LOCATION_TABLE[locname].code))
 
         # Send the list of newly-checked locations & hints to the server.
+        # We can send every hint over because create_as_hint: 2 ensures only *new* hints get broadcast.
         locations_checked = ctx.locations_checked.difference(ctx.checked_locations)
-        hints_checked = hints_checked.difference(ctx.locations_scouted)
         if locations_checked:
             await ctx.send_msgs([{"cmd": "LocationChecks", "locations": locations_checked}]) 
         if hints_checked:
@@ -500,7 +499,7 @@ async def check_death(ctx: SSContext) -> None:
 
     :return: `True` if the player is dead, otherwise `False`.
     """
-    if ctx.slot is not None and check_ingame() and not check_on_title_screen():
+    if ctx.slot is not None and check_ingame(get_link_ptr()) and not check_on_title_screen():
         cur_health = dme_read_short(CURR_HEALTH_ADDR)
         if cur_health <= 0:
             if not ctx.has_send_death and time.time() >= ctx.last_death_link + 3:
@@ -564,7 +563,7 @@ def validate_link_action(link_ptr: int) -> bool:
     if link_ptr == 0x0:
         return False
     action = dme_read_byte(link_ptr + LINK_ACTION_OFFSET)
-    return action <= MAX_SAFE_ACTION or (action == ITEM_GET_ACTION)
+    return action <= MAX_SAFE_ACTION
 
 def is_link_not_in_action(link_ptr: int, actions: List[int]) -> bool:
     if link_ptr == 0x0:

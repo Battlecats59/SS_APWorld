@@ -1250,8 +1250,8 @@ AP_ENTRANCE_TABLE = [
         "Lanayru Caves - Past Locked Door",
         "Lanayru Caves - Past Locked Door - Path away from Door",
         "Lanayru Sand Sea - Door to Caves",
-        None,
-        1, False, None,
+        "Lanayru Sand Sea - Door to Caves - Door to Caves",
+        2, True, 1,
     ),
     SSAPEntranceData(
         "Lanayru Caves - Past Locked Door",
@@ -1264,8 +1264,8 @@ AP_ENTRANCE_TABLE = [
         "Lanayru Caves - Past Crawlspace",
         "Lanayru Caves - Past Crawlspace - Path away from Crawlspace",
         "Lanayru Gorge - Gorge",
-        None,
-        1, False, None,
+        "Lanayru Gorge - Gorge - Path to Caves",
+        2, True, 1,
     ),
     SSAPEntranceData(
         "Lanayru Caves - Past Crawlspace",
@@ -1284,9 +1284,9 @@ AP_ENTRANCE_TABLE = [
     SSAPEntranceData(
         "Lanayru Gorge - Gorge",
         "Lanayru Gorge - Gorge - Path to Caves",
-        "Lanayru Caves - Caves",
-        None,
-        1, False, None,
+        "Lanayru Caves - Past Crawlspace",
+        "Lanayru Caves - Past Crawlspace - Path away from Crawlspace",
+        2, True, 1,
     ),
     SSAPEntranceData(
         "Lanayru Sand Sea - Door to Caves",
@@ -1298,9 +1298,9 @@ AP_ENTRANCE_TABLE = [
     SSAPEntranceData(
         "Lanayru Sand Sea - Door to Caves",
         "Lanayru Sand Sea - Door to Caves - Door to Caves",
-        "Lanayru Caves - Caves",
-        None,
-        1, False, None,
+        "Lanayru Caves - Past Locked Door",
+        "Lanayru Caves - Past Locked Door - Path away from Door",
+        2, True, 1,
     ),
     SSAPEntranceData(
         "Lanayru Sand Sea - Ancient Harbor",
@@ -3359,7 +3359,7 @@ GAME_ENTRANCE_TABLE = [
         None,
         "The Sky",
         "F000", 0, 0, 0, 2,
-        "Entrance", "Beedle's Shop",
+        "Entrance", "Central Skyloft",
     ),
     SSEntranceData(
         "Skyloft - Knight Academy - Chimney",
@@ -3875,11 +3875,11 @@ AP_EXIT_GRAPH = {
     },
     "Lanayru Gorge - Gorge": {
         "Fly to Sky": "Sky",
-        "Path to Caves": "Lanayru Caves - Caves",
+        "Path to Caves": "Lanayru Caves - Past Crawlspace",
     },
     "Lanayru Sand Sea - Door to Caves": {
         "Clawshot Path to Harbor": "Lanayru Sand Sea - Ancient Harbor",
-        "Door to Caves": "Lanayru Caves - Caves",
+        "Door to Caves": "Lanayru Caves - Past Locked Door",
     },
     "Lanayru Sand Sea - Ancient Harbor": {
         "Fly to Sky": "Sky",
