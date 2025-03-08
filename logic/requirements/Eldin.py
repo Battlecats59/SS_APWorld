@@ -7,6 +7,7 @@ ELDIN_REQUIREMENTS = {
         "exits": {
             "Fly to Sky": "Nothing",
             "Volcano East": "Nothing",
+            "Volcano Ascent": "Bomb Bag",
             "Speak to Gossip Stone": "Nothing",
         },
         "locations": {
@@ -23,7 +24,7 @@ ELDIN_REQUIREMENTS = {
         },
         "exits": {
             "Fly to Sky": "Nothing",
-            "Volcano Entry": "Nothing",
+            "Volcano Entry": "Bomb Bag | Clawshots",
             "Volcano Ascent": "Bomb Bag | Has Hook Beetle",
             "Mogma Cave": "Nothing",
         },
@@ -39,6 +40,7 @@ ELDIN_REQUIREMENTS = {
         "hint_region": "Eldin Volcano",
         "exits": {
             "Fly to Sky": "Nothing",
+            "Volcano Entry": "Nothing",
             "Volcano East": "Nothing",
             "Thrill Digger Cliff": "Has Slingshot | Has Bow",
             "Bottom of Sand Slide": "Bomb Bag | Has Hook Beetle",

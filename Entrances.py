@@ -646,6 +646,13 @@ AP_ENTRANCE_TABLE = [
     ),
     SSAPEntranceData(
         "Eldin Volcano - Volcano Entry",
+        "Eldin Volcano - Volcano Entry - Volcano Ascent",
+        "Eldin Volcano - Volcano Ascent",
+        "Eldin Volcano - Volcano Ascent - Volcano Entry",
+        2, True, 1,
+    ),
+    SSAPEntranceData(
+        "Eldin Volcano - Volcano Entry",
         "Eldin Volcano - Volcano Entry - Speak to Gossip Stone",
         "Bokoblin Base - Prison",
         "Bokoblin Base - Prison - Speak to Gossip Stone",
@@ -685,6 +692,13 @@ AP_ENTRANCE_TABLE = [
         "Sky",
         None,
         1, False, 9,
+    ),
+    SSAPEntranceData(
+        "Eldin Volcano - Volcano Ascent",
+        "Eldin Volcano - Volcano Ascent - Volcano Entry",
+        "Eldin Volcano - Volcano Entry",
+        "Eldin Volcano - Volcano Entry - Volcano Ascent",
+        2, True, 1,
     ),
     SSAPEntranceData(
         "Eldin Volcano - Volcano Ascent",
@@ -3711,6 +3725,7 @@ AP_EXIT_GRAPH = {
     "Eldin Volcano - Volcano Entry": {
         "Fly to Sky": "Sky",
         "Volcano East": "Eldin Volcano - Volcano East",
+        "Volcano Ascent": "Eldin Volcano - Volcano Ascent",
         "Speak to Gossip Stone": "Bokoblin Base - Prison",
     },
     "Eldin Volcano - Volcano East": {
@@ -3721,6 +3736,7 @@ AP_EXIT_GRAPH = {
     },
     "Eldin Volcano - Volcano Ascent": {
         "Fly to Sky": "Sky",
+        "Volcano Entry": "Eldin Volcano - Volcano Entry",
         "Volcano East": "Eldin Volcano - Volcano East",
         "Thrill Digger Cliff": "Eldin Volcano - Thrill Digger Cliff",
         "Bottom of Sand Slide": "Eldin Volcano - Bottom of Sand Slide",
