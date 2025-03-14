@@ -11,6 +11,7 @@ from Options import (
     StartInventoryPool,
     ProgressionBalancing,
     Toggle,
+    Removed,
 )
 
 
@@ -210,13 +211,21 @@ class ProgressionScrapper(DefaultOnToggle):
 
     display_name = "Progression in Scrapper Quests"
 
-class ProgressionBatreaux(DefaultOnToggle):
+class ProgressionBatreaux(Range):
     """
-    If enabled, Batreaux's Rewards can contain progression items.
-    If not enabled, all Batreaux Rewards will contain junk (filler) items.
+    Controls the maximum Batreaux's reward that can contain progression items.
+    Progression locations will begin with Batreaux's first rewards. Any locations
+    after this number will contain junk (filler) items.
+    0 means no rewards may contain progression, 7 means all rewards may contain progression.
+
+    NOTE: Batreaux's chest falls under the third reward, and the seventh reward falls under the sixth reward,
+    since they are given at the same time.
     """
 
     display_name = "Progression in Batreaux's Rewards"
+    range_start = 0
+    range_end = 7
+    default = 7
 
 
 # Dungeons
@@ -465,6 +474,25 @@ class ForceSwordDungeonReward(Choice):
     option_none = 0
     option_heart_container = 1
     option_final_check = 2
+    default = 0
+
+
+class ShuffleBatreauxCounts(Choice):
+    """
+    Determines the amount of crystals Batreaux will require for each of his rewards.
+    **Vanilla**: The normal required crystal counts (5, 10, 30, 40, 50, 70, 80).
+    **Half**: Half of the normal required crystal counts (2, 5, 15, 20, 25, 35, 40).
+    **Shuffled**: Completely random required crystal counts (min 1, max 80).
+    **Shuffled - High**: Higher random required crystal counts (min 30, max 80).
+    **Shuffled - Low**: Lower random required crystal counts (min 1, max 50).
+    """
+    
+    display_name = "Shuffle Batreaux Counts"
+    option_vanilla = 0
+    option_half = 1
+    option_shuffled = 2
+    option_shuffled_high = 3
+    option_shuffled_low = 4
     default = 0
 
 
@@ -871,6 +899,7 @@ class SSOptions(PerGameCommonOptions):
     tadtonesanity: Tadtonesanity
     gondo_upgrades: PlaceScrapShopUpgrades
     sword_dungeon_reward: ForceSwordDungeonReward
+    batreaux_counts: ShuffleBatreauxCounts
     randomize_boss_key_puzzles: RandomizeBossKeyPuzzles
     random_puzzles: RandomPuzzles
     peatrice_conversations: PeatriceConversations
@@ -900,8 +929,8 @@ class SSOptions(PerGameCommonOptions):
     chest_dowsing: ChestDowsing
     dungeon_dowsing: AllowDowsingInDungeons
     impa_sot_hint: PastImpaStoneOfTrialsHint
-    cube_sots: SeparateCubeSotS
-    precise_item: PreciseItemHints
+    #cube_sots: SeparateCubeSotS
+    #precise_item: PreciseItemHints
     starting_items: StartInventoryPool
     death_link: DeathLink
     progression_balancing: SSProgressionBalancing

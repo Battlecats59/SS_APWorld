@@ -97,6 +97,17 @@ TRIAL_GATE_REGIONS = {
     "trial_gate_in_lanayru_desert": "Lanayru Desert - North Desert",
 }
 
+BATREAUX_LOCATIONS = [
+    # Does not include chest or seventh reward!!
+    "Batreaux's House - First Reward",
+    "Batreaux's House - Second Reward",
+    "Batreaux's House - Third Reward",
+    "Batreaux's House - Fourth Reward",
+    "Batreaux's House - Fifth Reward",
+    "Batreaux's House - Sixth Reward",
+    "Batreaux's House - Final Reward",
+]
+
 SWORD_COUNTS = {
     "swordless": 0,
     "practice_sword": 1,

@@ -5,7 +5,6 @@ from base64 import b64encode
 from copy import deepcopy
 from collections.abc import Mapping
 from dataclasses import fields
-import threading
 from typing import Any, ClassVar
 
 import yaml
@@ -36,6 +35,7 @@ from .rando.DungeonRando import DungeonRando
 from .rando.EntranceRando import EntranceRando
 from .rando.ItemPlacement import handle_itempool, item_classification
 from .rando.HintPlacement import Hints
+from .rando.MiscRando import shuffle_batreaux_counts
 
 from .logic.LogicParser import parse_expression
 from .logic.Logic import ALL_REQUIREMENTS
@@ -149,8 +149,6 @@ class SSWorld(World):
 
         self.dungeons = DungeonRando(self)
         self.entrances = EntranceRando(self)
-        self.hint_data: Hints = None
-        self.hint_data_available = threading.Event()
 
     def determine_progress_and_nonprogress_locations(self) -> tuple[set[str], set[str]]:
         """
@@ -175,7 +173,6 @@ class SSWorld(World):
         enabled_flags |= add_flag(self.options.progression_minigames, SSLocFlag.MINIGME)
         enabled_flags |= add_flag(self.options.progression_crystals, SSLocFlag.CRYSTAL)
         enabled_flags |= add_flag(self.options.progression_scrapper, SSLocFlag.SCRAPPR)
-        enabled_flags |= add_flag(self.options.progression_batreaux, SSLocFlag.BTREAUX)
 
         # Other flags
         enabled_flags |= add_flag(self.options.rupeesanity, SSLocFlag.RUPEE)
@@ -227,7 +224,18 @@ class SSWorld(World):
             )
 
         for loc, data in LOCATION_TABLE.items():
-            if data.flags & enabled_flags == data.flags:
+            if data.flags & SSLocFlag.BTREAUX:
+                if loc == "Batreaux's House - Chest":
+                    bat_rew = "Batreaux's House - Third Reward"
+                elif loc == "Batreaux's House - Seventh Reward":
+                    bat_rew = "Batreaux's House - Sixth Reward"
+                else:
+                    bat_rew = loc
+                if BATREAUX_LOCATIONS.index(bat_rew) < self.options.progression_batreaux.value:
+                    progress_locations.add(loc)
+                else:
+                    nonprogress_locations.add(loc)
+            elif data.flags & enabled_flags == data.flags:
                 progress_locations.add(loc)
             else:
                 nonprogress_locations.add(loc)
@@ -264,6 +272,9 @@ class SSWorld(World):
             self.determine_progress_and_nonprogress_locations()
         )
 
+        self.batreaux_rewards = shuffle_batreaux_counts(self)
+        self.batreaux_requirements = {}
+
     def create_regions(self) -> None:
         """
         Create and connect regions.
@@ -273,7 +284,48 @@ class SSWorld(World):
             region = Region(reg_name, self.player, self.multiworld)
             for short_loc_name, rule in data["locations"].items():
                 full_loc_name = f"{data["hint_region"]} - {short_loc_name}"
-                location = SSLocation(self.player, full_loc_name, region, LOCATION_TABLE[full_loc_name])
+                og_full_loc_name = deepcopy(full_loc_name)
+                if LOCATION_TABLE[full_loc_name].flags & SSLocFlag.BTREAUX:
+                    # Remove location from progress or nonprogress locations
+                    if full_loc_name in self.progress_locations:
+                        self.progress_locations.remove(full_loc_name)
+                        bat_loc_progress = True
+                    elif full_loc_name in self.nonprogress_locations:
+                        self.nonprogress_locations.remove(full_loc_name)
+                        bat_loc_progress = False
+                    else:
+                        raise Exception(
+                            f"Batreaux location not found in progress "
+                            f"locations nor nonprogress locations: {full_loc_name}"
+                        )
+
+                    if short_loc_name == "Chest":
+                        crystal_count = self.batreaux_rewards["Third Reward"]
+                        short_loc_name = f"{str(crystal_count)} Crystals Chest"
+                        full_loc_name = f"{data["hint_region"]} - {str(crystal_count)} Crystals Chest"
+                        self.batreaux_requirements[short_loc_name] = f"{str(crystal_count)} Gratitude Crystals"
+                    elif short_loc_name == "Seventh Reward":
+                        crystal_count = self.batreaux_rewards["Sixth Reward"]
+                        short_loc_name = f"{str(crystal_count)} Crystals Second Reward"
+                        full_loc_name = f"{data["hint_region"]} - {str(crystal_count)} Crystals Second Reward"
+                        self.batreaux_requirements[short_loc_name] = f"{str(crystal_count)} Gratitude Crystals"
+                    else:
+                        crystal_count = self.batreaux_rewards[short_loc_name]
+                        short_loc_name = f"{str(crystal_count)} Crystals"
+                        full_loc_name = f"{data["hint_region"]} - {str(crystal_count)} Crystals"
+                        self.batreaux_requirements[short_loc_name] = f"{str(crystal_count)} Gratitude Crystals"
+
+                    # Add new location back into progress or nonprogress locations
+                    if bat_loc_progress:
+                        self.progress_locations.add(full_loc_name)
+                    else:
+                        self.nonprogress_locations.add(full_loc_name)
+
+                    # Create a batreaux reward location
+                    location = SSLocation(self.player, full_loc_name, region, LOCATION_TABLE[og_full_loc_name], ogname=og_full_loc_name)
+                else:
+                    # Create a normal location
+                    location = SSLocation(self.player, full_loc_name, region, LOCATION_TABLE[full_loc_name])
                 if full_loc_name in self.nonprogress_locations:
                     location.progress_type = LocationProgressType.EXCLUDED
                 region.locations.append(location)
@@ -284,10 +336,17 @@ class SSWorld(World):
 
         self.connect_regions(self.origin_region_name)
 
+        # These are checks to make sure all locations were made
+        # Batreaux rewards are handled differently, so skip those
+
         for loc in LOCATION_TABLE.keys():
+            if LOCATION_TABLE[loc].region == "Batreaux's House":
+                continue
             assert self.get_location(loc), f"Location found in location table, but not in requirements: {loc}"
 
         for loc in self.multiworld.get_locations(self.player):
+            if loc.parent_region.name == "Batreaux's House":
+                continue
             assert LOCATION_TABLE[loc.name], f"Location found in requirements, but not in location table: {loc}"
 
     def connect_regions(self, region_name) -> None:
@@ -406,13 +465,17 @@ class SSWorld(World):
             )
         raise KeyError(f"Invalid item name: {name}")
     
-    # def post_fill(self):
-    #     spheres = self.multiworld.get_spheres()
-    #     locs = {}
-    #     for i, sphere in enumerate(spheres):
-    #         locs[i] = sorted([(loc.name, loc.item.name) for loc in sphere], key=lambda loc: loc[0])
-    #     with open("./worlds/ss/Playthrough.json", "w") as f:
-    #         json.dump(locs, f, indent=2)
+    def post_fill(self):
+        # Fill hint data
+        self.hints = Hints(self)
+        self.hints.handle_hints()
+
+        # spheres = self.multiworld.get_spheres()
+        # locs = {}
+        # for i, sphere in enumerate(spheres):
+        #     locs[i] = sorted([(loc.name, loc.item.name) for loc in sphere], key=lambda loc: loc[0])
+        # with open("./worlds/ss/Playthrough.json", "w") as f:
+        #     json.dump(locs, f, indent=2)
 
     def region_to_hint_region(self, region: Region) -> str:
         """
@@ -432,8 +495,6 @@ class SSWorld(World):
         """
         multiworld = self.multiworld
         player = self.player
-        hints = Hints(self)
-        game_hints, log_hints = hints.handle_hints()
         player_hash = self.random.sample(HASH_NAMES, 3)
         mw_player_names = [
             self.multiworld.get_player_name(i + 1)
@@ -457,9 +518,10 @@ class SSWorld(World):
             "Starting Items": self.starting_items,
             "Required Dungeons": self.dungeons.required_dungeons,
             "Locations": {},
-            "Hints": game_hints,
-            "Log Hints": log_hints,
-            "SoT Location": hints.handle_impa_sot_hint(),
+            "Batreaux Rewards": self.batreaux_rewards,
+            "Hints": self.hints.placed_hints,
+            "Log Hints": self.hints.placed_hints_log,
+            "SoT Location": self.hints.handle_impa_sot_hint(),
             "Dungeon Entrances": {},
             "Trial Entrances": {},
             "Starting Statues": self.entrances.starting_statues,
@@ -471,6 +533,11 @@ class SSWorld(World):
             output_data["Options"][field.name.replace("_", "-")] = getattr(
                 self.options, field.name
             ).value
+
+        # Unused options in AP must be filled for the patcher
+        output_data["Options"]["limit-start-entrance"] = 0
+        output_data["Options"]["cube-sots"] = 0
+        output_data["Options"]["precise-item"] = 1
 
         # Output which item has been placed at each location.
         locations = sorted(
@@ -496,7 +563,10 @@ class SSWorld(World):
                         "game": "Skyward Sword",
                         "classification": "filler",
                     }
-                output_data["Locations"][location.name] = item_info
+                if location.ogname:
+                    output_data["Locations"][location.ogname] = item_info
+                else:
+                    output_data["Locations"][location.name] = item_info
 
         # Fix entrances
         dunconn = {}
@@ -533,11 +603,7 @@ class SSWorld(World):
         )
         apssr.write()
 
-        self.hint_data = hints
-        self.hint_data_available.set()
-
     def fill_slot_data(self) -> Mapping[str, Any]:
-        self.hint_data_available.wait()
         """
         Return the `slot_data` field that will be in the `Connected` network package.
 
@@ -572,7 +638,7 @@ class SSWorld(World):
             "randomize_entrances": self.options.randomize_entrances.value,
             "randomize_trials": self.options.randomize_trials.value,
             "random_start_entrance": self.options.random_start_entrance.value,
-            #"limit_start_entrance": self.options.limit_start_entrance.value,
+            "limit_start_entrance": 0, # self.options.limit_start_entrance.value,
             "random_start_statues": self.options.random_start_statues.value,
             "shopsanity": self.options.shopsanity.value,
             "rupoor_mode": self.options.rupoor_mode.value,
@@ -580,6 +646,7 @@ class SSWorld(World):
             "tadtonesanity": self.options.tadtonesanity.value,
             "gondo_upgrades": self.options.gondo_upgrades.value,
             "sword_dungeon_reward": self.options.sword_dungeon_reward.value,
+            "batreaux_counts": self.options.batreaux_counts.value,
             "randomize_boss_key_puzzles": self.options.randomize_boss_key_puzzles.value,
             "random_puzzles": self.options.random_puzzles.value,
             "peatrice_conversations": self.options.peatrice_conversations.value,
@@ -608,11 +675,11 @@ class SSWorld(World):
             "chest_dowsing": self.options.chest_dowsing.value,
             "dungeon_dowsing": self.options.dungeon_dowsing.value,
             "impa_sot_hint": self.options.impa_sot_hint.value,
-            "cube_sots": self.options.cube_sots.value,
-            "precise_item": self.options.precise_item.value,
+            "cube_sots": 0, #self.options.cube_sots.value,
+            "precise_item": 1, #self.options.precise_item.value,
             "starting_items": self.options.starting_items.value,
             "death_link": self.options.death_link.value,
-            "locations_for_hint": self.hint_data.locations_for_hint,
+            "locations_for_hint": self.hints.locations_for_hint,
             "excluded_locations": self.nonprogress_locations,
             "required_dungeons": self.dungeons.required_dungeons,
         }
