@@ -44,7 +44,7 @@ def handle_itempool(world: "SSWorld") -> None:
         # No need to push these as precollected, AP already does that c:
 
     for itm in placed:
-        adjusted_classification = item_classification(world, item)
+        adjusted_classification = item_classification(world, itm)
         classification = (
             ITEM_TABLE[itm].classification
             if adjusted_classification is None
