@@ -73,6 +73,9 @@ class SSContext(CommonContext):
         self.last_rcvd_index: int = -1
         self.has_send_death: bool = False
         self.locations_for_hint: dict[str, list] = {}
+
+        self.hints_checked = set() # local variable
+        self.chceked_hints = set() # server variable
         self.beedle_items_purchased = [0, 0, 0, 0] # slots from left to right
 
         # Name of the current stage as read from the game's memory. Sent to trackers whenever its value changes to
@@ -419,24 +422,25 @@ async def check_locations(ctx: SSContext) -> None:
                             ctx.beedle_items_purchased[slot] += (data.code == checks[ctx.beedle_items_purchased[slot]])
                             
         
-        hints_checked = set()
         for hint, data in HINT_TABLE.items():
             [flag_bit, flag_value, addr] = data.checked_flag
             # All hint flags are story flags
             flag = dme_read_byte(addr + flag_bit)
             checked = bool(flag & flag_value)
 
-            if checked:
+            if checked or ctx.finished_game:
                 for locname in ctx.locations_for_hint.get(hint, []):
-                    hints_checked.add(SSLocation.get_apid(LOCATION_TABLE[locname].code))
+                    ctx.hints_checked.add(SSLocation.get_apid(LOCATION_TABLE[locname].code))
 
         # Send the list of newly-checked locations & hints to the server.
-        # We can send every hint over because create_as_hint: 2 ensures only *new* hints get broadcast.
         locations_checked = ctx.locations_checked.difference(ctx.checked_locations)
+        hints_checked = ctx.hints_checked.difference(ctx.checked_hints)
         if locations_checked:
             await ctx.send_msgs([{"cmd": "LocationChecks", "locations": locations_checked}]) 
         if hints_checked:
-            await ctx.send_msgs([{"cmd": "LocationScouts", "locations": hints_checked, "create_as_hint": 2}]) 
+            await ctx.send_msgs([{"cmd": "LocationScouts", "locations": hints_checked, "create_as_hint": 2}])
+
+        ctx.checked_hints += hints_checked
 
 
 async def check_current_stage_changed(ctx: SSContext) -> None:

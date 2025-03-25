@@ -29,22 +29,13 @@ def handle_itempool(world: "SSWorld") -> None:
     for item in world.starting_items:
         world.multiworld.push_precollected(world.create_item(item))
 
-    # Set starting items in the dungeon key handler
-    world.dungeons.key_handler.set_starting_keys()
-
     # `placed` variable is simply a list of items to remove from the base pool, since they are
     # either starting items or manually placed
     placed = _handle_placements(world, pool)
     placed.extend(world.starting_items)
 
-    # Handle start inventory now, as these items are not removed from the pool
-    start_inventory = []
-    for itm, q in world.options.start_inventory.value.items():
-        world.starting_items.extend([itm] * q)
-        # No need to push these as precollected, AP already does that c:
-
     for itm in placed:
-        adjusted_classification = item_classification(world, itm)
+        adjusted_classification = item_classification(world, item)
         classification = (
             ITEM_TABLE[itm].classification
             if adjusted_classification is None
@@ -297,7 +288,7 @@ def _handle_placements(world: "SSWorld", pool: list[str]) -> list[str]:
 
     if not options.tadtonesanity:
         num_tadtones = 17 - options.starting_tadtones.value
-        all_tadtones = [loc for loc in world.multiworld.get_locations(world.player) if loc.type == SSLocType.CLEF]
+        all_tadtones = [loc for loc in world.multiworld.get_locations(world.player) if LOCATION_TABLE[loc.name].type == SSLocType.CLEF]
         for i, tad in enumerate(all_tadtones):
             if i < num_tadtones:
                 tad.place_locked_item(

@@ -93,7 +93,7 @@ class SSLocation(Location):
 
     game: str = "Skyward Sword"
 
-    def __init__(self, player: int, name: str, parent: Region, data: SSLocData, ogname: str | None = None):
+    def __init__(self, player: int, name: str, parent: Region, data: SSLocData):
         address = None if data.code is None else SSLocation.get_apid(data.code)
         super().__init__(player, name, address=address, parent=parent)
 
@@ -104,8 +104,6 @@ class SSLocation(Location):
         self.vanilla_item = data.vanilla_item
         self.type = data.type
         self.checked_flag = data.checked_flag
-        self.hint = data.hint
-        self.ogname = ogname
         self.address = self.address
 
     @staticmethod
@@ -432,7 +430,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         [SSLocCheckedFlag.STORY, 0x2, 0x08, 0x805A9B00],  # Flag 373
     ),
     # Batreaux's House
-    "Batreaux's House - First Reward": SSLocData(
+    "Batreaux's House - 5 Crystals": SSLocData(
         32,
         SSLocFlag.BTREAUX,
         "Batreaux's House",
@@ -441,7 +439,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         SSLocType.EVENT,
         [SSLocCheckedFlag.SCENE, 0x9, 0x40, "Skyloft"],
     ),
-    "Batreaux's House - Second Reward": SSLocData(
+    "Batreaux's House - 10 Crystals": SSLocData(
         33,
         SSLocFlag.BTREAUX,
         "Batreaux's House",
@@ -450,7 +448,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         SSLocType.EVENT,
         [SSLocCheckedFlag.SCENE, 0x9, 0x80, "Skyloft"],
     ),
-    "Batreaux's House - Third Reward": SSLocData(
+    "Batreaux's House - 30 Crystals": SSLocData(
         34,
         SSLocFlag.BTREAUX,
         "Batreaux's House",
@@ -459,7 +457,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         SSLocType.EVENT,
         [SSLocCheckedFlag.SCENE, 0x8, 0x01, "Skyloft"],
     ),
-    "Batreaux's House - Chest": SSLocData(
+    "Batreaux's House - 30 Crystals Chest": SSLocData(
         35,
         SSLocFlag.BTREAUX,
         "Batreaux's House",
@@ -468,7 +466,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         SSLocType.T_BOX,
         [SSLocCheckedFlag.SCENE, 0xA, 0x20, "Skyloft"],
     ),
-    "Batreaux's House - Fourth Reward": SSLocData(
+    "Batreaux's House - 40 Crystals": SSLocData(
         36,
         SSLocFlag.BTREAUX,
         "Batreaux's House",
@@ -477,7 +475,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         SSLocType.EVENT,
         [SSLocCheckedFlag.SCENE, 0x8, 0x02, "Skyloft"],
     ),
-    "Batreaux's House - Fifth Reward": SSLocData(
+    "Batreaux's House - 50 Crystals": SSLocData(
         37,
         SSLocFlag.BTREAUX,
         "Batreaux's House",
@@ -486,7 +484,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         SSLocType.EVENT,
         [SSLocCheckedFlag.SCENE, 0x8, 0x04, "Skyloft"],
     ),
-    "Batreaux's House - Sixth Reward": SSLocData(
+    "Batreaux's House - 70 Crystals": SSLocData(
         38,
         SSLocFlag.BTREAUX,
         "Batreaux's House",
@@ -496,7 +494,7 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         [SSLocCheckedFlag.SCENE, 0x8, 0x08, "Skyloft"],
         SSHintType.SOMETIMES,
     ),
-    "Batreaux's House - Seventh Reward": SSLocData(
+    "Batreaux's House - 70 Crystals Second Reward": SSLocData(
         39,
         SSLocFlag.BTREAUX,
         "Batreaux's House",
@@ -506,14 +504,14 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         [SSLocCheckedFlag.SCENE, 0x8, 0x08, "Skyloft"],
         SSHintType.SOMETIMES,
     ),
-    "Batreaux's House - Final Reward": SSLocData(
+    "Batreaux's House - 80 Crystals": SSLocData(
         40,
         SSLocFlag.BTREAUX,
         "Batreaux's House",
         "F012r",
         "Progressive Wallet",
         SSLocType.EVENT,
-        [SSLocCheckedFlag.STORY, 0x0, 0x40, 0x805A9B00],  # Flag 360
+        [SSLocCheckedFlag.SCENE, 0x8, 0x80, "Skyloft"],  # TODO: check
         SSHintType.ALWAYS,
     ),
     # Beedle's Shop

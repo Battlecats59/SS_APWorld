@@ -35,12 +35,12 @@ class Hints:
         self.always_locations = [
             loc
             for loc in self.world.progress_locations
-            if self.world.get_location(loc).hint == SSHintType.ALWAYS
+            if LOCATION_TABLE[loc].hint == SSHintType.ALWAYS
         ]
         self.sometimes_locations = [
             loc
             for loc in self.world.progress_locations
-            if self.world.get_location(loc).hint == SSHintType.SOMETIMES
+            if LOCATION_TABLE[loc].hint == SSHintType.SOMETIMES
         ]
         self.hintable_items = []
         for itm, data in ITEM_TABLE.items():
@@ -69,7 +69,7 @@ class Hints:
             self.sometimes_locations = [
                 loc
                 for loc in self.sometimes_locations
-                if self.world.get_location(loc).type != SSLocType.WPOBJ
+                if LOCATION_TABLE[loc].type != SSLocType.WPOBJ
             ]
 
         # Create and fill hint classes
@@ -77,7 +77,7 @@ class Hints:
         for hint in location_hints:
             loc = hint.location
             itm = self.world.get_location(loc).item
-            hint.region = self.world.get_location(loc).region
+            hint.region = LOCATION_TABLE[loc].region
             hint.player_to_receive = self.multiworld.get_player_name(itm.player)
             hint.item = itm.name
         for hint in item_hints:
