@@ -75,7 +75,7 @@ class SSContext(CommonContext):
         self.locations_for_hint: dict[str, list] = {}
 
         self.hints_checked = set() # local variable
-        self.chceked_hints = set() # server variable
+        self.checked_hints = set() # server variable
         self.beedle_items_purchased = [0, 0, 0, 0] # slots from left to right
 
         # Name of the current stage as read from the game's memory. Sent to trackers whenever its value changes to
