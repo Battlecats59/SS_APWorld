@@ -369,19 +369,19 @@ class RandomStartingSpawn(Choice):
 
     display_name = "Random Starting Spawn"
     option_vanilla = 0
-    # option_bird_statues = 1
-    # option_any_surface_region = 2
-    # option_any = 3
+    option_bird_statues = 1
+    option_any_surface_region = 2
+    option_any = 3
     default = 0
 
 
-class LimitStartingLocation(Toggle):
-    """
-    If enabled, you will only start at a location in a region unlocked by the tablets you start with.
-    E.g. Starting with Ruby Tablet and Amber Tablet will mean you cannot start in Faron.
-    """
+# class LimitStartingLocation(Toggle):
+#     """
+#     If enabled, you will only start at a location in a region unlocked by the tablets you start with.
+#     E.g. Starting with Ruby Tablet and Amber Tablet will mean you cannot start in Faron.
+#     """
 
-    display_name = "Limit Starting Location"
+#     display_name = "Limit Starting Location"
 
 
 class RandomStartingStatues(Toggle):
@@ -863,7 +863,7 @@ class SSOptions(PerGameCommonOptions):
     randomize_entrances: RandomizeEntrances
     randomize_trials: RandomizeSilentRealms
     random_start_entrance: RandomStartingSpawn
-    limit_start_entrance: LimitStartingLocation
+    #limit_start_entrance: LimitStartingLocation
     random_start_statues: RandomStartingStatues
     shopsanity: Shopsanity
     rupoor_mode: RupoorMode

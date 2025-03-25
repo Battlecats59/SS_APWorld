@@ -72,6 +72,7 @@ From now on, Archipelago may be referred to as "AP". Skyward Sword may be referr
     - When you click "connect", the tracker will automatically input all settings and locations for you.
         - Once you are connected, click "launch new tracker" to begin.
 - [Skyward Sword Randomizer Web Tracker](https://robojumper.github.io/SS-Randomizer-Tracker/) (created by robojumper)
+    - [Web Tracker Guide](https://robojumper.github.io/SS-Randomizer-Tracker/guide)
     - This is recommended if you want to manually track your game.
     - Set the release to "Latest Development Build (ssrando/main)"
     - You can manually put in all of the settings, or paste in a settings string **(recommended)**.
@@ -81,7 +82,7 @@ From now on, Archipelago may be referred to as "AP". Skyward Sword may be referr
             - Locate your ssrando.exe application, and find the logs folder in that directory.
             - Find the spoiler log corresponding to your current run. The seed and hash that were generated will also be in the spoiler log.
             - The settings string will be the "permalink" in the spoiler log file.
-        - If you paste in a settings string, it is significantly quicker and it will include all of the starting items and excluded locations from the seed.
+        - If you paste in a settings string, it is significantly quicker and it will include all of the starting items and excluded locations from the seed. 
 - Archipelago Universal Tracker
     - It is recommended that you hide excluded locations in the tracker, as they will all appear as sphere 0 checks.
     - Don't worry, these locations will always contain junk items.
@@ -139,6 +140,7 @@ Discussion regarding this APWorld is in the [Archipelago Main Discord](https://d
 - **robojumper**: Client and logic work
 - **Trez**: Archipelago web implementation
 - **Fireworkspinner**: Early Archipelago manual designs
+- **RayStormThunder**: Skyward Sword Archipelago logo design
 - **lepelog**: SS Rando creator, arc work for multiworld
 - **SS Rando Devs**: Creating the Skyward Sword Randomizer
 - **tanjo3 and TWW APWorld Devs**: Created the TWW APWorld, which provided a lot of code for the SS APWorld

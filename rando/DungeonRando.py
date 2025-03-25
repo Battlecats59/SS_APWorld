@@ -9,6 +9,8 @@ from ..Items import ITEM_TABLE
 from ..Options import SSOptions
 from ..Constants import *
 
+from ..logic.Logic import ALL_REQUIREMENTS
+
 if TYPE_CHECKING:
     from .. import SSWorld
 
@@ -25,6 +27,10 @@ class DungeonRando:
         self.required_dungeons: list[str] = []
         self.banned_dungeons: list[str] = []
         self.required_dungeon_checks: list[str] = []
+
+        self.sky_keep_required: bool = False
+        # Since `required_dungeons` and `banned_dungeons` only include the 6 main
+        # dungeons, use this to determine if sky keep is required or not
 
         self.key_handler: DungeonKeyHandler = DungeonKeyHandler(self.world)
 
@@ -63,6 +69,8 @@ class DungeonRando:
                 if dun not in self.required_dungeons
             ]
         )
+
+        self.sky_keep_required = self.world.options.triforce_required and self.world.options.triforce_shuffle != "anywhere"
 
         self.key_handler.set_progress_dungeons(self.required_dungeons)
 
@@ -120,7 +128,7 @@ class DungeonKeyHandler:
             for dun in self.all_maps.keys():
                 locs_placeable[dun] = []
                 for loc in self.multiworld.get_locations(self.world.player):
-                    if loc.parent_region.name == dun and loc.item is None:
+                    if self.world.region_to_hint_region(loc.parent_region) == dun and loc.item is None:
                         if (
                             loc.name in DUNGEON_HC_CHECKS.values()
                             or loc.name in DUNGEON_FINAL_CHECKS.values()
@@ -133,7 +141,7 @@ class DungeonKeyHandler:
             for dun in self.all_maps.keys():
                 locs_placeable[dun] = []
                 for loc in self.multiworld.get_locations(self.world.player):
-                    if loc.parent_region.name == dun and loc.item is None:
+                    if self.world.region_to_hint_region(loc.parent_region) == dun and loc.item is None:
                         if loc.item:
                             continue
                         locs_placeable[dun].append(tuple([loc.name, loc.player]))
@@ -220,7 +228,7 @@ class DungeonKeyHandler:
             for dun in self.all_bkeys.keys():
                 locs_placeable[dun] = []
                 for loc in self.multiworld.get_locations(self.world.player):
-                    if loc.parent_region.name == dun and loc.item is None:
+                    if self.world.region_to_hint_region(loc.parent_region) == dun and loc.item is None:
                         if (
                             loc.name in DUNGEON_HC_CHECKS.values()
                             or loc.name in DUNGEON_FINAL_CHECKS.values()

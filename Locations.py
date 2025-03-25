@@ -39,6 +39,7 @@ class SSLocType(Enum):
 
     T_BOX = auto()
     ITEM = auto()
+    CRYST = auto() # Single crystal
     EVENT = auto()
     SHOP = auto()
     HRTCO = auto()
@@ -3226,6 +3227,148 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         SSLocType.RELIC,
         [SSLocCheckedFlag.SCENE, 0xF, 0x01, "Eldin Silent Realm"],
     ),
+    
+    # Single Gratitude Crystals
+    "Upper Skyloft - Crystal in Link's Room": SSLocData(
+        335,
+        SSLocFlag.ALWAYS,
+        "Upper Skyloft",
+        "F001r",
+        "Gratitude Crystal",
+        SSLocType.CRYST,
+        [SSLocCheckedFlag.SCENE, 0xC, 0x01, "Skyloft"],
+    ),
+    "Upper Skyloft - Crystal in Knight Academy Plant": SSLocData(
+        336,
+        SSLocFlag.ALWAYS,
+        "Upper Skyloft",
+        "F001r",
+        "Gratitude Crystal",
+        SSLocType.CRYST,
+        [SSLocCheckedFlag.SCENE, 0xD, 0x40, "Skyloft"],
+    ),
+    "Upper Skyloft - Crystal in Zelda's Room": SSLocData(
+        337,
+        SSLocFlag.ALWAYS,
+        "Upper Skyloft",
+        "F001r",
+        "Gratitude Crystal",
+        SSLocType.CRYST,
+        [SSLocCheckedFlag.SCENE, 0xD, 0x80, "Skyloft"],
+    ),
+    "Upper Skyloft - Crystal in Sparring Hall": SSLocData(
+        338,
+        SSLocFlag.ALWAYS,
+        "Upper Skyloft",
+        "F009r",
+        "Gratitude Crystal",
+        SSLocType.CRYST,
+        [SSLocCheckedFlag.SCENE, 0xF, 0x08, "Skyloft"],
+    ),
+
+    "Central Skyloft - Crystal in Orielle and Parrow's House": SSLocData(
+        339,
+        SSLocFlag.ALWAYS,
+        "Central Skyloft",
+        "F005r",
+        "Gratitude Crystal",
+        SSLocType.CRYST,
+        [SSLocCheckedFlag.SCENE, 0xF, 0x04, "Skyloft"],
+    ),
+    "Central Skyloft - Crystal on West Cliff": SSLocData(
+        340,
+        SSLocFlag.ALWAYS,
+        "Central Skyloft",
+        "F000",
+        "Gratitude Crystal",
+        SSLocType.CRYST,
+        [SSLocCheckedFlag.SCENE, 0xF, 0x02, "Skyloft"],
+    ),
+    "Central Skyloft - Crystal between Wooden Planks": SSLocData(
+        341,
+        SSLocFlag.ALWAYS,
+        "Central Skyloft",
+        "F000",
+        "Gratitude Crystal",
+        SSLocType.CRYST,
+        [SSLocCheckedFlag.SCENE, 0xF, 0x01, "Skyloft"],
+    ),
+    "Central Skyloft - Crystal after Waterfall Cave": SSLocData(
+        342,
+        SSLocFlag.ALWAYS,
+        "Central Skyloft",
+        "F000",
+        "Gratitude Crystal",
+        SSLocType.CRYST,
+        [SSLocCheckedFlag.SCENE, 0xC, 0x80, "Skyloft"],
+    ),
+    "Central Skyloft - Crystal in Loftwing Prison": SSLocData(
+        343,
+        SSLocFlag.ALWAYS,
+        "Central Skyloft",
+        "F000",
+        "Gratitude Crystal",
+        SSLocType.CRYST,
+        [SSLocCheckedFlag.SCENE, 0xC, 0x40, "Skyloft"],
+    ),
+    "Central Skyloft - Crystal on Waterfall Island": SSLocData(
+        344,
+        SSLocFlag.ALWAYS,
+        "Central Skyloft",
+        "F000",
+        "Gratitude Crystal",
+        SSLocType.CRYST,
+        [SSLocCheckedFlag.SCENE, 0xC, 0x20, "Skyloft"],
+    ),
+    "Central Skyloft - Crystal on Light Tower": SSLocData(
+        345,
+        SSLocFlag.ALWAYS,
+        "Central Skyloft",
+        "F000",
+        "Gratitude Crystal",
+        SSLocType.CRYST,
+        [SSLocCheckedFlag.SCENE, 0xC, 0x04, "Skyloft"],
+    ),
+
+    "Skyloft Village - Crystal near Pumpkin Patch": SSLocData(
+        346,
+        SSLocFlag.ALWAYS,
+        "Skyloft Village",
+        "F000",
+        "Gratitude Crystal",
+        SSLocType.CRYST,
+        [SSLocCheckedFlag.SCENE, 0xC, 0x10, "Skyloft"],
+    ),
+
+    "Sky - Crystal outside Lumpy Pumpkin": SSLocData(
+        347,
+        SSLocFlag.ALWAYS,
+        "Sky",
+        "F020",
+        "Gratitude Crystal",
+        SSLocType.CRYST,
+        [SSLocCheckedFlag.SCENE, 0xD, 0x10, "Sky"],
+    ),
+    "Sky - Crystal inside Lumpy Pumpkin": SSLocData(
+        348,
+        SSLocFlag.ALWAYS,
+        "Sky",
+        "F011r",
+        "Gratitude Crystal",
+        SSLocType.CRYST,
+        [SSLocCheckedFlag.SCENE, 0xF, 0x10, "Sky"],
+    ),
+    "Sky - Crystal on Beedle's Ship": SSLocData(
+        349,
+        SSLocFlag.ALWAYS,
+        "Sky",
+        "F020",
+        "Gratitude Crystal",
+        SSLocType.CRYST,
+        [SSLocCheckedFlag.SCENE, 0xF, 0x80, "Sky"],
+    ),
+
+    # Victory Location
     "Hylia's Realm - Defeat Demise": SSLocData(
         None,
         SSLocFlag.ALWAYS,
@@ -3237,7 +3380,8 @@ LOCATION_TABLE: dict[str, SSLocData] = {
         # Set during demise final blow
         # If skip demise option is on, it is set during the Fi text before the portal
     ),
-    # HIGHEST_INDEX=334 (Eldin Silent Realm - Relic 10)
+    
+    # HIGHEST_INDEX=349 (Sky - Crystal on Beedle's Ship)
     # If you add checks to the list, begin 1 index above the HIGHEST_INDEX
     # and update the value above when you complete
 }
