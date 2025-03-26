@@ -440,7 +440,7 @@ async def check_locations(ctx: SSContext) -> None:
         if hints_checked:
             await ctx.send_msgs([{"cmd": "LocationScouts", "locations": hints_checked, "create_as_hint": 2}])
 
-        ctx.checked_hints += hints_checked
+        ctx.checked_hints |= hints_checked
 
 
 async def check_current_stage_changed(ctx: SSContext) -> None:
