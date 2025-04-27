@@ -31,6 +31,8 @@ from .Rules import set_rules
 from .Names import HASH_NAMES
 from .Entrances import AP_ENTRANCE_TABLE
 
+from .Utils import restricted_safe_dump
+
 from .rando.DungeonRando import DungeonRando
 from .rando.EntranceRando import EntranceRando
 from .rando.ItemPlacement import handle_itempool, item_classification
@@ -103,8 +105,8 @@ class SSContainer(APContainer, metaclass=AutoPatchRegister):
         """
         super().write_contents(opened_zipfile)
 
-        # Record the data for the game under the key `plando`.
-        opened_zipfile.writestr("plando", b64encode(bytes(yaml.safe_dump(self.data, sort_keys=False), "utf-8")))
+        # Record the data for the game under the key `plando` using the adjusted safe_dump method that supports counters
+        opened_zipfile.writestr("plando", b64encode(bytes(restricted_safe_dump(self.data, sort_keys=False), "utf-8")))
 
 class SSWorld(World):
     """
@@ -439,12 +441,18 @@ class SSWorld(World):
             for i in range(self.multiworld.players)
         ]
 
+        # seed_name on web adds an additional 'W', making the seed 21 characters long.
+        if 'W' in multiworld.seed_name:
+            ap_seed = multiworld.seed_name[1:]
+        else:
+            ap_seed = multiworld.seed_name
+
         # Output seed name and slot number to seed RNG in randomizer client.
         output_data = {
             "AP Version": list(AP_VERSION),
             "World Version": list(WORLD_VERSION),
             "Hash": f"AP P{player} " + " ".join(player_hash),
-            "AP Seed": multiworld.seed_name,
+            "AP Seed": ap_seed,
             "Rando Seed": self.random.randint(
                 0, 2**32 - 1
             ),
