@@ -16,6 +16,7 @@ From now on, Archipelago may be referred to as "AP". Skyward Sword may be referr
 
 ### Useful Links
 - [Archipelago Setup Guide](https://archipelago.gg/tutorial/Archipelago/setup/en)
+- [SS AP Troubleshooting Guide](https://github.com/Battlecats59/SSArchipelago/blob/ss/worlds/ss/docs/troubleshooting_en.md)
 - [Archipelago Main Discord](https://discord.gg/8Z65BR2)
 - [Trackers and other useful tools](#trackers)
 

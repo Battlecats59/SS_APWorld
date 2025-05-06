@@ -5,6 +5,7 @@ from BaseClasses import ItemClassification as IC
 from ..Hints import *
 from ..Items import ITEM_TABLE
 from ..Locations import SSLocType, LOCATION_TABLE, SSLocation
+from ..Constants import GONDO_UPGRADES
 
 from .ItemPlacement import item_classification
 
@@ -53,9 +54,15 @@ class Hints:
                 if data.code is None:
                     continue
                 self.hintable_items.extend([itm] * data.quantity)
+
+        # Remove starting items and gondo items (if shuffle off) from hintable pool
         for itm in self.world.starting_items:
             if itm in self.hintable_items:
                 self.hintable_items.remove(itm)
+        if not self.world.options.gondo_upgrades:
+            for itm in GONDO_UPGRADES:
+                if itm in self.hintable_items:
+                    self.hintable_items.remove(itm)
         self.all_hints = []
 
     def handle_hints(self) -> tuple[dict[str, list], dict[str, list]]:

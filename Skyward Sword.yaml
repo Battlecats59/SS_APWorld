@@ -20,13 +20,12 @@
 #    You can also verify that your Archipelago options are valid at this site:
 #        https://archipelago.gg/check
 
-# Your slot name, limited to 16 characters.
-# This does not need to match your filename in game. Follow utf-8 encoding.
+# Your name in-game, limited to 16 characters.
 #     {player} will be replaced with the player's slot number.
 #     {PLAYER} will be replaced with the player's slot number, if that slot number is greater than 1.
 #     {number} will be replaced with the counter value of the name.
 #     {NUMBER} will be replaced with the counter value of the name, if the counter value is greater than 1.
-name: Player
+name: Player{number}
 
 # Used to describe your yaml. Useful if you have multiple files.
 description: Default Skyward Sword Template
@@ -288,23 +287,16 @@ Skyward Sword:
     # **Any Surface Region**: You will spawn at any valid surface entrance or Link's bedroom.
     # **Any**: You will spawn at any valid entrance.
     # **TIP**: You can ask Fi to warp you back to the starting point.
-    #
-    # NOT SUPPORTED: MUST BE VANILLA
-    vanilla: 50 # DO NOT CHANGE
-
-  limit_start_entrance:
-    # If enabled, you will only start at a location in a region unlocked by the tablets you start with.
-    # E.g. Starting with Ruby Tablet and Amber Tablet will mean you cannot start in Faron.
-    'false': 50
-    'true': 0
+    vanilla: 50
+    bird_statues: 0
+    any_surface_region: 0
+    any: 0
 
   random_start_statues:
     # If enabled, the starting statue for each surface region will be randomized. All overworld statues
     # except Inside the Volcano and Inside Fire Sanctuary may be chosen.
-    #
-    # NOT SUPPORTED: MUST BE FALSE
-    'false': 50 # DO NOT CHANGE
-    'true': 0 # DO NOT CHANGE
+    'false': 50
+    'true': 0
 
   shopsanity:
     # Determines if shops are randomized. When enabled, shop items and locations will be shuffled like normal items,
@@ -529,8 +521,6 @@ Skyward Sword:
     # You can define additional values between the minimum and maximum values.
     # Minimum value is 0
     # Maximum value is 17
-    #
-    # NOTE: If tadtonesanity if OFF, make sure this is ZERO (0)
     0: 50
     random: 0
     random-low: 0
@@ -639,7 +629,7 @@ Skyward Sword:
 
   start_inventory:
     # Start with these items.
-    {} # DO NOT CHANGE
+    {}
 
   start_hints:
     # Start with these item's locations prefilled into the ``!hint`` command.
@@ -665,5 +655,4 @@ Skyward Sword:
     # Start with these items and don't place them in the world.
     # 
     # The game decides what the replacement items will be.
-    # Do NOT add dungeon items here! This includes maps, small keys, and boss keys
     {}

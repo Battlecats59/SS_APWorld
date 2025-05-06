@@ -26,16 +26,28 @@ def handle_itempool(world: "SSWorld") -> None:
     world.starting_items = _handle_starting_items(world)
 
     # Add starting items to the multiworld's `precollected_items` list.
-    for item in world.starting_items:
-        world.multiworld.push_precollected(world.create_item(item))
+    # Then remove starting items from the item pool
+    for itm in world.starting_items:
+        world.multiworld.push_precollected(world.create_item(itm))
 
-    # `placed` variable is simply a list of items to remove from the base pool, since they are
-    # either starting items or manually placed
+        adjusted_classification = item_classification(world, itm)
+        classification = (
+            ITEM_TABLE[itm].classification
+            if adjusted_classification is None
+            else adjusted_classification
+        )
+        if classification == IC.filler:
+            assert itm in filler_pool, f"Could not remove filler item from pool: {itm}"
+            filler_pool.remove(itm)
+        else:
+            assert itm in pool, f"Could not remove item from pool: {itm}"
+            pool.remove(itm)
+    
+    # Place items and remove from the item pool
     placed = _handle_placements(world, pool)
-    placed.extend(world.starting_items)
 
     for itm in placed:
-        adjusted_classification = item_classification(world, item)
+        adjusted_classification = item_classification(world, itm)
         classification = (
             ITEM_TABLE[itm].classification
             if adjusted_classification is None
@@ -281,10 +293,14 @@ def _handle_placements(world: "SSWorld", pool: list[str]) -> list[str]:
     if not options.shopsanity:
         for loc, data in LOCATION_TABLE.items():
             if data.type == SSLocType.SHOP:
-                world.get_location(loc).place_locked_item(
-                    world.create_item(data.vanilla_item)
-                )
-                placed.append(data.vanilla_item)
+                if loc == "Beedle's Shop - 1600 Rupee Item" and int(options.starting_heart_pieces.value) == 24:
+                    # Edge case where we cannot place the HP, just exclude the location
+                    world.get_location(loc).progress_type = LocationProgressType.EXCLUDED
+                else:
+                    world.get_location(loc).place_locked_item(
+                        world.create_item(data.vanilla_item)
+                    )
+                    placed.append(data.vanilla_item)
 
     if not options.tadtonesanity:
         num_tadtones = 17 - options.starting_tadtones.value
@@ -307,6 +323,22 @@ def _handle_placements(world: "SSWorld", pool: list[str]) -> list[str]:
                 )
                 placed.append(data.vanilla_item)
 
+    if not options.gondo_upgrades:
+        placed.extend(GONDO_UPGRADES)
+        # We're not actually going to place these in the world, the rando will patch them in
+        # Still, remove them from the item pool
+
+    ### DUNGEON PLACEMENTS
+
+    # Place vanilla keys first to prevent location overlap
+    if options.small_key_mode == "vanilla":
+        placed.extend(world.dungeons.key_handler.place_small_keys())
+    if options.boss_key_mode == "vanilla":
+        placed.extend(world.dungeons.key_handler.place_boss_keys())
+    if options.map_mode == "vanilla":
+        placed.extend(world.dungeons.key_handler.place_dungeon_maps())
+
+    # Sword Dungeon Reward
     if options.sword_dungeon_reward != "none":
         num_swords_to_place = pool.count("Progressive Sword")
         if num_swords_to_place < len(world.dungeons.required_dungeons):
@@ -328,28 +360,29 @@ def _handle_placements(world: "SSWorld", pool: list[str]) -> list[str]:
             )
             placed.append("Progressive Sword")
 
+    # Vanilla Triforces
     if options.triforce_shuffle == "vanilla":
         world.get_location("Sky Keep - Sacred Power of Din").place_locked_item(world.create_item("Triforce of Power"))
         world.get_location("Sky Keep - Sacred Power of Nayru").place_locked_item(world.create_item("Triforce of Wisdom"))
         world.get_location("Sky Keep - Sacred Power of Farore").place_locked_item(world.create_item("Triforce of Courage"))
         placed.extend(["Triforce of Power", "Triforce of Wisdom", "Triforce of Courage"])
-    elif options.triforce_shuffle == "sky_keep":
+    
+    # Place non-vanilla keys now
+    if options.small_key_mode != "vanilla":
+        placed.extend(world.dungeons.key_handler.place_small_keys())
+    if options.boss_key_mode != "vanilla":
+        placed.extend(world.dungeons.key_handler.place_boss_keys())
+    if options.map_mode != "start_with" and options.map_mode != "vanilla":
+        placed.extend(world.dungeons.key_handler.place_dungeon_maps())
+
+    # Non-vanilla Triforces
+    if options.triforce_shuffle == "sky_keep":
         locations_to_place = [loc for loc in world.multiworld.get_locations(world.player) if world.region_to_hint_region(loc.parent_region) == "Sky Keep" and not loc.item]
         triforce_locations = world.random.sample(locations_to_place, 3)
         world.random.shuffle(triforce_locations)
         for i, tri in enumerate(["Triforce of Power", "Triforce of Wisdom", "Triforce of Courage"]):
             triforce_locations[i].place_locked_item(world.create_item(tri))
         placed.extend(["Triforce of Power", "Triforce of Wisdom", "Triforce of Courage"])
-
-    if not options.gondo_upgrades:
-        placed.extend(GONDO_UPGRADES)
-        # We're not actually going to place these in the world, the rando will patch them in
-        # Still, remove them from the item pool
-
-    placed.extend(world.dungeons.key_handler.place_small_keys())
-    placed.extend(world.dungeons.key_handler.place_boss_keys())
-    if options.map_mode != "start_with":
-        placed.extend(world.dungeons.key_handler.place_dungeon_maps())
 
     return placed
 
