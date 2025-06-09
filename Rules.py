@@ -113,3 +113,5 @@ def set_rules(world: "SSWorld") -> None:
             raise Exception(f"Tried to set logic for unknown location: {loc.name}")
         if loc.name in world.progress_locations:
             set_rule(loc, eval(f"lambda state, player=world.player: {parse_expression(rule)}"))
+
+    world.multiworld.completion_condition[world.player] = lambda state: state.has("Victory", world.player)
