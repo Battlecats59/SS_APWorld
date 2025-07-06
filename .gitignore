@@ -1,4 +1,5 @@
 __pycache__/
+.github/
 test.py
 BUILD/
 ss/

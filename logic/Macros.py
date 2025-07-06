@@ -95,36 +95,439 @@ BASE_MACROS = {
     "Can Defeat Stalmaster": "Has Practice Sword",
 
     ## GRATITUDE CRYSTALS
-    "Five Gratitude Crystals": "Gratitude Crystal Pack x1 | Gratitude Crystal x5",
-    "Ten Gratitude Crystals": (
-        "Gratitude Crystal x10 "
-        "| (Gratitude Crystal Pack x1 & Gratitude Crystal x5) "
+    "1 Gratitude Crystals": (
+        "Gratitude Crystal x1 "
+        "| Gratitude Crystal Pack x1"
+    ),
+    "2 Gratitude Crystals": (
+        "Gratitude Crystal x2 "
+        "| Gratitude Crystal Pack x1"
+    ),
+    "3 Gratitude Crystals": (
+        "Gratitude Crystal x3 "
+        "| Gratitude Crystal Pack x1"
+    ),
+    "4 Gratitude Crystals": (
+        "Gratitude Crystal x4 "
+        "| Gratitude Crystal Pack x1"
+    ),
+    "5 Gratitude Crystals": (
+        "Gratitude Crystal x5 "
+        "| Gratitude Crystal Pack x1"
+    ),
+    "6 Gratitude Crystals": (
+        "Gratitude Crystal x6 "
+        "| (Gratitude Crystal x1 & Gratitude Crystal Pack x1) "
         "| Gratitude Crystal Pack x2"
     ),
-    "Thirty Gratitude Crystals": (
+    "7 Gratitude Crystals": (
+        "Gratitude Crystal x7 "
+        "| (Gratitude Crystal x2 & Gratitude Crystal Pack x1) "
+        "| Gratitude Crystal Pack x2"
+    ),
+    "8 Gratitude Crystals": (
+        "Gratitude Crystal x8 "
+        "| (Gratitude Crystal x3 & Gratitude Crystal Pack x1) "
+        "| Gratitude Crystal Pack x2"
+    ),
+    "9 Gratitude Crystals": (
+        "Gratitude Crystal x9 "
+        "| (Gratitude Crystal x4 & Gratitude Crystal Pack x1) "
+        "| Gratitude Crystal Pack x2"
+    ),
+    "10 Gratitude Crystals": (
+        "Gratitude Crystal x10 "
+        "| (Gratitude Crystal x5 & Gratitude Crystal Pack x1) "
+        "| Gratitude Crystal Pack x2"
+    ),
+    "11 Gratitude Crystals": (
+        "Gratitude Crystal x11 "
+        "| (Gratitude Crystal x6 & Gratitude Crystal Pack x1) "
+        "| (Gratitude Crystal x1 & Gratitude Crystal Pack x2) "
+        "| Gratitude Crystal Pack x3"
+    ),
+    "12 Gratitude Crystals": (
+        "Gratitude Crystal x12 "
+        "| (Gratitude Crystal x7 & Gratitude Crystal Pack x1) "
+        "| (Gratitude Crystal x2 & Gratitude Crystal Pack x2) "
+        "| Gratitude Crystal Pack x3"
+    ),
+    "13 Gratitude Crystals": (
+        "Gratitude Crystal x13 "
+        "| (Gratitude Crystal x8 & Gratitude Crystal Pack x1) "
+        "| (Gratitude Crystal x3 & Gratitude Crystal Pack x2) "
+        "| Gratitude Crystal Pack x3"
+    ),
+    "14 Gratitude Crystals": (
+        "Gratitude Crystal x14 "
+        "| (Gratitude Crystal x9 & Gratitude Crystal Pack x1) "
+        "| (Gratitude Crystal x4 & Gratitude Crystal Pack x2) "
+        "| Gratitude Crystal Pack x3"
+    ),
+    "15 Gratitude Crystals": (
+        "Gratitude Crystal x15 "
+        "| (Gratitude Crystal x10 & Gratitude Crystal Pack x1) "
+        "| (Gratitude Crystal x5 & Gratitude Crystal Pack x2) "
+        "| Gratitude Crystal Pack x3"
+    ),
+    "16 Gratitude Crystals": (
+        "(Gratitude Crystal x11 & Gratitude Crystal Pack x1) "
+        "| (Gratitude Crystal x6 & Gratitude Crystal Pack x2) "
+        "| (Gratitude Crystal x1 & Gratitude Crystal Pack x3) "
+        "| Gratitude Crystal Pack x4"
+    ),
+    "17 Gratitude Crystals": (
+        "(Gratitude Crystal x12 & Gratitude Crystal Pack x1) "
+        "| (Gratitude Crystal x7 & Gratitude Crystal Pack x2) "
+        "| (Gratitude Crystal x2 & Gratitude Crystal Pack x3) "
+        "| Gratitude Crystal Pack x4"
+    ),
+    "18 Gratitude Crystals": (
+        "(Gratitude Crystal x13 & Gratitude Crystal Pack x1) "
+        "| (Gratitude Crystal x8 & Gratitude Crystal Pack x2) "
+        "| (Gratitude Crystal x3 & Gratitude Crystal Pack x3) "
+        "| Gratitude Crystal Pack x4"
+    ),
+    "19 Gratitude Crystals": (
+        "(Gratitude Crystal x14 & Gratitude Crystal Pack x1) "
+        "| (Gratitude Crystal x9 & Gratitude Crystal Pack x2) "
+        "| (Gratitude Crystal x4 & Gratitude Crystal Pack x3) "
+        "| Gratitude Crystal Pack x4"
+    ),
+    "20 Gratitude Crystals": (
+        "(Gratitude Crystal x15 & Gratitude Crystal Pack x1) "
+        "| (Gratitude Crystal x10 & Gratitude Crystal Pack x2) "
+        "| (Gratitude Crystal x5 & Gratitude Crystal Pack x3) "
+        "| Gratitude Crystal Pack x4"
+    ),
+    "21 Gratitude Crystals": (
+        "(Gratitude Crystal x11 & Gratitude Crystal Pack x2) "
+        "| (Gratitude Crystal x6 & Gratitude Crystal Pack x3) "
+        "| (Gratitude Crystal x1 & Gratitude Crystal Pack x4) "
+        "| Gratitude Crystal Pack x5"
+    ),
+    "22 Gratitude Crystals": (
+        "(Gratitude Crystal x12 & Gratitude Crystal Pack x2) "
+        "| (Gratitude Crystal x7 & Gratitude Crystal Pack x3) "
+        "| (Gratitude Crystal x2 & Gratitude Crystal Pack x4) "
+        "| Gratitude Crystal Pack x5"
+    ),
+    "23 Gratitude Crystals": (
+        "(Gratitude Crystal x13 & Gratitude Crystal Pack x2) "
+        "| (Gratitude Crystal x8 & Gratitude Crystal Pack x3) "
+        "| (Gratitude Crystal x3 & Gratitude Crystal Pack x4) "
+        "| Gratitude Crystal Pack x5"
+    ),
+    "24 Gratitude Crystals": (
+        "(Gratitude Crystal x14 & Gratitude Crystal Pack x2) "
+        "| (Gratitude Crystal x9 & Gratitude Crystal Pack x3) "
+        "| (Gratitude Crystal x4 & Gratitude Crystal Pack x4) "
+        "| Gratitude Crystal Pack x5"
+    ),
+    "25 Gratitude Crystals": (
+        "(Gratitude Crystal x15 & Gratitude Crystal Pack x2) "
+        "| (Gratitude Crystal x10 & Gratitude Crystal Pack x3) "
+        "| (Gratitude Crystal x5 & Gratitude Crystal Pack x4) "
+        "| Gratitude Crystal Pack x5"
+    ),
+    "26 Gratitude Crystals": (
+        "(Gratitude Crystal x11 & Gratitude Crystal Pack x3) "
+        "| (Gratitude Crystal x6 & Gratitude Crystal Pack x4) "
+        "| (Gratitude Crystal x1 & Gratitude Crystal Pack x5) "
+        "| Gratitude Crystal Pack x6"
+    ),
+    "27 Gratitude Crystals": (
+        "(Gratitude Crystal x12 & Gratitude Crystal Pack x3) "
+        "| (Gratitude Crystal x7 & Gratitude Crystal Pack x4) "
+        "| (Gratitude Crystal x2 & Gratitude Crystal Pack x5) "
+        "| Gratitude Crystal Pack x6"
+    ),
+    "28 Gratitude Crystals": (
+        "(Gratitude Crystal x13 & Gratitude Crystal Pack x3) "
+        "| (Gratitude Crystal x8 & Gratitude Crystal Pack x4) "
+        "| (Gratitude Crystal x3 & Gratitude Crystal Pack x5) "
+        "| Gratitude Crystal Pack x6"
+    ),
+    "29 Gratitude Crystals": (
+        "(Gratitude Crystal x14 & Gratitude Crystal Pack x3) "
+        "| (Gratitude Crystal x9 & Gratitude Crystal Pack x4) "
+        "| (Gratitude Crystal x4 & Gratitude Crystal Pack x5) "
+        "| Gratitude Crystal Pack x6"
+    ),
+    "30 Gratitude Crystals": (
         "(Gratitude Crystal x15 & Gratitude Crystal Pack x3) "
         "| (Gratitude Crystal x10 & Gratitude Crystal Pack x4) "
         "| (Gratitude Crystal x5 & Gratitude Crystal Pack x5) "
         "| Gratitude Crystal Pack x6"
     ),
-    "Forty Gratitude Crystals": (
+    "31 Gratitude Crystals": (
+        "(Gratitude Crystal x11 & Gratitude Crystal Pack x4) "
+        "| (Gratitude Crystal x6 & Gratitude Crystal Pack x5) "
+        "| (Gratitude Crystal x1 & Gratitude Crystal Pack x6) "
+        "| Gratitude Crystal Pack x7"
+    ),
+    "32 Gratitude Crystals": (
+        "(Gratitude Crystal x12 & Gratitude Crystal Pack x4) "
+        "| (Gratitude Crystal x7 & Gratitude Crystal Pack x5) "
+        "| (Gratitude Crystal x2 & Gratitude Crystal Pack x6) "
+        "| Gratitude Crystal Pack x7"
+    ),
+    "33 Gratitude Crystals": (
+        "(Gratitude Crystal x13 & Gratitude Crystal Pack x4) "
+        "| (Gratitude Crystal x8 & Gratitude Crystal Pack x5) "
+        "| (Gratitude Crystal x3 & Gratitude Crystal Pack x6) "
+        "| Gratitude Crystal Pack x7"
+    ),
+    "34 Gratitude Crystals": (
+        "(Gratitude Crystal x14 & Gratitude Crystal Pack x4) "
+        "| (Gratitude Crystal x9 & Gratitude Crystal Pack x5) "
+        "| (Gratitude Crystal x4 & Gratitude Crystal Pack x6) "
+        "| Gratitude Crystal Pack x7"
+    ),
+    "35 Gratitude Crystals": (
+        "(Gratitude Crystal x15 & Gratitude Crystal Pack x4) "
+        "| (Gratitude Crystal x10 & Gratitude Crystal Pack x5) "
+        "| (Gratitude Crystal x5 & Gratitude Crystal Pack x6) "
+        "| Gratitude Crystal Pack x7"
+    ),
+    "36 Gratitude Crystals": (
+        "(Gratitude Crystal x11 & Gratitude Crystal Pack x5) "
+        "| (Gratitude Crystal x6 & Gratitude Crystal Pack x6) "
+        "| (Gratitude Crystal x1 & Gratitude Crystal Pack x7) "
+        "| Gratitude Crystal Pack x8"
+    ),
+    "37 Gratitude Crystals": (
+        "(Gratitude Crystal x12 & Gratitude Crystal Pack x5) "
+        "| (Gratitude Crystal x7 & Gratitude Crystal Pack x6) "
+        "| (Gratitude Crystal x2 & Gratitude Crystal Pack x7) "
+        "| Gratitude Crystal Pack x8"
+    ),
+    "38 Gratitude Crystals": (
+        "(Gratitude Crystal x13 & Gratitude Crystal Pack x5) "
+        "| (Gratitude Crystal x8 & Gratitude Crystal Pack x6) "
+        "| (Gratitude Crystal x3 & Gratitude Crystal Pack x7) "
+        "| Gratitude Crystal Pack x8"
+    ),
+    "39 Gratitude Crystals": (
+        "(Gratitude Crystal x14 & Gratitude Crystal Pack x5) "
+        "| (Gratitude Crystal x9 & Gratitude Crystal Pack x6) "
+        "| (Gratitude Crystal x4 & Gratitude Crystal Pack x7) "
+        "| Gratitude Crystal Pack x8"
+    ),
+    "40 Gratitude Crystals": (
         "(Gratitude Crystal x15 & Gratitude Crystal Pack x5) "
         "| (Gratitude Crystal x10 & Gratitude Crystal Pack x6) "
         "| (Gratitude Crystal x5 & Gratitude Crystal Pack x7) "
         "| Gratitude Crystal Pack x8"
     ),
-    "Fifty Gratitude Crystals": (
+    "41 Gratitude Crystals": (
+        "(Gratitude Crystal x11 & Gratitude Crystal Pack x6) "
+        "| (Gratitude Crystal x6 & Gratitude Crystal Pack x7) "
+        "| (Gratitude Crystal x1 & Gratitude Crystal Pack x8) "
+        "| Gratitude Crystal Pack x9"
+    ),
+    "42 Gratitude Crystals": (
+        "(Gratitude Crystal x12 & Gratitude Crystal Pack x6) "
+        "| (Gratitude Crystal x7 & Gratitude Crystal Pack x7) "
+        "| (Gratitude Crystal x2 & Gratitude Crystal Pack x8) "
+        "| Gratitude Crystal Pack x9"
+    ),
+    "43 Gratitude Crystals": (
+        "(Gratitude Crystal x13 & Gratitude Crystal Pack x6) "
+        "| (Gratitude Crystal x8 & Gratitude Crystal Pack x7) "
+        "| (Gratitude Crystal x3 & Gratitude Crystal Pack x8) "
+        "| Gratitude Crystal Pack x9"
+    ),
+    "44 Gratitude Crystals": (
+        "(Gratitude Crystal x14 & Gratitude Crystal Pack x6) "
+        "| (Gratitude Crystal x9 & Gratitude Crystal Pack x7) "
+        "| (Gratitude Crystal x4 & Gratitude Crystal Pack x8) "
+        "| Gratitude Crystal Pack x9"
+    ),
+    "45 Gratitude Crystals": (
+        "(Gratitude Crystal x15 & Gratitude Crystal Pack x6) "
+        "| (Gratitude Crystal x10 & Gratitude Crystal Pack x7) "
+        "| (Gratitude Crystal x5 & Gratitude Crystal Pack x8) "
+        "| Gratitude Crystal Pack x9"
+    ),
+    "46 Gratitude Crystals": (
+        "(Gratitude Crystal x11 & Gratitude Crystal Pack x7) "
+        "| (Gratitude Crystal x6 & Gratitude Crystal Pack x8) "
+        "| (Gratitude Crystal x1 & Gratitude Crystal Pack x9) "
+        "| Gratitude Crystal Pack x10"
+    ),
+    "47 Gratitude Crystals": (
+        "(Gratitude Crystal x12 & Gratitude Crystal Pack x7) "
+        "| (Gratitude Crystal x7 & Gratitude Crystal Pack x8) "
+        "| (Gratitude Crystal x2 & Gratitude Crystal Pack x9) "
+        "| Gratitude Crystal Pack x10"
+    ),
+    "48 Gratitude Crystals": (
+        "(Gratitude Crystal x13 & Gratitude Crystal Pack x7) "
+        "| (Gratitude Crystal x8 & Gratitude Crystal Pack x8) "
+        "| (Gratitude Crystal x3 & Gratitude Crystal Pack x9) "
+        "| Gratitude Crystal Pack x10"
+    ),
+    "49 Gratitude Crystals": (
+        "(Gratitude Crystal x14 & Gratitude Crystal Pack x7) "
+        "| (Gratitude Crystal x9 & Gratitude Crystal Pack x8) "
+        "| (Gratitude Crystal x4 & Gratitude Crystal Pack x9) "
+        "| Gratitude Crystal Pack x10"
+    ),
+    "50 Gratitude Crystals": (
         "(Gratitude Crystal x15 & Gratitude Crystal Pack x7) "
         "| (Gratitude Crystal x10 & Gratitude Crystal Pack x8) "
         "| (Gratitude Crystal x5 & Gratitude Crystal Pack x9) "
         "| Gratitude Crystal Pack x10"
     ),
-    "Seventy Gratitude Crystals": (
+    "51 Gratitude Crystals": (
+        "(Gratitude Crystal x11 & Gratitude Crystal Pack x8) "
+        "| (Gratitude Crystal x6 & Gratitude Crystal Pack x9) "
+        "| (Gratitude Crystal x1 & Gratitude Crystal Pack x10) "
+        "| Gratitude Crystal Pack x11"
+    ),
+    "52 Gratitude Crystals": (
+        "(Gratitude Crystal x12 & Gratitude Crystal Pack x8) "
+        "| (Gratitude Crystal x7 & Gratitude Crystal Pack x9) "
+        "| (Gratitude Crystal x2 & Gratitude Crystal Pack x10) "
+        "| Gratitude Crystal Pack x11"
+    ),
+    "53 Gratitude Crystals": (
+        "(Gratitude Crystal x13 & Gratitude Crystal Pack x8) "
+        "| (Gratitude Crystal x8 & Gratitude Crystal Pack x9) "
+        "| (Gratitude Crystal x3 & Gratitude Crystal Pack x10) "
+        "| Gratitude Crystal Pack x11"
+    ),
+    "54 Gratitude Crystals": (
+        "(Gratitude Crystal x14 & Gratitude Crystal Pack x8) "
+        "| (Gratitude Crystal x9 & Gratitude Crystal Pack x9) "
+        "| (Gratitude Crystal x4 & Gratitude Crystal Pack x10) "
+        "| Gratitude Crystal Pack x11"
+    ),
+    "55 Gratitude Crystals": (
+        "(Gratitude Crystal x15 & Gratitude Crystal Pack x8) "
+        "| (Gratitude Crystal x10 & Gratitude Crystal Pack x9) "
+        "| (Gratitude Crystal x5 & Gratitude Crystal Pack x10) "
+        "| Gratitude Crystal Pack x11"
+    ),
+    "56 Gratitude Crystals": (
+        "(Gratitude Crystal x11 & Gratitude Crystal Pack x9) "
+        "| (Gratitude Crystal x6 & Gratitude Crystal Pack x10) "
+        "| (Gratitude Crystal x1 & Gratitude Crystal Pack x11) "
+        "| Gratitude Crystal Pack x12"
+    ),
+    "57 Gratitude Crystals": (
+        "(Gratitude Crystal x12 & Gratitude Crystal Pack x9) "
+        "| (Gratitude Crystal x7 & Gratitude Crystal Pack x10) "
+        "| (Gratitude Crystal x2 & Gratitude Crystal Pack x11) "
+        "| Gratitude Crystal Pack x12"
+    ),
+    "58 Gratitude Crystals": (
+        "(Gratitude Crystal x13 & Gratitude Crystal Pack x9) "
+        "| (Gratitude Crystal x8 & Gratitude Crystal Pack x10) "
+        "| (Gratitude Crystal x3 & Gratitude Crystal Pack x11) "
+        "| Gratitude Crystal Pack x12"
+    ),
+    "59 Gratitude Crystals": (
+        "(Gratitude Crystal x14 & Gratitude Crystal Pack x9) "
+        "| (Gratitude Crystal x9 & Gratitude Crystal Pack x10) "
+        "| (Gratitude Crystal x4 & Gratitude Crystal Pack x11) "
+        "| Gratitude Crystal Pack x12"
+    ),
+    "60 Gratitude Crystals": (
+        "(Gratitude Crystal x15 & Gratitude Crystal Pack x9) "
+        "| (Gratitude Crystal x10 & Gratitude Crystal Pack x10) "
+        "| (Gratitude Crystal x5 & Gratitude Crystal Pack x11) "
+        "| Gratitude Crystal Pack x12"
+    ),
+    "61 Gratitude Crystals": (
+        "(Gratitude Crystal x11 & Gratitude Crystal Pack x10) "
+        "| (Gratitude Crystal x6 & Gratitude Crystal Pack x11) "
+        "| (Gratitude Crystal x1 & Gratitude Crystal Pack x12) "
+        "| Gratitude Crystal Pack x13"
+    ),
+    "62 Gratitude Crystals": (
+        "(Gratitude Crystal x12 & Gratitude Crystal Pack x10) "
+        "| (Gratitude Crystal x7 & Gratitude Crystal Pack x11) "
+        "| (Gratitude Crystal x2 & Gratitude Crystal Pack x12) "
+        "| Gratitude Crystal Pack x13"
+    ),
+    "63 Gratitude Crystals": (
+        "(Gratitude Crystal x13 & Gratitude Crystal Pack x10) "
+        "| (Gratitude Crystal x8 & Gratitude Crystal Pack x11) "
+        "| (Gratitude Crystal x3 & Gratitude Crystal Pack x12) "
+        "| Gratitude Crystal Pack x13"
+    ),
+    "64 Gratitude Crystals": (
+        "(Gratitude Crystal x14 & Gratitude Crystal Pack x10) "
+        "| (Gratitude Crystal x9 & Gratitude Crystal Pack x11) "
+        "| (Gratitude Crystal x4 & Gratitude Crystal Pack x12) "
+        "| Gratitude Crystal Pack x13"
+    ),
+    "65 Gratitude Crystals": (
+        "(Gratitude Crystal x15 & Gratitude Crystal Pack x10) "
+        "| (Gratitude Crystal x10 & Gratitude Crystal Pack x11) "
+        "| (Gratitude Crystal x5 & Gratitude Crystal Pack x12) "
+        "| Gratitude Crystal Pack x13"
+    ),
+    "66 Gratitude Crystals": (
+        "(Gratitude Crystal x11 & Gratitude Crystal Pack x11) "
+        "| (Gratitude Crystal x6 & Gratitude Crystal Pack x12) "
+        "| (Gratitude Crystal x1 & Gratitude Crystal Pack x13)"
+    ),
+    "67 Gratitude Crystals": (
+        "(Gratitude Crystal x12 & Gratitude Crystal Pack x11) "
+        "| (Gratitude Crystal x7 & Gratitude Crystal Pack x12) "
+        "| (Gratitude Crystal x2 & Gratitude Crystal Pack x13)"
+    ),
+    "68 Gratitude Crystals": (
+        "(Gratitude Crystal x13 & Gratitude Crystal Pack x11) "
+        "| (Gratitude Crystal x8 & Gratitude Crystal Pack x12) "
+        "| (Gratitude Crystal x3 & Gratitude Crystal Pack x13)"
+    ),
+    "69 Gratitude Crystals": (
+        "(Gratitude Crystal x14 & Gratitude Crystal Pack x11) "
+        "| (Gratitude Crystal x9 & Gratitude Crystal Pack x12) "
+        "| (Gratitude Crystal x4 & Gratitude Crystal Pack x13)"
+    ),
+    "70 Gratitude Crystals": (
         "(Gratitude Crystal x15 & Gratitude Crystal Pack x11) "
         "| (Gratitude Crystal x10 & Gratitude Crystal Pack x12) "
         "| (Gratitude Crystal x5 & Gratitude Crystal Pack x13)"
     ),
-    "Eighty Gratitude Crystals": (
+    "71 Gratitude Crystals": (
+        "(Gratitude Crystal x11 & Gratitude Crystal Pack x12) "
+        "| (Gratitude Crystal x6 & Gratitude Crystal Pack x13)"
+    ),
+    "72 Gratitude Crystals": (
+        "(Gratitude Crystal x12 & Gratitude Crystal Pack x12) "
+        "| (Gratitude Crystal x7 & Gratitude Crystal Pack x13)"
+    ),
+    "73 Gratitude Crystals": (
+        "(Gratitude Crystal x13 & Gratitude Crystal Pack x12) "
+        "| (Gratitude Crystal x8 & Gratitude Crystal Pack x13)"
+    ),
+    "74 Gratitude Crystals": (
+        "(Gratitude Crystal x14 & Gratitude Crystal Pack x12) "
+        "| (Gratitude Crystal x9 & Gratitude Crystal Pack x13)"
+    ),
+    "75 Gratitude Crystals": (
+        "(Gratitude Crystal x15 & Gratitude Crystal Pack x12) "
+        "| (Gratitude Crystal x10 & Gratitude Crystal Pack x13)"
+    ),
+    "76 Gratitude Crystals": (
+        "Gratitude Crystal x11 & Gratitude Crystal Pack x13"
+    ),
+    "77 Gratitude Crystals": (
+        "Gratitude Crystal x12 & Gratitude Crystal Pack x13"
+    ),
+    "78 Gratitude Crystals": (
+        "Gratitude Crystal x13 & Gratitude Crystal Pack x13"
+    ),
+    "79 Gratitude Crystals": (
+        "Gratitude Crystal x14 & Gratitude Crystal Pack x13"
+    ),
+    "80 Gratitude Crystals": (
         "Gratitude Crystal x15 & Gratitude Crystal Pack x13"
     ),
     

@@ -37,12 +37,21 @@ class SSLocationHint:
     """
 
     location: str = ""
+    aplocation: str = ""
     region: str = ""
     player_to_receive: str = ""
     item: str = ""
 
-    def __init__(self, loc):
+    def __init__(self, loc, world):
         self.location = loc
+
+        # Set aplocation property to handle batreaux's rewards
+        if self.location.startswith("Batreaux's House - "):
+            if world.get_location(self.location).ogname is None:
+                raise Exception(f"OG location name for batreaux reward is none: {self.location}")
+            self.aplocation = world.get_location(self.location).ogname
+        else:
+            self.aplocation = self.location
 
     def to_stone_text(self) -> str:
         return f"They say that <r<{self.location}>> has <b+<{self.player_to_receive}'s>> <y<{self.item}>>."

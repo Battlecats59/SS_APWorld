@@ -115,15 +115,17 @@ SKYLOFT_REQUIREMENTS = {
             "Exit Shed Door": "Nothing",
         },
         "locations": {
-            "5 Crystals": "Five Gratitude Crystals",
-            "10 Crystals": "Ten Gratitude Crystals",
-            "30 Crystals": "Thirty Gratitude Crystals",
-            "30 Crystals Chest": "Thirty Gratitude Crystals",
-            "40 Crystals": "Forty Gratitude Crystals",
-            "50 Crystals": "Fifty Gratitude Crystals",
-            "70 Crystals": "Seventy Gratitude Crystals",
-            "70 Crystals Second Reward": "Seventy Gratitude Crystals",
-            "80 Crystals": "Eighty Gratitude Crystals",
+            # These are internal names for these checks, they will be changed during generation
+            # Logic will also be changed during generation
+            "First Reward": "Impossible",
+            "Second Reward": "Impossible",
+            "Third Reward": "Impossible",
+            "Chest": "Impossible",
+            "Fourth Reward": "Impossible",
+            "Fifth Reward": "Impossible",
+            "Sixth Reward": "Impossible",
+            "Seventh Reward": "Impossible",
+            "Final Reward": "Impossible",
         },
     },
     "Beedle's Shop": {

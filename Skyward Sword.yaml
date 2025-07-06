@@ -32,7 +32,7 @@ description: Default Skyward Sword Template
 
 game: Skyward Sword
 requires:
-  version: 0.6.1 # Version of Archipelago required for this yaml to work as expected.
+  version: 0.6.2 # Version of Archipelago required for this yaml to work as expected.
 
 Skyward Sword:
   # Game Options
@@ -59,6 +59,10 @@ Skyward Sword:
     # **Minimal:** ensure what is needed to reach your goal can be acquired.
     full: 50
     minimal: 0
+
+  plando_items:
+    # Generic items plando.
+    []
 
   required_dungeon_count:
     # Determines the number of dungeons required to beat the seed.
@@ -185,10 +189,21 @@ Skyward Sword:
     'true': 50
 
   progression_batreaux:
-    # If enabled, Batreaux's Rewards can contain progression items.
-    # If not enabled, all Batreaux Rewards will contain junk (filler) items.
-    'false': 0
-    'true': 50
+    # Controls the maximum Batreaux's reward that can contain progression items.
+    # Progression locations will begin with Batreaux's first rewards. Any locations
+    # after this number will contain junk (filler) items.
+    # 0 means no rewards may contain progression, 7 means all rewards may contain progression.
+    # 
+    # NOTE: Batreaux's chest falls under the third reward, and the seventh reward falls under the sixth reward,
+    # since they are given at the same time.
+    #
+    # You can define additional values between the minimum and maximum values.
+    # Minimum value is 0
+    # Maximum value is 7
+    7: 50
+    random: 0
+    random-low: 0
+    random-high: 0
 
   empty_unrequired_dungeons:
     # If enabled, only the required dungeons will contain progression items.
@@ -347,6 +362,19 @@ Skyward Sword:
     none: 50
     heart_container: 0
     final_check: 0
+
+  batreaux_counts:
+    # Determines the amount of crystals Batreaux will require for each of his rewards.
+    # **Vanilla**: The normal required crystal counts (5, 10, 30, 40, 50, 70, 80).
+    # **Half**: Half of the normal required crystal counts (2, 5, 15, 20, 25, 35, 40).
+    # **Shuffled**: Completely random required crystal counts (min 1, max 80).
+    # **Shuffled - High**: Higher random required crystal counts (min 30, max 80).
+    # **Shuffled - Low**: Lower random required crystal counts (min 1, max 50).
+    vanilla: 50
+    half: 0
+    shuffled: 0
+    shuffled_high: 0
+    shuffled_low: 0
 
   randomize_boss_key_puzzles:
     # If enabled, the starting position of the boss keys will be randomized.
@@ -601,18 +629,6 @@ Skyward Sword:
     'false': 50
     'true': 0
 
-  cube_sots:
-    # If enabled, when a SotS hint points to a Goddess Chest, the hint will change to indicate this and display
-    # which of the cube progress regions is SotS.
-    'false': 50
-    'true': 0
-
-  precise_item:
-    # If enabled, item hints will indicate the exact location within a region that is being hinted.
-    # If disabled, only the region will be hinted.
-    'false': 50
-    'true': 0
-
   death_link:
     # When you die, everyone who enabled death link dies. Of course, the reverse is true too.
     'false': 50
@@ -629,6 +645,12 @@ Skyward Sword:
 
   start_inventory:
     # Start with these items.
+    {}
+
+  starting_items:
+    # Start with these items and don't place them in the world.
+    # 
+    # The game decides what the replacement items will be.
     {}
 
   start_hints:
@@ -650,9 +672,3 @@ Skyward Sword:
   item_links:
     # Share part of your item pool with other players.
     []
-
-  starting_items:
-    # Start with these items and don't place them in the world.
-    # 
-    # The game decides what the replacement items will be.
-    {}

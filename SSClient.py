@@ -1,6 +1,8 @@
 import asyncio
+import copy
 import time
 import traceback
+import textwrap
 from typing import TYPE_CHECKING, Any, List, Optional
 
 import dolphin_memory_engine
@@ -74,9 +76,12 @@ class SSContext(CommonContext):
         self.has_send_death: bool = False
         self.locations_for_hint: dict[str, list] = {}
 
-        self.hints_checked = set() # local variable
-        self.checked_hints = set() # server variable
-        self.beedle_items_purchased = [0, 0, 0, 0] # slots from left to right
+        self.hints_checked = set()  # local variable
+        self.checked_hints = set()  # server variable
+        self.beedle_items_purchased = [0, 0, 0, 0]  # slots from left to right
+
+        self.ingame_client_messages: list[tuple[float, str]] = []
+        self.text_buffer_address: int = 0x0 # will be read from the dol when connected
 
         # Name of the current stage as read from the game's memory. Sent to trackers whenever its value changes to
         # facilitate automatically switching to the map of the current stage.
@@ -90,7 +95,7 @@ class SSContext(CommonContext):
         self.visited_stage_names: Optional[set[str]] = None
 
         # Length of the item get array in memory.
-        self.len_give_item_array: int = 0x1 # TODO CHANGE TO 0x10 WHEN GAME IS FIXED
+        self.len_give_item_array: int = 0x1  # TODO CHANGE TO 0x10 WHEN GAME IS FIXED
 
     async def disconnect(self, allow_autoreconnect: bool = False) -> None:
         """
@@ -216,6 +221,62 @@ class SSContext(CommonContext):
                 ]
             )
 
+    def forward_client_message(self, msg: str):
+        lines = []
+        for raw_line in msg.split("\n"):
+            lines.extend(
+                textwrap.wrap(
+                    raw_line,
+                    INGAME_LINE_LENGTH,
+                )
+            )
+
+        timestamp = time.time()
+        # We want to stagger the messages so large amounts of text can "scroll"
+        # if they go over the character limit
+        for line in lines:
+            self.ingame_client_messages.append(
+                (timestamp + len(self.ingame_client_messages) * 0.5, line)
+            )
+
+    def show_messages_ingame(self) -> None:
+        # Filter out old messages
+        line_list = []
+        filtered_msgs = []
+        curr_timestamp = time.time()
+        for tup in self.ingame_client_messages:
+            if curr_timestamp - tup[0] > CLIENT_TEXT_TIMEOUT:
+                continue
+
+            filtered_msgs.append(tup)
+            line_list.append(tup[1])
+
+        self.ingame_client_messages = filtered_msgs
+
+        if len(line_list) == 0:
+            self.write_string_to_buffer("")
+        else:
+            # Want to cap it at 16 lines so the text doesn't get too obtrusive
+            # (which could happen if each line is quite short)
+            self.write_string_to_buffer("\n".join(line_list[:16]))
+
+    def on_print_json(self, args: dict):
+        # Don't show messages in-game for item sends irrelevant to this slot
+        if not self.is_uninteresting_item_send(args):
+            self.forward_client_message(
+                self.rawjsontotextparser(copy.deepcopy(args["data"]))
+            )
+
+        super().on_print_json(args)
+    
+    def write_string_to_buffer(self, text: str):
+        if self.text_buffer_address != 0x0:
+            # Truncate text to fit in the buffer, then write to buffer
+            text_bytes = text.encode("utf-8")[: CLIENT_TEXT_BUFFER_SIZE - 1].ljust(
+                CLIENT_TEXT_BUFFER_SIZE, b"\x00"
+            )
+            dolphin_memory_engine.write_bytes(self.text_buffer_address, text_bytes)
+
 
 def dme_read_byte(console_address: int) -> int:
     """
@@ -246,6 +307,17 @@ def dme_read_short(console_address: int) -> int:
     """
     return int.from_bytes(
         dolphin_memory_engine.read_bytes(console_address, 2), byteorder="big"
+    )
+
+def dme_read_long(console_address: int) -> int:
+    """
+    Read a 4-byte long from Dolphin memory.
+
+    :param console_address: Address to read from.
+    :return: The value read from memory.
+    """
+    return int.from_bytes(
+        dolphin_memory_engine.read_bytes(console_address, 4), byteorder="big"
     )
 
 
@@ -324,7 +396,7 @@ async def _give_item(ctx: SSContext, item_name: str) -> bool:
     for idx in range(ctx.len_give_item_array):
         slot = dme_read_byte(ARCHIPELAGO_ARRAY_ADDR + idx)
         if slot == 0xFF:
-            logger.info(f"DEBUG: Gave item {item_id} to player {ctx.player_names[ctx.slot]}.")
+            # logger.info(f"DEBUG: Gave item {item_id} to player {ctx.player_names[ctx.slot]}.")
             dme_write_byte(ARCHIPELAGO_ARRAY_ADDR + idx, item_id)
             await asyncio.sleep(0.25)
             # If this happens, this may be an indicator that the player interrupted the itemget with something like a Fi call
@@ -337,16 +409,16 @@ async def _give_item(ctx: SSContext, item_name: str) -> bool:
                 # so we shouldn't resend the item, or else it will be duplicated.
                 if is_link_in_action(get_link_ptr(), SWIM_ACTIONS):
                     break
-                    
                 # If state is 0, that means a reload occurred, so we should resend the item.
                 # However, we shouldn't resend the item if the user immediately enters the item get action anyway
                 # (which can happen if this reload occurs due to a door, in which case the original item will still be received)
                 if not check_ingame(get_link_ptr()):
                     # Reset the value at this array index to 0, to avoid duplicating the item if it was never read in the first place
                     dme_write_byte(ARCHIPELAGO_ARRAY_ADDR + idx, 0xFF)
-                    logger.info(f"DEBUG: A reload deleted the item. Resending the item...")
+                    debug_text = f"DEBUG: A reload deleted {ctx.player_names[ctx.slot]}'s {item_name} (ID {item_id}). Resending the item..."
+                    logger.info(debug_text)
+                    ctx.forward_client_message(debug_text)
                     return False
-            
             return True
 
     # If unable to place the item in the array, return False.
@@ -612,6 +684,7 @@ def can_send_items() -> bool:
     """
     return (not check_on_title_screen()) and check_on_file_1()
 
+
 async def dolphin_sync_task(ctx: SSContext) -> None:
     """
     Manages the connection to Dolphin.
@@ -627,6 +700,7 @@ async def dolphin_sync_task(ctx: SSContext) -> None:
                 dolphin_memory_engine.is_hooked()
                 and ctx.dolphin_status == CONNECTION_CONNECTED_STATUS
             ):
+                ctx.show_messages_ingame()
                 if not check_ingame(get_link_ptr()):
                     # Reset the give item array while not in the game.
                     # dolphin_memory_engine.write_bytes(ARCHIPELAGO_ARRAY_ADDR, bytes([0xFF] * ctx.len_give_item_array))
@@ -660,6 +734,7 @@ async def dolphin_sync_task(ctx: SSContext) -> None:
                         logger.info(CONNECTION_CONNECTED_STATUS)
                         ctx.dolphin_status = CONNECTION_CONNECTED_STATUS
                         ctx.locations_checked = set()
+                        ctx.text_buffer_address = dme_read_long(CLIENT_TEXT_BUFFER_PTR)
                 else:
                     logger.info(
                         "Connection to Dolphin failed, attempting again in 5 seconds..."

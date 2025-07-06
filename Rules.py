@@ -108,8 +108,12 @@ def set_rules(world: "SSWorld") -> None:
 
     for loc in world.multiworld.get_locations(world.player):
         check_name = " - ".join(loc.name.split(" - ")[1:])
-        rule = ALL_REQUIREMENTS[loc.parent_region.name]["locations"][check_name]
-        if loc.name not in LOCATION_TABLE.keys():
-            raise Exception(f"Tried to set logic for unknown location: {loc.name}")
+        if loc.parent_region.name == "Batreaux's House":
+            rule = world.batreaux_requirements[check_name]
+        else:
+            rule = ALL_REQUIREMENTS[loc.parent_region.name]["locations"][check_name]
+            if loc.name not in LOCATION_TABLE.keys():
+                raise Exception(f"Tried to set logic for unknown location: {loc.name}")
         if loc.name in world.progress_locations:
             set_rule(loc, eval(f"lambda state, player=world.player: {parse_expression(rule)}"))
+    world.multiworld.completion_condition[world.player] = lambda state: state.has("Victory", world.player)

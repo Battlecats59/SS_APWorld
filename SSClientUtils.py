@@ -55,6 +55,16 @@ FILE_NAME_ADDR = 0x80955D38  # ARRAY[16]
 # A bit at this address is set if on the title screen
 GLOBAL_TITLE_LOADER_ADDR = 0x80575780
 
+# An array at the address pointed to here holds text to be displayed by the game
+CLIENT_TEXT_BUFFER_PTR = 0x8005526C # Pointer to STRING[512]
+CLIENT_TEXT_BUFFER_SIZE = 512
+
+# Time for a client message to disappear in-game (in seconds, not including stagger time for multiple lines in the queue)
+CLIENT_TEXT_TIMEOUT = 6
+
+# Max number of characters in a line for in-game client text
+INGAME_LINE_LENGTH = 64
+
 AP_VISITED_STAGE_NAMES_KEY_FORMAT = "ss_visited_stages_%i"
 
 LINK_INVALID_STATES = [
