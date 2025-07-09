@@ -1,13 +1,7 @@
 name: Build
 on:
-  push:
-    tags: [ "v*" ]
-  workflow_dispatch:
-    inputs:
-      tag:
-        description: Build tag
-        required: false
-        type: string
+  - push
+  - pull_request
 
 defaults:
   run:
