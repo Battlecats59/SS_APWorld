@@ -112,7 +112,7 @@ function mk_apworld() {
 function cp_data() {
     local root="$1" destdir="$2"
     echo "=> Copying over the extra data"
-    cp --verbose ${root}/docs/setup_en.md${destdir}
+    cp --verbose ${root}/docs/setup_en.md ${destdir}
     cp --verbose ${root}/docs/troubleshooting_en.md ${destdir}
     cp --verbose "${root}/Skyward Sword.yaml" ${destdir}
 }
