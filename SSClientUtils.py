@@ -119,9 +119,15 @@ STAGE_TO_SCENEFLAG_ADDR = {
     "Skyloft Silent Realm": 0x80957058,
 }
 
+# Used for batch lookup
+STORYFLAG_START_ADDR = 0x805A9AD8
+SCENEFLAG_START_ADDR = 0x80956EC8
+
 # DME Connection Messages for the client
 CONNECTION_REFUSED_GAME_STATUS = "Dolphin failed to connect. Please load a randomized ROM for Skyward Sword. Trying again in 5 seconds..."
 CONNECTION_REFUSED_SAVE_STATUS = "Dolphin failed to connect. Please load into the save file. Trying again in 5 seconds..."
 CONNECTION_LOST_STATUS = "Dolphin connection was lost. Please restart your emulator and make sure Skyward Sword is running."
 CONNECTION_CONNECTED_STATUS = "Dolphin connected successfully."
 CONNECTION_INITIAL_STATUS = "Dolphin connection has not been initiated."
+
+CONSOLE_CONNECTED_STATUS = "Wii connected successfully."
