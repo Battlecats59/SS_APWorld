@@ -263,8 +263,6 @@ class SmallKeyMode(Choice):
     Determines the placement of small keys.
     **Vanilla**: keys will be in their vanilla locations (The Skyview Digging Spot will not contain a key).
     **Own Dungeon**: keys will be within their own dungeons in your own world.
-    **Lanayru Caves Key only**: shuffles the Lanayru Caves Small Key
-        (all other keys are shuffled within their own dungeon).
     **Anywhere**: keys can appear outside of dungeons in any world.
     """
 
@@ -272,7 +270,23 @@ class SmallKeyMode(Choice):
     option_vanilla = 0
     option_own_dungeon = 1
     # option_own_dungeon_any_world = 0
-    option_lanayru_caves_key_only = 2
+    option_anywhere = 2
+    default = 1
+
+
+class LanayruCavesSmallKey(Choice):
+    """
+    Determines the placement of the Lanayru Caves small key.
+    **Start With**: start with the key in your inventory.
+    **Caves**: places the key within the caves.
+    **Lanayru**: places the key in the Lanayru surface region. The key will only be in an accessible area of Lanayru.
+    **Anywhere**: key can appear outside of lanayru in any world.
+    """
+
+    display_name = "Lanayru Caves Small Key"
+    option_start_with = 0
+    option_caves = 1
+    option_lanayru = 2
     option_anywhere = 3
     default = 2
 
@@ -883,6 +897,7 @@ class SSOptions(PerGameCommonOptions):
     empty_unrequired_dungeons: EmptyUnrequiredDungeons
     map_mode: MapMode
     small_key_mode: SmallKeyMode
+    lanayru_caves_small_key: LanayruCavesSmallKey
     boss_key_mode: BossKeyMode
     fs_lava_flow: FSLastRoomLavaFlow
     shuffle_trial_objects: ShuffleTrialObjects

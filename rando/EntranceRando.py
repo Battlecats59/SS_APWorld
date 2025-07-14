@@ -101,6 +101,13 @@ class EntranceRando:
                     and ent.statue_name != "Inside the Volcano"
                     and ent.province == prov
                 ]
+            if self.world.options.lanayru_caves_small_key == "caves":
+                # Account for this edge case where caves key is in caves
+                # We must block sand sea from being the starting region
+                possible_starting_statues["Lanayru Province"] = [
+                    ent for ent in possible_starting_statues["Lanayru Province"]
+                    if ent.flag_space != "Lanayru Sand Sea"
+                ]
         else:
             for prov in ["Faron Province", "Eldin Province", "Lanayru Province"]:
                 possible_starting_statues[prov] = [

@@ -100,7 +100,6 @@ class DungeonKeyHandler:
             self.all_maps[dun] = f"{dun} Map"
             if dun != "Earth Temple":
                 self.all_skeys[dun] = [f"{dun} Small Key"] * ITEM_TABLE[f"{dun} Small Key"].quantity
-            self.all_skeys["Lanayru Caves"] = ["Lanayru Caves Small Key"]
             if dun != "Sky Keep":
                 self.all_bkeys[dun] = f"{dun} Boss Key"
 
@@ -198,16 +197,6 @@ class DungeonKeyHandler:
                 else:
                     for i, locs in keydata.items():
                         locs_placeable[dun][i] = [(loc, self.world.player) for loc in locs if not self.world.get_location(loc).item]
-        elif self.world.options.small_key_mode == "lanayru_caves_key_only":
-            locs_placeable = deepcopy(KEY_PLACEMENTS)
-            del locs_placeable["Lanayru Caves"]
-            for dun, keydata in locs_placeable.items():
-                if dun in self.progression_dungeons:
-                    for i, locs in keydata.items():
-                        locs_placeable[dun][i] = [(loc, self.world.player) for loc in locs if loc not in self.world.nonprogress_locations and not self.world.get_location(loc).item]
-                else:
-                    for i, locs in keydata.items():
-                        locs_placeable[dun][i] = [(loc, self.world.player) for loc in locs if not self.world.get_location(loc).item]
         elif self.world.options.small_key_mode == "anywhere":
             return []
         for dun, skey_items in self.all_skeys.items():
@@ -230,6 +219,53 @@ class DungeonKeyHandler:
                     locs_placeable[dun][keyindex].remove(loc_to_place)
                 placed.append(skey)
 
+        return placed
+    
+    def place_caves_key(self) -> list[str]:
+        """
+        Places lanayru caves key based on options.
+        """
+        placed = []
+        locs_placeable = []
+        if self.world.options.lanayru_caves_small_key == "start_with":
+            raise FillError("Tried to place caves key, but option is start with.")
+        elif self.world.options.lanayru_caves_small_key == "caves":
+            # Will also make sure that lanayru starting statue is not in sand sea
+            locs_placeable.extend([
+                loc for loc in ["Lanayru Caves - Chest", "Lanayru Caves - Golo's Gift"]
+                if self.world.get_location(loc).item is None
+            ])
+        elif self.world.options.lanayru_caves_small_key == "lanayru":
+            # Let's check to see where the starting statue is
+            # We MUST place the small key on that side of caves
+            if self.world.entrances.starting_statues["Lanayru Province"][0] in [
+                "Lanayru Sand Sea Docks - Statue Entrance",
+                "Pirate Stronghold - Statue Entrance",
+                "Shipyard - Statue Entrance",
+                "Skipper's Retreat - Statue Entrance",
+            ]:
+                # In this case, we must place the key in sand sea
+                locs_placeable.extend([
+                    loc for loc, data in LOCATION_TABLE.items()
+                    if data.region in ["Lanayru Sand Sea"]
+                    and self.world.get_location(loc).item is None
+                ])
+            else:
+                # Otherwise, place the key anywhere except sand sea
+                locs_placeable.extend([
+                    loc for loc, data in LOCATION_TABLE.items()
+                    if data.region in ["Lanayru Mine", "Lanayru Desert", "Lanayru Caves", "Lanayru Gorge"]
+                    and self.world.get_location(loc).item is None
+                ])
+        elif self.world.options.lanayru_caves_small_key == "anywhere":
+            return []
+        
+        if len(locs_placeable) == 0:
+            raise FillError(f"Could not find a location to place lanayru caves small key")
+        loc_to_place = self.world.random.choice(locs_placeable)
+        self.world.get_location(loc_to_place).place_locked_item(self.world.create_item("Lanayru Caves Small Key"))
+        placed.append("Lanayru Caves Small Key")
+        
         return placed
 
     def place_boss_keys(self) -> list[str]:
@@ -389,12 +425,6 @@ KEY_PLACEMENTS = {
             "Sky Keep - Rupee in Fire Sanctuary Room in Alcove",
             "Sky Keep - Sacred Power of Din",
             "Sky Keep - Sacred Power of Nayru",
-        ],
-    },
-    "Lanayru Caves": {
-        0: [
-            "Lanayru Caves - Chest",
-            "Lanayru Caves - Golo's Gift",
         ],
     },
 }

@@ -252,6 +252,11 @@ def _handle_starting_items(world: "SSWorld") -> list[str]:
             if data.type == "Map":
                 starting_items.append(itm)
 
+    # Start with Caves Key
+    caves_key_option = options.lanayru_caves_small_key
+    if caves_key_option == "start_with":
+        starting_items.append("Lanayru Caves Small Key")
+
     return starting_items
 
 
@@ -379,6 +384,8 @@ def _handle_placements(world: "SSWorld", pool: list[str]) -> list[str]:
     # Place non-vanilla keys now
     if options.small_key_mode != "vanilla":
         placed.extend(world.dungeons.key_handler.place_small_keys())
+    if options.lanayru_caves_small_key != "start_with":
+        placed.extend(world.dungeons.key_handler.place_caves_key())
     if options.boss_key_mode != "vanilla":
         placed.extend(world.dungeons.key_handler.place_boss_keys())
     if options.map_mode != "start_with" and options.map_mode != "vanilla":
