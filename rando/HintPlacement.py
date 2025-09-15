@@ -1,12 +1,11 @@
 from typing import TYPE_CHECKING
 
 from BaseClasses import ItemClassification as IC
-from BaseClasses import CollectionState
 
 from ..Hints import *
 from ..Items import ITEM_TABLE
 from ..Locations import SSLocType, LOCATION_TABLE, SSLocation
-from ..Constants import GONDO_UPGRADES, HINT_REGIONS, DUNGEON_FINAL_CHECKS
+from ..Constants import GONDO_UPGRADES
 
 from .ItemPlacement import item_classification
 
@@ -22,13 +21,6 @@ class Hints:
     def __init__(self, world: "SSWorld"):
         self.world = world
         self.multiworld = world.multiworld
-
-        self.hint_regions = HintRegions(self.world)
-        self.hint_regions.get_sots_barren_regions()
-        self.hint_regions.get_path_regions()
-
-        self.advancement_hints = AdvancementHints(self.world, self.hint_regions)
-        self.advancement_hints.handle_advancement_hints()
 
         self.placed_hints: dict[str, list] = {}
         self.placed_hints_log: dict[str, list] = {}
@@ -168,10 +160,6 @@ class Hints:
         num_hints_to_place = fi_hints + (18 * hints_per_stone)
         location_hints: list[SSLocationHint] = []
         item_hints: list[SSItemHint] = []
-        sots_hints: list[SSSotSHint] = []
-        barren_hints: list[SSBarrenHint] = []
-        #path_hints: list[] = []
-        #advancement_hints: list[] = []
         junk_hints: list[SSJunkHint] = []
 
         if num_hints_to_place == 0:
@@ -325,106 +313,3 @@ class Hints:
         :return: List of q junk hints.
         """
         return self.world.random.sample(JUNK_HINT_TEXT, k=q)
-
-class HintRegions:
-    """
-    
-    """
-
-    def __init__(self, world: "SSWorld"):
-        self.world = world
-        self.multiworld = self.world.multiworld
-
-        # Spirit of the Sword (SotS), items are required to beat the game
-        self.sots_locations = set()
-        self.sots_regions = set()
-
-        # Progress, items assist progression but are not required to beat the game
-        self.progress_locations = set()
-        self.progress_regions = set()
-        
-        # Barren, items are filler and not required to beat the game
-        self.barren_locations = set()
-        self.barren_regions = set()
-
-        # Path, items are required to beat a dungeon
-        self.path_locations = {}
-
-    def get_sots_barren_regions(self):
-        for reg in HINT_REGIONS:
-            if reg == "Hylia's Realm":
-                continue
-            for loc in self.world.get_locations():
-                if loc.region != reg:
-                    continue
-                state = CollectionState(self.multiworld)
-                state.locations_checked.add(loc)
-                if not self.multiworld.can_beat_game(state):
-                    self.sots_locations.add(loc)
-                    if reg not in self.sots_regions:
-                        self.sots_regions.add(reg)
-                else:
-                    if loc.item.classification & IC.progression:
-                        self.progress_locations.add(loc)
-                        if reg not in self.progress_regions:
-                            self.progress_regions.add(reg)
-                    else:
-                        self.barren_locations.add(loc)
-            if reg not in self.sots_regions and reg not in self.progress_regions:
-                self.barren_regions.add(reg)
-
-    def get_path_regions(self):
-        for dun in self.world.dungeons.required_dungeons:
-            self.path_locations[dun] = set()
-            for loc in self.world.get_locations():
-                state = CollectionState(self.multiworld)
-                state.sweep_for_advancements([swloc for swloc in self.world.get_locations() if swloc != loc])
-                if not state.can_reach_location(DUNGEON_FINAL_CHECKS[dun], self.world.player):
-                    self.path_locations[dun].add(loc)
-
-class AdvancementHints:
-    """
-    
-    """
-
-    def __init__(self, world: "SSWorld", hint_regions):
-        self.world = world
-        self.multiworld = world.multiworld
-        self.hint_regions = hint_regions
-
-        self.advancement_locs = []
-
-    def handle_advancement_hints(self):
-        self.spheres = list(self.multiworld.get_spheres())
-        self.numspheres = len(self.spheres)
-        if self.numspheres < 10:
-            hintspheres = list(range(0, self.numspheres))
-        else:
-            hintspheres = (
-                [0] + sorted(self.world.random.sample(
-                    range(1, self.numspheres),
-                    k=9
-                ))
-            )
-        
-        for sphere in hintspheres:
-            hintable_locs = [
-                loc for loc in self.spheres[sphere]
-                if loc in self.hint_regions.sots_locations
-                and loc.item.player == self.world.player
-                and loc.code is not None
-            ] # prioritize SotS locations
-            if len(hintable_locs) == 0:
-                hintable_locs = [
-                    loc for loc in self.spheres[sphere]
-                    if loc.item.classification & IC.progression
-                    and loc.item.player == self.world.player
-                    and loc.code is not None
-                ] # otherwise, progression
-                if len(hintable_locs) == 0:
-                    self.advancement_locs.append(None)
-                    continue # if no progression locs, return None
-            
-            self.advancement_locs.append(
-                self.world.random.choice(hintable_locs)
-            )
