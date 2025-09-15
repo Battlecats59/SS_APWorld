@@ -8,16 +8,17 @@ From now on, Archipelago may be referred to as "AP". Skyward Sword may be referr
 - The latest release of [Archipelago](https://github.com/ArchipelagoMW/Archipelago/releases/latest)
 - [Dolphin Emulator](https://dolphin-emu.org/download/) (use the dev version!)
 - A `The Legend of Zelda: Skyward Sword` unrandomzied US 1.00 iso
-- The [Archipelago release of the Skyward Sword Randomizer](https://nightly.link/Battlecats59/sslib/workflows/build.yaml/archipelago)
 - The Skyward Sword AP World:
     - This includes the [APWorld file and the YAML options file](https://github.com/Battlecats59/SS_APWorld/releases/latest)
-    - A zip file including both of these can be downloaded [here](https://github.com/Battlecats59/SS_APWorld/releases/latest/download/APSkywardSword.zip)
+    - You must also download the SS game patcher, which will also be available in the release above
     - To see all releases and pre-releases, visit the [SS AP release page](https://github.com/Battlecats59/SS_APWorld/releases)
 
 ### Useful Links
 - [Archipelago Setup Guide](https://archipelago.gg/tutorial/Archipelago/setup/en)
 - [SS AP Troubleshooting Guide](https://github.com/Battlecats59/SSArchipelago/blob/ss/worlds/ss/docs/troubleshooting_en.md)
 - [Archipelago Main Discord](https://discord.gg/8Z65BR2)
+- [The SS APWorld Suggestion Page](https://github.com/Battlecats59/SS_APWorld/discussions/24)
+- [The SS APWorld Issue Page](https://github.com/Battlecats59/SS_APWorld/issues)
 - [Trackers and other useful tools](#trackers)
 
 ### Setting up Archipelago
@@ -138,6 +139,7 @@ Discussion regarding this APWorld is in the [Archipelago Main Discord](https://d
 
 - **Battlecats59**: Archipelago implementation
 - **YourAverageLink**: Archipelago implementation, client work, tracker implementation
+- **Harmjan387**: Significant testing and bug fixes
 - **robojumper**: Client and logic work
 - **Trez**: Archipelago web implementation
 - **Fireworkspinner**: Early Archipelago manual designs

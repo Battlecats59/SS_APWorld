@@ -53,6 +53,15 @@ DUNGEON_FINAL_CHECKS = {
     "Fire Sanctuary": "Fire Sanctuary - Din's Flame",
 }
 
+DUNGEON_BOSS_NAMES = {
+    "Skyview": "Ghirahim I",
+    "Earth Temple": "Scaldera",
+    "Lanayru Mining Facility": "Moldarach",
+    "Ancient Cistern": "Koloktos",
+    "Sandship": "Tentalus",
+    "Fire Sanctuary": "Ghirahim II",
+}
+
 VANILLA_DUNGEON_CONNECTIONS = {
     "Skyview": "dungeon_entrance_in_deep_woods",
     "Earth Temple": "dungeon_entrance_in_eldin_volcano",
@@ -106,6 +115,41 @@ BATREAUX_LOCATIONS = [
     "Batreaux's House - Fifth Reward",
     "Batreaux's House - Sixth Reward",
     "Batreaux's House - Final Reward",
+]
+
+HINT_REGIONS = [
+    "Upper Skyloft",
+    "Central Skyloft",
+    "Skyloft Village",
+    "Batreaux's House",
+    "Beedle's Shop",
+    "Skyloft Silent Realm",
+    "Sky",
+    "Thunderhead",
+    "Sealed Grounds",
+    "Hylia's Realm",
+    "Faron Woods",
+    "Lake Floria",
+    "Flooded Faron Woods",
+    "Faron Silent Realm",
+    "Eldin Volcano",
+    "Mogma Turf",
+    "Volcano Summit",
+    "Bokoblin Base",
+    "Eldin Silent Realm",
+    "Lanayru Mine",
+    "Lanayru Desert",
+    "Lanayru Caves",
+    "Lanayru Gorge",
+    "Lanayru Sand Sea",
+    "Lanayru Silent Realm",
+    "Skyview",
+    "Earth Temple",
+    "Lanayru Mining Facility",
+    "Ancient Cistern",
+    "Sandship",
+    "Fire Sanctuary",
+    "Sky Keep",
 ]
 
 SWORD_COUNTS = {

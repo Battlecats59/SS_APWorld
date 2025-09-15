@@ -45,7 +45,17 @@ class SSCommandProcessor(ClientCommandProcessor):
         Display the current Dolphin emulator connection status.
         """
         if isinstance(self.ctx, SSContext):
-            logger.info(f"Dolphin Status: {self.ctx.dolphin_status}")
+            logger.info(f"Dolphin Status: {self.ctx.dolphin_status}") 
+            
+    def _cmd_deathlink(self) -> None:
+        """Toggle DeathLink."""
+        if isinstance(self.ctx, SSContext):
+            if "DeathLink" in self.ctx.tags:
+                Utils.async_start(self.ctx.update_death_link(False))
+                logger.info("Deathlink disabled.")
+            else:
+                Utils.async_start(self.ctx.update_death_link(True))
+                logger.info("Deathlink enabled.")
 
 
 class SSContext(CommonContext):
@@ -796,3 +806,4 @@ if __name__ == "__main__":
     parser = get_base_parser()
     args = parser.parse_args()
     main(args.connect, args.password)
+

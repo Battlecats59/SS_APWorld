@@ -1,6 +1,8 @@
 from enum import Enum, auto
 from typing import NamedTuple
 
+from .Constants import DUNGEON_BOSS_NAMES
+
 
 class SSHintType(Enum):
     """
@@ -84,6 +86,74 @@ class SSItemHint:
     
     def to_log_text(self) -> str:
         return f"Your {self.item} is in {self.player_to_find}'s world at {self.location}."
+    
+
+class SSSotSHint:
+    """
+    Represents a Spirit of the Sword (SotS) region hint in Skyward Sword
+    """
+
+    location: str = ""
+    region: str = ""
+
+    def __init__(self, loc):
+        self.location = loc.name
+        self.region = loc.region
+
+    def to_stone_text(self) -> str:
+        return f"The <b+<Spirit of the Sword>> leads the chosen hero to <y<{self.region}>>."
+
+    def to_fi_text(self) -> str:
+        return f"The <b+<Spirit of the Sword>> leads the chosen hero to <y<{self.region}>>."
+    
+    def to_log_text(self) -> str:
+        return f"The Spirit of the Sword leads the chosen hero to {self.region}."
+    
+
+class SSBarrenHint:
+    """
+    Represents a barren region hint in Skyward Sword
+    """
+
+    region: str = ""
+
+    def __init__(self, reg):
+        self.region = reg
+
+    def to_stone_text(self) -> str:
+        return f"They say the hero who travels to <y<{self.region}>> will never find anything for their quest."
+
+    def to_fi_text(self) -> str:
+        return f"My readings indicate that travelling to <y<{self.region}>> will be useless on you quest."
+    
+    def to_log_text(self) -> str:
+        return f"{self.region} is barren."
+    
+
+class SSPathHint:
+    """
+    Represents a path region hint in Skyward Sword.
+    """
+
+    location: str = ""
+    region: str = ""
+    dungeon: str = ""
+    boss: str = ""
+
+    def __init__(self, loc, dun):
+        self.location = loc.name
+        self.region = loc.region
+        self.dungeon = dun
+        self.boss = DUNGEON_BOSS_NAMES[dun]
+
+    def to_stone_text(self) -> str:
+        return f"They say the hero who wishes to defeat <r<{self.boss}>> must travel to <y<{self.region}>>."
+
+    def to_fi_text(self) -> str:
+        return f"Master, if you wish to defeat <r<{self.boss}>>, you must travel to <y<{self.region}>>."
+    
+    def to_log_text(self) -> str:
+        return f"{self.region} is on the path to {self.boss}."
 
 
 class SSJunkHint:
