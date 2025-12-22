@@ -517,13 +517,15 @@ class SSWorld(World):
         #     locs[i] = sorted([(loc.name, loc.item.name) for loc in sphere], key=lambda loc: loc[0])
         # with open("./worlds/ss/Playthrough.json", "w") as f:
         #     json.dump(locs, f, indent=2)
-        
+                
         multiworld = self.multiworld
         player = self.player
+        worlds = self.multiworld.worlds
+        players = [int(item) for item in worlds]
         player_hash = self.random.sample(HASH_NAMES, 3)
         mw_player_names = [
-            self.multiworld.get_player_name(i + 1)
-            for i in range(self.multiworld.players)
+            self.multiworld.get_player_name(i)
+            for i in players
         ]
 
         # seed_name on web adds an additional 'W', making the seed 21 characters long.
@@ -725,4 +727,5 @@ class SSWorld(World):
         }
 
         return slot_data
+
 
