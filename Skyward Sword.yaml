@@ -32,10 +32,14 @@ description: Default Skyward Sword Template
 
 game: Skyward Sword
 requires:
-  version: 0.6.5 # Version of Archipelago required for this yaml to work as expected.
+  version: 0.6.7 # Version of Archipelago required for this yaml to work as expected.
+  game:
+    Skyward Sword: 0.5.6 # Version of the world required for this yaml to work as expected.
 
 Skyward Sword:
-  # Game Options
+  ################
+  # Game Options #
+  ################
   progression_balancing:
     # Algorithm for moving progression items into earlier spheres to make the gameplay experience a bit smoother.
     # The higher the value, the more frontloaded the world is.
@@ -43,10 +47,11 @@ Skyward Sword:
     # You can define additional values between the minimum and maximum values.
     # Minimum value is 0
     # Maximum value is 99
-    70: 50
+    65: 50
     random: 0
-    random-low: 0
-    random-high: 0
+    random-low: 0 # random value weighted towards lower values
+    random-high: 0 # random value weighted towards higher values
+    random-range-0-99: 0 # random value between 0 and 99
     disabled: 0 # equivalent to 0
     normal: 0 # equivalent to 50
     extreme: 0 # equivalent to 99
@@ -60,10 +65,6 @@ Skyward Sword:
     full: 50
     minimal: 0
 
-  plando_items:
-    # Generic items plando.
-    []
-
   required_dungeon_count:
     # Determines the number of dungeons required to beat the seed.
     # Beating Sky Keep is **NOT** required.
@@ -75,8 +76,9 @@ Skyward Sword:
     # Maximum value is 6
     2: 50
     random: 0
-    random-low: 0
-    random-high: 0
+    random-low: 0 # random value weighted towards lower values
+    random-high: 0 # random value weighted towards higher values
+    random-range-0-6: 0 # random value between 0 and 6
 
   triforce_required:
     # If enabled, the three Triforces will be required to open the door to Hylia's Realm at the end of the game.
@@ -202,8 +204,9 @@ Skyward Sword:
     # Maximum value is 7
     7: 50
     random: 0
-    random-low: 0
-    random-high: 0
+    random-low: 0 # random value weighted towards lower values
+    random-high: 0 # random value weighted towards higher values
+    random-range-0-7: 0 # random value between 0 and 7
 
   empty_unrequired_dungeons:
     # If enabled, only the required dungeons will contain progression items.
@@ -284,19 +287,19 @@ Skyward Sword:
     # Maximum value is 10
     5: 50
     random: 0
-    random-low: 0
-    random-high: 0
+    random-low: 0 # random value weighted towards lower values
+    random-high: 0 # random value weighted towards higher values
+    random-range-1-10: 0 # random value between 1 and 10
 
   randomize_entrances:
     # Shuffles entrances with one another.
     # **None**: entrances are vanilla.
-    # **Required Dungeons Separately**: required dungeons entrances are only shuffled with each other.
-    # **All Surface Dungeons**: all surface dungeons entrances are shuffled with each other.
-    # **All Surface Dungeons + Sky Keep** - all surface dungeon entrances AND the Sky Keep entrance are shuffled with each other.
+    # **Required Dungeons Only**: only required dungeon entrances are shuffled with each other.
+    # **Dungeons Only**: all dungeon entrances are shuffled with each other.
+    # **All Entrances**: all shuffle-able entrances are shuffled with each other, with some limitations.
     none: 50
-    required_dungeons_separately: 0
-    all_surface_dungeons: 0
-    all_surface_dungeons_and_sky_keep: 0
+    required_dungeons_only: 0
+    dungeons_only: 0
 
   randomize_trials:
     # If enabled, the Silent Realm that a Trial Gate entrance leads to is shuffled.
@@ -403,8 +406,9 @@ Skyward Sword:
     # Maximum value is 6
     6: 50
     random: 0
-    random-low: 0
-    random-high: 0
+    random-low: 0 # random value weighted towards lower values
+    random-high: 0 # random value weighted towards higher values
+    random-range-0-6: 0 # random value between 0 and 6
 
   demise_count:
     # Determines how many demises appear in the final fight of the game.
@@ -416,8 +420,9 @@ Skyward Sword:
     # Maximum value is 10
     1: 50
     random: 0
-    random-low: 0
-    random-high: 0
+    random-low: 0 # random value weighted towards lower values
+    random-high: 0 # random value weighted towards higher values
+    random-range-1-10: 0 # random value between 1 and 10
 
   bit_patches:
     # Changes how the Back in Time (BiT) glitch works.
@@ -479,8 +484,9 @@ Skyward Sword:
     # Maximum value is 255
     1: 50
     random: 0
-    random-low: 0
-    random-high: 0
+    random-low: 0 # random value weighted towards lower values
+    random-high: 0 # random value weighted towards higher values
+    random-range-1-255: 0 # random value between 1 and 255
 
   starting_sword:
     # Select which sword to start with.
@@ -502,8 +508,9 @@ Skyward Sword:
     # Maximum value is 3
     1: 50
     random: 0
-    random-low: 0
-    random-high: 0
+    random-low: 0 # random value weighted towards lower values
+    random-high: 0 # random value weighted towards higher values
+    random-range-0-3: 0 # random value between 0 and 3
 
   starting_crystal_packs:
     # How many gratitude crystal packs to start with.
@@ -513,8 +520,9 @@ Skyward Sword:
     # Maximum value is 13
     0: 50
     random: 0
-    random-low: 0
-    random-high: 0
+    random-low: 0 # random value weighted towards lower values
+    random-high: 0 # random value weighted towards higher values
+    random-range-0-13: 0 # random value between 0 and 13
 
   starting_bottles:
     # Determines how many empty bottles start in your pouch.
@@ -526,8 +534,9 @@ Skyward Sword:
     # Maximum value is 5
     0: 50
     random: 0
-    random-low: 0
-    random-high: 0
+    random-low: 0 # random value weighted towards lower values
+    random-high: 0 # random value weighted towards higher values
+    random-range-0-5: 0 # random value between 0 and 5
 
   starting_heart_containers:
     # Determines how many heart containers to start with.
@@ -537,8 +546,9 @@ Skyward Sword:
     # Maximum value is 6
     0: 50
     random: 0
-    random-low: 0
-    random-high: 0
+    random-low: 0 # random value weighted towards lower values
+    random-high: 0 # random value weighted towards higher values
+    random-range-0-6: 0 # random value between 0 and 6
 
   starting_heart_pieces:
     # Determines how many heart pieces to start with.
@@ -548,8 +558,9 @@ Skyward Sword:
     # Maximum value is 24
     0: 50
     random: 0
-    random-low: 0
-    random-high: 0
+    random-low: 0 # random value weighted towards lower values
+    random-high: 0 # random value weighted towards higher values
+    random-range-0-24: 0 # random value between 0 and 24
 
   starting_tadtones:
     # How many groups of Tadtones to start with.
@@ -559,8 +570,9 @@ Skyward Sword:
     # Maximum value is 17
     0: 50
     random: 0
-    random-low: 0
-    random-high: 0
+    random-low: 0 # random value weighted towards lower values
+    random-high: 0 # random value weighted towards higher values
+    random-range-0-17: 0 # random value between 0 and 17
 
   random_starting_item:
     # Gives you a random progression item at the start of the game in addition to any starting items.
@@ -601,6 +613,12 @@ Skyward Sword:
     # Note that this distribution is different from the original randomizer's hint distribution option.
     # Archipelago hints in game are placed differently than the original randomizer's hints.
     standard: 50
+    weak: 0
+    strong: 0
+    funky: 0
+    location_and_item_hints_only: 0
+    large_multiworld: 0
+    standard_with_dungeon_er: 0
     junk: 0
 
   song_hints:
@@ -620,7 +638,7 @@ Skyward Sword:
     #     (after obtaining the necessary song or Sea Chart first).
     # **All Chests**: dowsing points to all chests (regardless of their contents).
     # **Progress Items**: dowsing only points to chests containing progress items
-    #     (doesn't work with Goddess Chests).
+    #     (Goddess Chests must be activated by their respective Goddess Cube before being dowsable)).
     vanilla: 50
     all_chests: 0
     progress_items: 0
@@ -637,12 +655,47 @@ Skyward Sword:
     'false': 50
     'true': 0
 
+  cube_sots:
+    # If enabled, when a SotS hint points to a Goddess Chest, the hint will change to indicate this and display
+    # which of the cube progress regions is SotS.
+    # 
+    # If the precise hints option is enabled, it will display the exact Goddess chest and cube.
+    'false': 50
+    'true': 0
+
+  precise_item_hints:
+    # If enabled, item hints will indicate the exact location within a region that is being hinted.
+    # If disabled, only the region will be hinted.
+    # This applies to item hints ONLY.
+    'false': 0
+    'true': 50
+
+  precise_hints:
+    # If enabled, hints will indicate the exact location within a region that is being hinted.
+    # If disabled, only the region will be hinted.
+    # This applies to item hints, SotS hints, path hints, and entrance hints.
+    'false': 50
+    'true': 0
+
+  explicit_hints:
+    # If enabled, Fi hints and gossip stones hint text will be as explicit as possible.
+    # For a more immersive game, keep this off.
+    'false': 50
+    'true': 0
+
   death_link:
     # When you die, everyone who enabled death link dies. Of course, the reverse is true too.
     'false': 50
     'true': 0
 
-  # Item & Location Options
+  breath_link:
+    # When you run out of stamina, everyone with breath link enabled does. Of course, the reverse is true too.
+    'false': 50
+    'true': 0
+
+  ###########################
+  # Item & Location Options #
+  ###########################
   local_items:
     # Forces these items to be in their native world.
     []
@@ -652,11 +705,11 @@ Skyward Sword:
     []
 
   start_inventory:
-    # Start with these items.
+    # Start with the specified amount of these items. Example: "Bomb: 1"
     {}
 
   starting_items:
-    # Start with these items and don't place them in the world.
+    # Start with the specified amount of these items and don't place them in the world. Example: "Bomb: 1"
     # 
     # The game decides what the replacement items will be.
     {}
@@ -679,4 +732,8 @@ Skyward Sword:
 
   item_links:
     # Share part of your item pool with other players.
+    []
+
+  plando_items:
+    # Generic items plando.
     []
