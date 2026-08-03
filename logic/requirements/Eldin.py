@@ -86,7 +86,7 @@ ELDIN_REQUIREMENTS = {
             "Thrill Digger Cliff": "can_reach_region Eldin Volcano - Thrill Digger Cliff",
             "Hot Cave": "Nothing",
             "Upper Eldin Cave": "Nothing",
-            "Dungeon Entrance in Eldin Volcano": "Key Piece x5",
+            "Dungeon Entrance in Eldin Volcano": ("Key Piece x5 | option_et_open"),
         },
         "locations": {
             "Digging Spot in front of Earth Temple": "Has Digging Mitts",

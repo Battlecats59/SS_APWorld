@@ -91,7 +91,7 @@ LANAYRU_REQUIREMENTS = {
     "Lanayru Desert - Temple of Time - Temple": {
         "hint_region": "Lanayru Desert",
         "macros": {
-            "Goddess Cube at Ride near Temple of Time": "Has Goddess Sword & Distance Activator",
+            "Goddess Cube at Ride near Temple of Time": "Has Goddess Sword & Has Hook Beetle",
         },
         "exits": {
             "Fly to Sky": "Nothing",

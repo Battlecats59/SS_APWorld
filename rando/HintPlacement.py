@@ -451,7 +451,7 @@ class Hints:
             else:
                 return [useless_text]
         if self.world.options.song_hints == "direct":
-            self.locations_for_hint[hint] = [(f"{trial_connection} - Trial Reward", self.world.player, 0)]
+            self.locations_for_hint[hint] = [(self.world.get_location((f"{trial_connection} - Trial Reward")).address, self.world.player, 0)]
             player_name = self.multiworld.get_player_name(trial_item.player)
             item_name = trial_item.name
             return [direct_text.format(plr=player_name, itm=item_name)]
